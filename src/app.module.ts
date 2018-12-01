@@ -13,7 +13,8 @@ import { Registrant } from './entities/registrant.entity';
       __dirname + '/../**/*.entity{.ts,.js}',
     ],
     synchronize: environment.database_config.synchronize,
-    logging: environment.database_config.logging
+    logging: environment.database_config.logging,
+    ssl: environment.production
   }), TypeOrmModule.forFeature([Registrant])],
   controllers: [AppController],
   providers: [AppService],
