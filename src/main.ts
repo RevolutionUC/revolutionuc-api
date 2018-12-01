@@ -33,4 +33,5 @@ async function bootstrap() {
   }));
   await app.listen(3000);
 }
+require('dotenv').config();
 bootstrap();

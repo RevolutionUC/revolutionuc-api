@@ -10,7 +10,7 @@ import { Registrant } from './entities/registrant.entity';
     type: 'postgres',
     url: environment.database_config.url,
     entities: [
-      'src/**/**.entity{.ts,.js}',
+      __dirname + '/../**/*.entity{.ts,.js}',
     ],
     synchronize: environment.database_config.synchronize,
     logging: environment.database_config.logging
@@ -18,10 +18,4 @@ import { Registrant } from './entities/registrant.entity';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
-  // configure(consumer: MiddlewareConsumer) {
-  //   consumer
-  //     .apply(MulterMiddleware)
-  //     .forRoutes({ path: '/registrant', method: RequestMethod.POST });
-  // }
-}
+export class AppModule {}
