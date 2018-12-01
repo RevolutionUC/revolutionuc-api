@@ -2,19 +2,31 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from 'app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { environment } from '../enviroments/enviroment';
+import { environment } from '../environments/environment';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const swaggerOptions = new DocumentBuilder()
   .setTitle('RevolutionUC API')
-  .setVersion('0.0.1')
+  .setVersion('1.0.0')
   .setBasePath('/api')
   .build();
   const document = SwaggerModule.createDocument(app, swaggerOptions);
   SwaggerModule.setup('docs', app, document);
   app.setGlobalPrefix('/api');
-  app.enableCors();
+  if (environment.production) {
+    app.enableCors(
+      {
+        origin: 'https://revolutionuc.com',
+        allowedHeaders: 'X-API-KEY'
+      }
+    );
+  }
+  else {
+    app.enableCors({
+      allowedHeaders: 'X-API-KEY'
+    });
+  }
   app.useGlobalPipes(new ValidationPipe({
     disableErrorMessages: environment.production,
     skipMissingProperties: true
