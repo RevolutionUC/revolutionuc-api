@@ -7,7 +7,7 @@ export const environment = {
   database_config: {
     url: process.env.DATABASE_URL,
     database: 'revuc',
-    synchronize: true,
+    synchronize: process.env.production !== 'true',
     logging: true
   },
 };

@@ -1,7 +1,7 @@
 {
-  "name": "new-api",
-  "version": "0.0.1",
-  "description": "New API for PodcastDB",
+  "name": "revolutionuc-api",
+  "version": "1.0.0",
+  "description": "New API for Revolution UC",
   "author": "Isiah Lloyd",
   "license": "MIT",
   "scripts": {
