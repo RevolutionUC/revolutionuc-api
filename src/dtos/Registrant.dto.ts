@@ -1,122 +1,115 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn} from 'typeorm';
-import { IsNotEmpty, IsString, IsEmail, IsPhoneNumber, IsIn, IsInt, IsDateString, IsBoolean } from 'class-validator';
+import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
+import { IsEmail, IsPhoneNumber, IsEnum, IsIn, IsInt, IsNotEmpty, IsString, IsDateString, IsBoolean } from 'class-validator';
 const GENDERS: string[] = ['Male', 'Female', 'NonBinary'];
 const ETHNICITIES: string[] = ['Indian', 'Asian', 'Black', 'Islander', 'White', 'Latino', 'Prefer Not'];
 const SHIRT_SIZES: string[] = ['Small', 'Medium', 'Large', 'X-Large'];
 const ALLERGENS: string[] = ['Vegetatian', 'Vegan', 'PeanutAllergy', 'GlutenFree'];
 const EDUCATION_LEVEL: string[] = ['HighSchool', 'Undergraduate', 'Graduate'];
-@Entity()
-export class Registrant {
-
-  @PrimaryGeneratedColumn('uuid')
+export class RegistrantDto {
+  @ApiModelPropertyOptional()
   id: string;
+
+  @ApiModelPropertyOptional()
+  createdAt: Date;
+
+  @ApiModelPropertyOptional()
+  updatedAt: Date;
 
   @IsNotEmpty()
   @IsString()
-  @Column()
+  @ApiModelProperty()
   firstName: string;
 
   @IsNotEmpty()
   @IsString()
-  @Column()
+  @ApiModelProperty()
   lastName: string;
 
   @IsNotEmpty()
   @IsEmail()
-  @Column({
-    unique: true
-  })
+  @ApiModelProperty()
   email: string;
 
-  @Column({
-    default: false
-  })
+  @ApiModelPropertyOptional()
   emailVerfied: boolean;
 
   @IsNotEmpty()
   @IsPhoneNumber('US')
-  @Column()
+  @ApiModelProperty()
   phoneNumber: string;
 
   @IsNotEmpty()
   @IsString()
-  @Column()
+  @ApiModelProperty()
   school: string;
 
   @IsNotEmpty()
   @IsString()
-  @Column()
+  @ApiModelProperty()
   major: string;
 
   @IsNotEmpty()
+  @IsIn(GENDERS)
   @IsString()
-  @Column({
+  @ApiModelProperty({
     enum: GENDERS
   })
   gender: string;
 
+  @IsIn(ETHNICITIES)
   @IsString()
-  @Column({
-    nullable: true,
+  @ApiModelProperty({
     enum: ETHNICITIES
   })
   ethnicity: string;
 
   @IsString()
-  @Column({
-    nullable: true
-  })
+  @ApiModelProperty()
   howYouHeard: string;
 
   @IsInt()
-  @Column({
-    nullable: true
-  })
+  @ApiModelProperty()
   hackathons: number;
 
-  @Column({
+  @IsIn(SHIRT_SIZES)
+  @ApiModelProperty({
     enum: SHIRT_SIZES
   })
   shirtSize: string;
 
   @IsString()
-  @Column({
-    nullable: true
-  })
+  @ApiModelProperty()
   githubUsername: string;
 
   @IsDateString()
-  @Column()
+  @ApiModelProperty()
   dateOfBirth: string;
 
-  @Column('text', {
-    nullable: true,
-    array: true,
+  @IsIn(ALLERGENS, {
+    each: true
+  })
+  @IsString({
+    each: true
+  })
+  @ApiModelProperty({
+    enum: ALLERGENS,
+    isArray: true
   })
   allergens: string[];
 
   @IsString()
-  @Column({
-    nullable: true
-  })
+  @ApiModelProperty()
   otherAllergens: string;
 
+  @IsIn(EDUCATION_LEVEL)
   @IsString()
-  @Column({
+  @ApiModelProperty({
     enum: EDUCATION_LEVEL
   })
   educationLevel: string;
 
-  @Column({default: true})
   @IsBoolean()
+  @ApiModelPropertyOptional()
   checkedIn: boolean;
 
-  @CreateDateColumn()
-  createdAt: Date;
-  @UpdateDateColumn()
-  updatedAt: Date;
 }
-export interface UploadKeyDto {
-  uploadKey: string;
-}
-

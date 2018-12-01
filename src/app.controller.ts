@@ -1,6 +1,6 @@
 import { Post, Body, Controller, Param, Get, Patch, UseGuards, Req, Res } from '@nestjs/common';
 import { AppService } from './app.service';
-import { RegistrantDto } from './dtos/registrant.dto';
+import { RegistrantDto } from './dtos/Registrant.dto';
 import { Registrant, UploadKeyDto } from './entities/registrant.entity';
 import { AdminGuard } from './admin.guard';
 import { ApiImplicitParam, ApiResponse, ApiImplicitHeader } from '@nestjs/swagger';
