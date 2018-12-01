@@ -111,5 +111,4 @@ export class RegistrantDto {
   @IsBoolean()
   @ApiModelPropertyOptional()
   checkedIn: boolean;
-
 }
