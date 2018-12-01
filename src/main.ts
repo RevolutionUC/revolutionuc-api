@@ -31,7 +31,7 @@ async function bootstrap() {
     disableErrorMessages: environment.production,
     skipMissingProperties: true
   }));
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 require('dotenv').config();
 bootstrap();
