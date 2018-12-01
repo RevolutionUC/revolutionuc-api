@@ -23,7 +23,9 @@ export class Registrant {
 
   @IsNotEmpty()
   @IsEmail()
-  @Column()
+  @Column({
+    unique: true
+  })
   email: string;
 
   @Column({
@@ -113,5 +115,8 @@ export class Registrant {
   createdAt: Date;
   @UpdateDateColumn()
   updatedAt: Date;
+}
+export interface UploadKeyDto {
+  uploadKey: string;
 }
 

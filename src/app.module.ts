@@ -1,13 +1,9 @@
-import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from 'app.controller';
 import { AppService } from 'app.service';
-import { UserModule } from 'users/user.module';
-import { PodcastsModule } from 'podcasts/podcasts.module';
-import { environment } from '../enviroments/enviroment';
-import { PeopleModule } from 'people/people.module';
+import { environment } from '../environments/environment';
 import { Registrant } from 'entities/registrant.entity';
-import { MulterMiddleware } from 'multer.middleware';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
