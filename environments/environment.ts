@@ -1,12 +1,12 @@
 export const environment = {
-  production: true,
-  API_KEY: 'testkey',
-  MAILGUN_API_KEY: 'key-3c58d656aac21372fd09a4721a8b9533',
+  production: process.env.production === 'true',
+  API_KEY: process.env.API_KEY,
+  MAILGUN_API_KEY: process.env.MAILGUN_API_KEY,
   MAILGUN_DOMAIN: 'revolutionuc.com',
-  CRYPTO_KEY: 'aq4?hJcQ8naN&eTfmMW%rvRarrRqRT9&',
+  CRYPTO_KEY: process.env.CRYPTO_KEY,
   database_config: {
-    url: 'postgresql://postgres:password@localhost:5432/revuc',
-    synchronize: true,
+    url: process.env.DATABASE_URL,
+    synchronize: process.env.production !== 'true',
     logging: true
   },
 };
