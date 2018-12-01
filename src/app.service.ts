@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RegistrantDto } from 'dtos/Registrant.dto';
-import { Registrant, UploadKeyDto } from 'entities/registrant.entity';
+import { RegistrantDto } from './dtos/Registrant.dto';
+import { Registrant, UploadKeyDto } from './entities/registrant.entity';
 import { environment } from '../environments/environment';
 import * as crypto from 'crypto';
 import * as multer from 'multer';

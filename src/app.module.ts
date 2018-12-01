@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from 'app.controller';
 import { AppService } from 'app.service';
 import { environment } from '../environments/environment';
-import { Registrant } from 'entities/registrant.entity';
+import { Registrant } from './entities/registrant.entity';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
