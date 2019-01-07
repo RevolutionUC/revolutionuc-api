@@ -78,7 +78,7 @@ export class RegistrantDto {
   shirtSize: string;
 
   @IsString()
-  @ApiModelProperty()
+  @ApiModelPropertyOptional()
   githubUsername: string;
 
   @IsDateString()

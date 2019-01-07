@@ -18,13 +18,13 @@ async function bootstrap() {
     app.enableCors(
       {
         origin: 'https://revolutionuc.com',
-        allowedHeaders: 'X-API-KEY'
+        allowedHeaders: ['X-API-KEY', 'Content-Type']
       }
     );
   }
   else {
     app.enableCors({
-      allowedHeaders: 'X-API-KEY'
+      allowedHeaders: ['X-API-KEY', 'Content-Type']
     });
   }
   app.useGlobalPipes(new ValidationPipe({
