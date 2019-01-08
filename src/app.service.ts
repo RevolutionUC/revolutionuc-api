@@ -72,7 +72,7 @@ export class AppService {
         throw new HttpException('There was an error uploading the resume', 500);
       }
       else {
-        return HttpStatus.CREATED;
+        return res.status(HttpStatus.CREATED).send();
       }
     });
   }

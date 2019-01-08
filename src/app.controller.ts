@@ -15,8 +15,7 @@ export class AppController {
   }
   @Post('uploadResume/:key')
   @ApiResponse({status: 201, description: 'The file has been uploaded'})
-  @ApiImplicitParam({name: 'Key', description: 'Key returned from /registrant'})
-  async uploadResume(@Req() req, @Res() res, @Param('key') key: string) {
+  uploadResume(@Req() req, @Res() res, @Param('key') key: string) {
     return this.appService.uploadResume(req, res, key);
   }
   @Post('verify/:key')
