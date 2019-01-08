@@ -24,6 +24,7 @@ async function bootstrap() {
   }
   else {
     app.enableCors({
+      origin: '*',
       allowedHeaders: ['X-API-KEY', 'Content-Type']
     });
   }
