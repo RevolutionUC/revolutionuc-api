@@ -4,7 +4,7 @@ import { environment } from '../environments/environment';
 export class AdminGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request: Request = context.switchToHttp().getRequest();
-    if (request.headers.get('X-API-KEY') === environment.API_KEY) {
+    if (request.headers['x-api-key'] === environment.API_KEY) {
       return true;
     }
     else {
