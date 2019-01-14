@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn} from 'typeorm';
 import { IsNotEmpty, IsString, IsEmail, IsPhoneNumber, IsIn, IsInt, IsDateString, IsBoolean } from 'class-validator';
-const GENDERS: string[] = ['Male', 'Female', 'NonBinary'];
+const GENDERS: string[] = ['Male', 'Female', 'NonBinary', 'Other', 'PreferNot'];
 const ETHNICITIES: string[] = ['Indian', 'Asian', 'Black', 'Islander', 'White', 'Latino', 'Prefer Not'];
 const SHIRT_SIZES: string[] = ['Small', 'Medium', 'Large', 'X-Large'];
 const ALLERGENS: string[] = ['Vegetatian', 'Vegan', 'PeanutAllergy', 'GlutenFree'];
@@ -107,7 +107,7 @@ export class Registrant {
   })
   educationLevel: string;
 
-  @Column({default: true})
+  @Column({default: false})
   @IsBoolean()
   checkedIn: boolean;
 
