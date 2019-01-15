@@ -4,7 +4,7 @@ import { RegistrantDto } from './dtos/Registrant.dto';
 import { Registrant, UploadKeyDto } from './entities/registrant.entity';
 import { AdminGuard } from './admin.guard';
 import { ApiImplicitParam, ApiResponse, ApiImplicitHeader } from '@nestjs/swagger';
-import { StatsDto } from 'dtos/Stats.dto';
+import { StatsDto } from './dtos/Stats.dto';
 
 @Controller()
 export class AppController {

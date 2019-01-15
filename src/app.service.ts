@@ -8,7 +8,7 @@ import * as crypto from 'crypto';
 import * as multer from 'multer';
 import * as multers3 from 'multer-s3';
 import * as aws from 'aws-sdk';
-import { StatsDto } from 'dtos/Stats.dto';
+import { StatsDto } from './dtos/Stats.dto';
 
 const { build, send } = require('revolutionuc-emails');
 
