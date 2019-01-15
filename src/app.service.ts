@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Raw } from 'typeorm';
 import { RegistrantDto } from './dtos/Registrant.dto';
 import { Registrant, UploadKeyDto } from './entities/registrant.entity';
 import { environment } from '../environments/environment';
@@ -8,6 +8,7 @@ import * as crypto from 'crypto';
 import * as multer from 'multer';
 import * as multers3 from 'multer-s3';
 import * as aws from 'aws-sdk';
+import { StatsDto } from 'dtos/Stats.dto';
 
 const { build, send } = require('revolutionuc-emails');
 
@@ -93,6 +94,31 @@ export class AppService {
   }
   async getRegistrants(): Promise<Registrant[]> {
     return await this.registrantRepository.find();
+  }
+  async getStats(): Promise<StatsDto> {
+    const stats = new StatsDto;
+    stats.numRegistrants = await this.registrantRepository.count();
+    stats.last24hrs = await this.registrantRepository.count({ createdAt: Raw(alias => `${alias} >= NOW() - '1 day'::INTERVAL`)});
+    stats.gender = await this.registrantRepository.query(`SELECT gender, COUNT(gender) FROM public.registrant
+                                                          GROUP BY gender ORDER BY count DESC`);
+    stats.top5schools = await this.registrantRepository.query(`SELECT school, COUNT(school) FROM public.registrant
+                                                               GROUP BY school ORDER BY count DESC LIMIT 5`);
+    stats.top5majors = await this.registrantRepository.query(`SELECT major, COUNT(major) FROM public.registrant
+                                                              GROUP BY major ORDER BY count DESC LIMIT 5`);
+    stats.ethnicities = await this.registrantRepository.query(`SELECT ethnicity, COUNT(ethnicity) FROM public.registrant
+                                                               GROUP BY ethnicity ORDER BY count DESC`);
+    stats.shirtSizes = await this.registrantRepository.query(`SELECT "shirtSize", COUNT("shirtSize") FROM public.registrant
+                                                              GROUP BY "shirtSize" ORDER BY count DESC`);
+    stats.educationLevels = await this.registrantRepository.query(`SELECT "educationLevel", COUNT("educationLevel") FROM public.registrant
+                                                                   GROUP BY "educationLevel" ORDER BY count DESC`);
+    stats.allergens = await this.registrantRepository.query(`select "allergens", count(*)
+                                                            from (
+                                                              select unnest("allergens") as allergens
+                                                              from public.registrant
+                                                            ) t
+                                                            group by allergens
+                                                            order by count ASC;`);
+    return await(stats);
   }
   checkInRegistrant(uuid: string): any {
     this.registrantRepository.update({id: uuid}, {checkedIn: true});

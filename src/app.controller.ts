@@ -4,6 +4,7 @@ import { RegistrantDto } from './dtos/Registrant.dto';
 import { Registrant, UploadKeyDto } from './entities/registrant.entity';
 import { AdminGuard } from './admin.guard';
 import { ApiImplicitParam, ApiResponse, ApiImplicitHeader } from '@nestjs/swagger';
+import { StatsDto } from 'dtos/Stats.dto';
 
 @Controller()
 export class AppController {
@@ -29,6 +30,13 @@ export class AppController {
   async getRegistrants(): Promise<Registrant[]> {
     return await this.appService.getRegistrants();
   }
+  @Get('admin/stats')
+  @ApiImplicitHeader({name: 'X-API-KEY'})
+  @UseGuards(AdminGuard)
+  async getStats(): Promise<StatsDto> {
+    return this.appService.getStats();
+  }
+
   @Patch('admin/registrants/:uuid/checkin')
   @ApiImplicitHeader({ name: 'X-API-KEY' })
   @UseGuards(AdminGuard)
