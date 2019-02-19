@@ -114,7 +114,7 @@ export class RegistrantDto {
 
   @IsBoolean()
   @ApiModelPropertyOptional()
-  confirmedAttendance: string;
+  confirmedAttendance1: string;
 
   @ApiModelPropertyOptional()
   emailsReceived: string[];
