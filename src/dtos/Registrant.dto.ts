@@ -111,4 +111,22 @@ export class RegistrantDto {
   @IsBoolean()
   @ApiModelPropertyOptional()
   checkedIn: boolean;
+
+  @IsBoolean()
+  @ApiModelPropertyOptional()
+  confirmedAttendance: string;
+
+  @ApiModelPropertyOptional()
+  emailsReceived: string[];
+  @IsBoolean()
+  @ApiModelPropertyOptional()
+  isWaitlisted: boolean;
+}
+export class VerifyAttendanceDto {
+  uuid: string;
+  isConfirmed: boolean;
+}
+export class SendEmailDto {
+  template: string;
+  recipent?: string;
 }

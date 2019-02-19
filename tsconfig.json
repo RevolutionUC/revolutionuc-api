@@ -15,7 +15,8 @@
     "baseUrl": "./src"
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "migration"
   ],
   "exclude": [
     "node_modules",

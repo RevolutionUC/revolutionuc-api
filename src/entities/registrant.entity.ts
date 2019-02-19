@@ -97,6 +97,12 @@ export class Registrant {
 
   @IsString()
   @Column({
+    nullable: true,
+  })
+  confirmedAttendance1: string;
+
+  @IsString()
+  @Column({
     nullable: true
   })
   otherAllergens: string;
@@ -107,9 +113,20 @@ export class Registrant {
   })
   educationLevel: string;
 
-  @Column({default: false})
   @IsBoolean()
+  @Column({default: false})
   checkedIn: boolean;
+
+  @IsBoolean()
+  @Column({default: false})
+  isWaitlisted: boolean;
+
+  @Column('text', {
+    array: true,
+    default: '{}',
+    nullable: false,
+  })
+  emailsReceived: string[];
 
   @CreateDateColumn()
   createdAt: Date;

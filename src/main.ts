@@ -17,7 +17,7 @@ async function bootstrap() {
   if (environment.production) {
     app.enableCors(
       {
-        origin: 'https://revolutionuc.com',
+        origin: ['https://revolutionuc.com', /\.revolutionuc.com$/],
         allowedHeaders: ['X-API-KEY', 'Content-Type']
       }
     );
@@ -29,7 +29,7 @@ async function bootstrap() {
     });
   }
   app.useGlobalPipes(new ValidationPipe({
-    disableErrorMessages: environment.production,
+    disableErrorMessages: false,
     skipMissingProperties: true
   }));
   await app.listen(process.env.PORT || 3000);
