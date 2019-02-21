@@ -179,6 +179,9 @@ export class AppService {
     this.registrantRepository.update({id: uuid}, {checkedIn: true});
   }
   async sendEmail(payload: SendEmailDto) {
+    if (payload.dryRun === undefined) {
+      payload.dryRun = false;
+    }
     if (payload.template === 'confirmAttendance') {
       const emailData = {
         subject: '[Corrected] Confirm Your Attendance for RevolutionUC!',
@@ -195,7 +198,7 @@ export class AppService {
                                               .andWhere('user.confirmedAttendance1 IS NULL')
                                               .getMany();
         user.forEach(el => {
-          const emailDataCopy = { ...emailData }
+          const emailDataCopy = { ...emailData };
           const cipher = crypto.createCipher(this.userCryptoAlgorithm, environment.CRYPTO_KEY);
           let encrypted = cipher.update(el.email, 'utf8', 'hex');
           encrypted += cipher.final('hex');
@@ -203,7 +206,7 @@ export class AppService {
           emailDataCopy.yesConfirmationUrl = `https://revolutionuc.com/attendance?confirm=true&id=${encrypted}`;
           emailDataCopy.noConfirmationUrl = `https://revolutionuc.com/attendance?confirm=false&id=${encrypted}`;
           emailDataCopy.offWaitlist = false;
-          sendHelper('confirmAttendance', emailDataCopy, el.email);
+          sendHelper('confirmAttendance', emailDataCopy, el.email, payload.dryRun);
           el.emailsReceived.push('confirmAttendance');
           this.registrantRepository.save(el);
         });
@@ -223,7 +226,7 @@ export class AppService {
         encrypted += cipher.final('hex');
         emailData.yesConfirmationUrl = `https://revolutionuc.com/attendance?confirm=true&id=${encrypted}`;
         emailData.noConfirmationUrl = `https://revolutionuc.com/attendance?confirm=false&id=${encrypted}`;
-        sendHelper('confirmAttendance', emailData, user.email);
+        sendHelper('confirmAttendance', emailData, user.email, payload.dryRun);
         user.emailsReceived.push('confirmAttendance');
         this.registrantRepository.save(user);
       }
@@ -245,18 +248,23 @@ export class AppService {
       emailData.firstName = user.firstName;
       emailData.qrImageSrc = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encrypted}`;
       user.emailsReceived.push('confirmAttendanceFollowUp');
-      sendHelper('confirmAttendanceFollowUp', emailData, user.email);
+      sendHelper('confirmAttendanceFollowUp', emailData, user.email, payload.dryRun);
     }
-  function sendHelper(template: string, emailData, recipent) {
-    build(template, emailData)
-      .then(html => {
-        send(environment.MAILGUN_API_KEY, environment.MAILGUN_DOMAIN, 'RevolutionUC <info@revolutionuc.com>',
-          recipent, emailData.subject, html);
-      })
-      .catch((e) => {
-        console.log('Email error:', e);
-        throw new HttpException('Error while generating email', 500);
-      });
+  function sendHelper(template: string, emailData, recipent: string, dryRun: boolean) {
+    if (dryRun) {
+      console.log({template: template, emailData: emailData, recipent: recipent});
+    }
+    else {
+      build(template, emailData)
+        .then(html => {
+          send(environment.MAILGUN_API_KEY, environment.MAILGUN_DOMAIN, 'RevolutionUC <info@revolutionuc.com>',
+            recipent, emailData.subject, html);
+        })
+        .catch((e) => {
+          console.log('Email error:', e);
+          throw new HttpException('Error while generating email', 500);
+        });
+      }
     }
   }
 }

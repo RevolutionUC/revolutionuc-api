@@ -128,5 +128,6 @@ export class VerifyAttendanceDto {
 }
 export class SendEmailDto {
   template: string;
-  recipent?: string;
+  recipent: string;
+  dryRun?: boolean;
 }
