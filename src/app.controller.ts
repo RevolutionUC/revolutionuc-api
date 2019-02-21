@@ -21,10 +21,10 @@ export class AppController {
     // which allows you to upload the file with the drawback that you get an anymonomus response which is OK in this case.
     return this.appService.uploadResume(req, res, key);
   }
-/*   @Post('confirmAttendance')
+  @Post('confirmAttendance')
   async confirmAttendance(@Body() payload: ConfirmAttendanceDto) {
     return this.appService.confirmAttendance(payload);
-  } */
+  }
   @Post('verify/:key')
   @ApiImplicitParam({ name: 'Key', description: 'Key from email sent to registrant' })
   verify(@Param('key') key: string) {

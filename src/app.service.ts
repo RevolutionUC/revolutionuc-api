@@ -158,6 +158,9 @@ export class AppService {
     return await(stats);
   }
   async confirmAttendance(payload: VerifyAttendanceDto) {
+    if (payload.uuid === 'b2df7a9b8251b7deff909c75d3d6a68491033449') {
+      throw new HttpException('This id has been blacklisted, please look for a newer confirmation email', 500);
+    }
     const decipher = crypto.createDecipher(this.userCryptoAlgorithm, environment.CRYPTO_KEY);
     let dec = decipher.update(payload.uuid, 'hex', 'utf8');
     dec += decipher.final('utf8');
@@ -178,7 +181,7 @@ export class AppService {
   async sendEmail(payload: SendEmailDto) {
     if (payload.template === 'confirmAttendance') {
       const emailData = {
-        subject: 'Confirm Your Attendance for RevolutionUC!',
+        subject: '[Corrected] Confirm Your Attendance for RevolutionUC!',
         shortDescription: 'Please confirm your attendance for RevolutionUC',
         firstName: null,
         yesConfirmationUrl: '',
@@ -192,14 +195,15 @@ export class AppService {
                                               .andWhere('user.confirmedAttendance1 IS NULL')
                                               .getMany();
         user.forEach(el => {
+          const emailDataCopy = { ...emailData }
           const cipher = crypto.createCipher(this.userCryptoAlgorithm, environment.CRYPTO_KEY);
           let encrypted = cipher.update(el.email, 'utf8', 'hex');
           encrypted += cipher.final('hex');
-          emailData.firstName = el.firstName;
-          emailData.yesConfirmationUrl = `https://revolutionuc.com/attendance?confirm=true&id=${encrypted}`;
-          emailData.noConfirmationUrl = `https://revolutionuc.com/attendance?confirm=false&id=${encrypted}`;
-          emailData.offWaitlist = false;
-          sendHelper('confirmAttendance', emailData, el.email);
+          emailDataCopy.firstName = el.firstName;
+          emailDataCopy.yesConfirmationUrl = `https://revolutionuc.com/attendance?confirm=true&id=${encrypted}`;
+          emailDataCopy.noConfirmationUrl = `https://revolutionuc.com/attendance?confirm=false&id=${encrypted}`;
+          emailDataCopy.offWaitlist = false;
+          sendHelper('confirmAttendance', emailDataCopy, el.email);
           el.emailsReceived.push('confirmAttendance');
           this.registrantRepository.save(el);
         });
@@ -234,7 +238,6 @@ export class AppService {
         firstName: null,
         qrImageSrc: null
       };
-      console.log(payload);
       const user: Registrant = await this.registrantRepository.findOneOrFail({ where: { email: payload.recipent} });
       const cipher = crypto.createCipher(this.userCryptoAlgorithm, environment.CRYPTO_KEY);
       let encrypted = cipher.update(user.email, 'utf8', 'hex');
