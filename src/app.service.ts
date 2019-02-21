@@ -208,7 +208,7 @@ export class AppService {
           emailDataCopy.offWaitlist = false;
           sendHelper('confirmAttendance', emailDataCopy, el.email, payload.dryRun);
           el.emailsReceived.push('confirmAttendance');
-          this.registrantRepository.save(el);
+          if (!payload.dryRun) { this.registrantRepository.save(user); }
         });
       }
       else {
@@ -228,7 +228,7 @@ export class AppService {
         emailData.noConfirmationUrl = `https://revolutionuc.com/attendance?confirm=false&id=${encrypted}`;
         sendHelper('confirmAttendance', emailData, user.email, payload.dryRun);
         user.emailsReceived.push('confirmAttendance');
-        this.registrantRepository.save(user);
+        if (!payload.dryRun) { this.registrantRepository.save(user); }
       }
     }
     else if (payload.template === 'confirmAttendanceFollowUp') {
@@ -249,6 +249,7 @@ export class AppService {
       emailData.qrImageSrc = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encrypted}`;
       user.emailsReceived.push('confirmAttendanceFollowUp');
       sendHelper('confirmAttendanceFollowUp', emailData, user.email, payload.dryRun);
+      if (!payload.dryRun) { this.registrantRepository.save(user); }
     }
   function sendHelper(template: string, emailData, recipent: string, dryRun: boolean) {
     if (dryRun) {
