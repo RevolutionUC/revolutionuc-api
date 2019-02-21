@@ -112,7 +112,7 @@ export class RegistrantDto {
   @ApiModelPropertyOptional()
   checkedIn: boolean;
 
-  @IsBoolean()
+  @IsString()
   @ApiModelPropertyOptional()
   confirmedAttendance1: string;
 
