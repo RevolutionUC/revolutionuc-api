@@ -14,7 +14,7 @@ import { Registrant } from './entities/registrant.entity';
     ],
     synchronize: environment.database_config.synchronize,
     logging: environment.database_config.logging,
-    ssl: environment.production
+    ssl: true
   }), TypeOrmModule.forFeature([Registrant])],
   controllers: [AppController],
   providers: [AppService],

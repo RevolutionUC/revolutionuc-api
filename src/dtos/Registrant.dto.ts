@@ -85,6 +85,11 @@ export class RegistrantDto {
   @ApiModelProperty()
   dateOfBirth: string;
 
+  @IsNotEmpty()
+  @IsBoolean()
+  @ApiModelProperty()
+  acceptedWaiver: boolean;
+
   @IsIn(ALLERGENS, {
     each: true
   })
