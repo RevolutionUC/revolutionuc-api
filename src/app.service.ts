@@ -64,7 +64,7 @@ export class AppService {
     const upload = multer({
       storage: multers3({
         s3: new aws.S3(),
-        bucket: 'revolutionuc-resumes-2019',
+        bucket: 'revolutionuc-resumes-2020',
         key: function (_req, file, cb) {
           const fileArray = file.originalname.split('.');
           const extension = fileArray[fileArray.length - 1];
