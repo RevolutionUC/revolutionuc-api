@@ -17,7 +17,7 @@ async function bootstrap() {
   if (environment.production) {
     app.enableCors(
       {
-        origin: ['https://revolutionuc.com', /\.revolutionuc.com$/],
+        origin: ['https://revuc.com', /\.revolutionuc.com$/,'https://revolutionuc.com', /\.revolutionuc.com$/],
         allowedHeaders: ['X-API-KEY', 'Content-Type']
       }
     );
