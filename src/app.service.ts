@@ -21,16 +21,15 @@ export class AppService {
   private userCryptoAlgorithm = 'aes-256-ctr';
   async register(registrant: RegistrantDto): Promise<UploadKeyDto> {
     let user: Registrant;
+    if (await this.getRegistrantsCount() >= environment.WAITLIST_THRESHOLD) {
+      registrant.isWaitlisted = true;
+    }
     try {
       user =  await this.registrantRepository.save(registrant);
     }
     catch (err) {
       console.error(err);
       throw new HttpException('There was an error inserting the user into the database', 500);
-    }
-    if (environment.WAITLIST_ENABLED) {
-      user.isWaitlisted = true;
-      this.registrantRepository.save(user);
     }
     const payload = {uploadKey: null, isWaitlisted: null};
     const cipher = crypto.createCipher(this.userCryptoAlgorithm, environment.CRYPTO_KEY);
@@ -41,7 +40,7 @@ export class AppService {
       shortDescription: 'Please verify your email address for RevolutionUC',
       firstName: user.firstName,
       verificationUrl: `https://revolutionuc.com/registration/verify?user=${encrypted}`,
-      waitlist: environment.WAITLIST_ENABLED
+      waitlist: user.isWaitlisted
     };
     build('verifyEmail', emailData)
     .then(html => {
@@ -53,7 +52,7 @@ export class AppService {
       throw new HttpException('Error while generating email', 500);
     });
     payload.uploadKey = encrypted;
-    payload.isWaitlisted = environment.WAITLIST_ENABLED;
+    payload.isWaitlisted = user.isWaitlisted;
     return payload;
   }
   uploadResume(req, res, key: string) {
@@ -81,6 +80,12 @@ export class AppService {
         return res.status(HttpStatus.CREATED).send();
       }
     });
+  }
+  private async getRegistrantsCount(): Promise<number> {
+    return await this.registrantRepository.count();
+  }
+  private async getRegistrantsConfirmedCount(): Promise<number> {
+    return await this.registrantRepository.count({confirmedAttendance1: 'true'});
   }
 
   verify(encryptedKey: string): HttpStatus {
@@ -164,27 +169,39 @@ export class AppService {
     const decipher = crypto.createDecipher(this.userCryptoAlgorithm, environment.CRYPTO_KEY);
     let dec = decipher.update(payload.uuid, 'hex', 'utf8');
     dec += decipher.final('utf8');
-    try {
-      this.registrantRepository.update({ email: dec }, { confirmedAttendance1: payload.isConfirmed.toString() });
+    if (await this.getRegistrantsConfirmedCount() >= 275) {
+      try {
+        this.registrantRepository.update({ email: dec }, { isWaitlisted: true });
+      }
+      catch (error) {
+        throw new HttpException(error, 500);
+      }
+      throw new HttpException({error: 'ConfirmedQuotaReached'}, 500);
     }
-    catch (error) {
-      throw new HttpException(error, 500);
-    }
-    if (payload.isConfirmed) {
-      this.sendEmail({ template: 'confirmAttendanceFollowUp', recipent: dec});
+    else {
+      try {
+        this.registrantRepository.update({ email: dec }, { confirmedAttendance1: payload.isConfirmed.toString() });
+      }
+      catch (error) {
+        throw new HttpException(error, 500);
+      }
+      if (payload.isConfirmed) {
+        this.sendEmail({ template: 'confirmAttendanceFollowUp', recipent: dec});
+      }
     }
     return HttpStatus.OK;
   }
   checkInRegistrant(uuid: string): any {
     this.registrantRepository.update({id: uuid}, {checkedIn: true});
   }
+
   async sendEmail(payload: SendEmailDto) {
     if (payload.dryRun === undefined) {
       payload.dryRun = false;
     }
     if (payload.template === 'confirmAttendance') {
       const emailData = {
-        subject: '[Corrected] Confirm Your Attendance for RevolutionUC!',
+        subject: 'Confirm Your Attendance for RevolutionUC!',
         shortDescription: 'Please confirm your attendance for RevolutionUC',
         firstName: null,
         yesConfirmationUrl: '',
@@ -239,14 +256,12 @@ export class AppService {
         subject: 'Thank you for confirming your attendance at RevolutionUC',
         shortDescription: 'Please read this email for important information.',
         firstName: null,
-        qrImageSrc: null
       };
       const user: Registrant = await this.registrantRepository.findOneOrFail({ where: { email: payload.recipent} });
       const cipher = crypto.createCipher(this.userCryptoAlgorithm, environment.CRYPTO_KEY);
       let encrypted = cipher.update(user.email, 'utf8', 'hex');
       encrypted += cipher.final('hex');
       emailData.firstName = user.firstName;
-      emailData.qrImageSrc = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encrypted}`;
       user.emailsReceived.push('confirmAttendanceFollowUp');
       sendHelper('confirmAttendanceFollowUp', emailData, user.email, payload.dryRun);
       if (!payload.dryRun) { this.registrantRepository.save(user); }
