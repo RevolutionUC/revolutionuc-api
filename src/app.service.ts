@@ -181,7 +181,7 @@ export class AppService {
     const decipher = crypto.createDecipher(this.userCryptoAlgorithm, environment.CRYPTO_KEY);
     let dec = decipher.update(payload.uuid, 'hex', 'utf8');
     dec += decipher.final('utf8');
-    if (await this.getRegistrantsConfirmedCount() >= 275) {
+    if (await this.getRegistrantsConfirmedCount() >= 314) {
       try {
         this.registrantRepository.update({ email: dec }, { isWaitlisted: true });
       }
@@ -226,6 +226,9 @@ export class AppService {
                                               .andWhere('user.isWaitlisted = false')
                                               .andWhere('user.confirmedAttendance1 IS NULL')
                                               .getMany();
+        console.log(`Sending emails to ${user.length}`)
+        let numSent: number = 0;
+        let usersToUpdate: Registrant[] = [];
         user.forEach(el => {
           const emailDataCopy = { ...emailData };
           const cipher = crypto.createCipher(this.userCryptoAlgorithm, environment.CRYPTO_KEY);
@@ -236,9 +239,15 @@ export class AppService {
           emailDataCopy.noConfirmationUrl = `https://revolutionuc.com/attendance?confirm=false&id=${encrypted}`;
           emailDataCopy.offWaitlist = false;
           sendHelper('confirmAttendance', emailDataCopy, el.email, payload.dryRun);
-          el.emailsReceived.push('confirmAttendance');
-          if (!payload.dryRun) { this.registrantRepository.save(user); }
+          numSent++;
+          console.log(`Sending ${numSent} emails`);
+          if(!el.emailsReceived.includes('confirmAttendance')) {
+            el.emailsReceived.push('confirmAttendance');
+            usersToUpdate.push(el);
+          }
         });
+        if (!payload.dryRun) { this.registrantRepository.save(usersToUpdate); }
+        console.log(`Sent emails to ${user.length}`)
       }
       else {
         const user: Registrant = await this.registrantRepository.findOneOrFail({ where: { email: payload.recipent } });
@@ -268,15 +277,48 @@ export class AppService {
         subject: 'Thank you for confirming your attendance at RevolutionUC',
         shortDescription: 'Please read this email for important information.',
         firstName: null,
+        offWaitlist: null
       };
       const user: Registrant = await this.registrantRepository.findOneOrFail({ where: { email: payload.recipent} });
-      const cipher = crypto.createCipher(this.userCryptoAlgorithm, environment.CRYPTO_KEY);
-      let encrypted = cipher.update(user.email, 'utf8', 'hex');
-      encrypted += cipher.final('hex');
+      if (user.isWaitlisted === true) {
+        emailData.offWaitlist = true;
+        user.isWaitlisted = false;
+        user.confirmedAttendance1 = 'true';
+      }
+      else {
+        emailData.offWaitlist = false;
+      }
       emailData.firstName = user.firstName;
       user.emailsReceived.push('confirmAttendanceFollowUp');
       sendHelper('confirmAttendanceFollowUp', emailData, user.email, payload.dryRun);
       if (!payload.dryRun) { this.registrantRepository.save(user); }
+    }
+    else if (payload.template === 'infoEmail1') {
+      const emailData = {
+        subject: 'RevolutionUC Is Less Than Three Weeks Away!',
+        shortDescription: "RevolutionUC is coming up. Here's some important information for the event",
+        firstName: null,
+      };
+      if (payload.recipent === 'all') {
+        const user: Registrant[] = await this.registrantRepository.createQueryBuilder('user')
+                                              .where('user.emailVerfied = true')
+                                              .andWhere("user.confirmedAttendance1 = 'true'")
+                                              .getMany();
+        console.log(`Sending emails to ${user.length}`)
+        let numSent: number = 0;
+        user.forEach(el => {
+          const emailDataCopy = { ...emailData };
+          emailDataCopy.firstName = el.firstName;
+          sendHelper('infoEmail1', emailDataCopy, el.email, payload.dryRun);
+          numSent++
+          console.log(`Sent ${numSent} emails`);
+        });
+      }
+      else {
+        const user: Registrant = await this.registrantRepository.findOneOrFail({ where: { email: payload.recipent } });
+        emailData.firstName = user.firstName;
+        sendHelper('infoEmail1', emailData, user.email, payload.dryRun);
+      }
     }
   function sendHelper(template: string, emailData, recipent: string, dryRun: boolean) {
     if (dryRun) {
