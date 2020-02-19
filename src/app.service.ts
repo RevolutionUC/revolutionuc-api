@@ -173,7 +173,7 @@ export class AppService {
         stats.numConfirmed = await this.registrantRepository.count({confirmedAttendance1: 'true'});
       }
       if(incStats.includes('numCheckedIn')) {
-        stats.numConfirmed = await this.registrantRepository.count({checkedIn: true});
+        stats.numCheckedIn = await this.registrantRepository.count({checkedIn: true});
       }
     }
     return await(stats);
