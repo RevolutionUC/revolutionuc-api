@@ -142,6 +142,7 @@ export class AppService {
     if(includedStats == null) {
       stats.numRegistrants = await this.registrantRepository.count();
       stats.numConfirmed = await this.registrantRepository.count({confirmedAttendance1: 'true'});
+      stats.numCheckedIn = await this.registrantRepository.count({checkedIn: true});
       stats.last24hrs = await this.registrantRepository.count({ createdAt: Raw(alias => `${alias} >= NOW() - '1 day'::INTERVAL`)});
       stats.gender = await this.registrantRepository.query(`SELECT gender, COUNT(gender) FROM public.registrant
                                                             GROUP BY gender ORDER BY count DESC`);
@@ -170,6 +171,9 @@ export class AppService {
       }
       if(incStats.includes('numConfirmed')) {
         stats.numConfirmed = await this.registrantRepository.count({confirmedAttendance1: 'true'});
+      }
+      if(incStats.includes('numCheckedIn')) {
+        stats.numConfirmed = await this.registrantRepository.count({checkedIn: true});
       }
     }
     return await(stats);
@@ -293,9 +297,9 @@ export class AppService {
       sendHelper('confirmAttendanceFollowUp', emailData, user.email, payload.dryRun);
       if (!payload.dryRun) { this.registrantRepository.save(user); }
     }
-    else if (payload.template === 'infoEmail1') {
+    else if (payload.template === 'infoEmail3') {
       const emailData = {
-        subject: 'RevolutionUC Is Less Than Three Weeks Away!',
+        subject: 'RevolutionUC Is This Weekend!',
         shortDescription: "RevolutionUC is coming up. Here's some important information for the event",
         firstName: null,
       };
@@ -309,7 +313,7 @@ export class AppService {
         user.forEach(el => {
           const emailDataCopy = { ...emailData };
           emailDataCopy.firstName = el.firstName;
-          sendHelper('infoEmail1', emailDataCopy, el.email, payload.dryRun);
+          sendHelper('infoEmail3', emailDataCopy, el.email, payload.dryRun);
           numSent++
           console.log(`Sent ${numSent} emails`);
         });
@@ -317,7 +321,7 @@ export class AppService {
       else {
         const user: Registrant = await this.registrantRepository.findOneOrFail({ where: { email: payload.recipent } });
         emailData.firstName = user.firstName;
-        sendHelper('infoEmail1', emailData, user.email, payload.dryRun);
+        sendHelper('infoEmail3', emailData, user.email, payload.dryRun);
       }
     }
   function sendHelper(template: string, emailData, recipent: string, dryRun: boolean) {
