@@ -40,8 +40,8 @@ export class AppController {
   @Get('admin/stats')
   @ApiImplicitHeader({name: 'X-API-KEY'})
   @UseGuards(AdminGuard)
-  async getStats(): Promise<StatsDto> {
-    return this.appService.getStats();
+  async getStats(@Query('stats') inclduedStats: string): Promise<StatsDto> {
+    return this.appService.getStats(inclduedStats);
   }
   @Post('admin/email')
   @ApiImplicitHeader({ name: 'X-API-KEY' })

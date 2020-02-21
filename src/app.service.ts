@@ -21,16 +21,15 @@ export class AppService {
   private userCryptoAlgorithm = 'aes-256-ctr';
   async register(registrant: RegistrantDto): Promise<UploadKeyDto> {
     let user: Registrant;
+    if (await this.getRegistrantsCount() >= environment.WAITLIST_THRESHOLD) {
+      registrant.isWaitlisted = true;
+    }
     try {
       user =  await this.registrantRepository.save(registrant);
     }
     catch (err) {
       console.error(err);
       throw new HttpException('There was an error inserting the user into the database', 500);
-    }
-    if (environment.WAITLIST_ENABLED) {
-      user.isWaitlisted = true;
-      this.registrantRepository.save(user);
     }
     const payload = {uploadKey: null, isWaitlisted: null};
     const cipher = crypto.createCipher(this.userCryptoAlgorithm, environment.CRYPTO_KEY);
@@ -41,7 +40,7 @@ export class AppService {
       shortDescription: 'Please verify your email address for RevolutionUC',
       firstName: user.firstName,
       verificationUrl: `https://revolutionuc.com/registration/verify?user=${encrypted}`,
-      waitlist: environment.WAITLIST_ENABLED
+      waitlist: user.isWaitlisted
     };
     build('verifyEmail', emailData)
     .then(html => {
@@ -53,7 +52,7 @@ export class AppService {
       throw new HttpException('Error while generating email', 500);
     });
     payload.uploadKey = encrypted;
-    payload.isWaitlisted = environment.WAITLIST_ENABLED;
+    payload.isWaitlisted = user.isWaitlisted;
     return payload;
   }
   uploadResume(req, res, key: string) {
@@ -64,7 +63,7 @@ export class AppService {
     const upload = multer({
       storage: multers3({
         s3: new aws.S3(),
-        bucket: 'revolutionuc-resumes-2019',
+        bucket: 'revolutionuc-resumes-2020',
         key: function (_req, file, cb) {
           const fileArray = file.originalname.split('.');
           const extension = fileArray[fileArray.length - 1];
@@ -81,6 +80,12 @@ export class AppService {
         return res.status(HttpStatus.CREATED).send();
       }
     });
+  }
+  private async getRegistrantsCount(): Promise<number> {
+    return await this.registrantRepository.count();
+  }
+  private async getRegistrantsConfirmedCount(): Promise<number> {
+    return await this.registrantRepository.count({confirmedAttendance1: 'true'});
   }
 
   verify(encryptedKey: string): HttpStatus {
@@ -132,29 +137,45 @@ export class AppService {
         });
     }
   }
-  async getStats(): Promise<StatsDto> {
+  async getStats(includedStats: string): Promise<StatsDto> {
     const stats = new StatsDto;
-    stats.numRegistrants = await this.registrantRepository.count();
-    stats.last24hrs = await this.registrantRepository.count({ createdAt: Raw(alias => `${alias} >= NOW() - '1 day'::INTERVAL`)});
-    stats.gender = await this.registrantRepository.query(`SELECT gender, COUNT(gender) FROM public.registrant
-                                                          GROUP BY gender ORDER BY count DESC`);
-    stats.top5schools = await this.registrantRepository.query(`SELECT school, COUNT(school) FROM public.registrant
-                                                               GROUP BY school ORDER BY count DESC LIMIT 5`);
-    stats.top5majors = await this.registrantRepository.query(`SELECT major, COUNT(major) FROM public.registrant
-                                                              GROUP BY major ORDER BY count DESC LIMIT 5`);
-    stats.ethnicities = await this.registrantRepository.query(`SELECT ethnicity, COUNT(ethnicity) FROM public.registrant
-                                                               GROUP BY ethnicity ORDER BY count DESC`);
-    stats.shirtSizes = await this.registrantRepository.query(`SELECT "shirtSize", COUNT("shirtSize") FROM public.registrant
-                                                              GROUP BY "shirtSize" ORDER BY count DESC`);
-    stats.educationLevels = await this.registrantRepository.query(`SELECT "educationLevel", COUNT("educationLevel") FROM public.registrant
-                                                                   GROUP BY "educationLevel" ORDER BY count DESC`);
-    stats.allergens = await this.registrantRepository.query(`SELECT "allergens", COUNT(*)
-                                                            FROM (
-                                                              SELECT UNNEST("allergens") AS allergens
-                                                              FROM public.registrant
-                                                            ) t
-                                                            GROUP BY allergens
-                                                            ORDER BY count DESC;`);
+    if(includedStats == null) {
+      stats.numRegistrants = await this.registrantRepository.count();
+      stats.numConfirmed = await this.registrantRepository.count({confirmedAttendance1: 'true'});
+      stats.numCheckedIn = await this.registrantRepository.count({checkedIn: true});
+      stats.last24hrs = await this.registrantRepository.count({ createdAt: Raw(alias => `${alias} >= NOW() - '1 day'::INTERVAL`)});
+      stats.gender = await this.registrantRepository.query(`SELECT gender, COUNT(gender) FROM public.registrant
+                                                            GROUP BY gender ORDER BY count DESC`);
+      stats.top5schools = await this.registrantRepository.query(`SELECT school, COUNT(school) FROM public.registrant
+                                                                GROUP BY school ORDER BY count DESC LIMIT 5`);
+      stats.top5majors = await this.registrantRepository.query(`SELECT major, COUNT(major) FROM public.registrant
+                                                                GROUP BY major ORDER BY count DESC LIMIT 5`);
+      stats.ethnicities = await this.registrantRepository.query(`SELECT ethnicity, COUNT(ethnicity) FROM public.registrant
+                                                                GROUP BY ethnicity ORDER BY count DESC`);
+      stats.shirtSizes = await this.registrantRepository.query(`SELECT "shirtSize", COUNT("shirtSize") FROM public.registrant
+                                                                GROUP BY "shirtSize" ORDER BY count DESC`);
+      stats.educationLevels = await this.registrantRepository.query(`SELECT "educationLevel", COUNT("educationLevel") FROM public.registrant
+                                                                    GROUP BY "educationLevel" ORDER BY count DESC`);
+      stats.allergens = await this.registrantRepository.query(`SELECT "allergens", COUNT(*)
+                                                              FROM (
+                                                                SELECT UNNEST("allergens") AS allergens
+                                                                FROM public.registrant
+                                                              ) t
+                                                              GROUP BY allergens
+                                                              ORDER BY count DESC;`);
+    }
+    else {
+      const incStats: string[] = includedStats.split(',');
+      if(incStats.includes('numRegistrants')) {
+        stats.numRegistrants = await this.registrantRepository.count();
+      }
+      if(incStats.includes('numConfirmed')) {
+        stats.numConfirmed = await this.registrantRepository.count({confirmedAttendance1: 'true'});
+      }
+      if(incStats.includes('numCheckedIn')) {
+        stats.numCheckedIn = await this.registrantRepository.count({checkedIn: true});
+      }
+    }
     return await(stats);
   }
   async confirmAttendance(payload: VerifyAttendanceDto) {
@@ -164,14 +185,25 @@ export class AppService {
     const decipher = crypto.createDecipher(this.userCryptoAlgorithm, environment.CRYPTO_KEY);
     let dec = decipher.update(payload.uuid, 'hex', 'utf8');
     dec += decipher.final('utf8');
-    try {
-      this.registrantRepository.update({ email: dec }, { confirmedAttendance1: payload.isConfirmed.toString() });
+    if (await this.getRegistrantsConfirmedCount() >= 314) {
+      try {
+        this.registrantRepository.update({ email: dec }, { isWaitlisted: true });
+      }
+      catch (error) {
+        throw new HttpException(error, 500);
+      }
+      throw new HttpException({error: 'ConfirmedQuotaReached'}, 500);
     }
-    catch (error) {
-      throw new HttpException(error, 500);
-    }
-    if (payload.isConfirmed) {
-      this.sendEmail({ template: 'confirmAttendanceFollowUp', recipent: dec});
+    else {
+      try {
+        this.registrantRepository.update({ email: dec }, { confirmedAttendance1: payload.isConfirmed.toString() });
+      }
+      catch (error) {
+        throw new HttpException(error, 500);
+      }
+      if (payload.isConfirmed) {
+        this.sendEmail({ template: 'confirmAttendanceFollowUp', recipent: dec});
+      }
     }
     return HttpStatus.OK;
   }
@@ -187,7 +219,7 @@ export class AppService {
     }
     if (payload.template === 'confirmAttendance') {
       const emailData = {
-        subject: '[Corrected] Confirm Your Attendance for RevolutionUC!',
+        subject: 'Confirm Your Attendance for RevolutionUC!',
         shortDescription: 'Please confirm your attendance for RevolutionUC',
         firstName: null,
         yesConfirmationUrl: '',
@@ -200,6 +232,9 @@ export class AppService {
                                               .andWhere('user.isWaitlisted = false')
                                               .andWhere('user.confirmedAttendance1 IS NULL')
                                               .getMany();
+        console.log(`Sending emails to ${user.length}`)
+        let numSent: number = 0;
+        let usersToUpdate: Registrant[] = [];
         user.forEach(el => {
           const emailDataCopy = { ...emailData };
           const cipher = crypto.createCipher(this.userCryptoAlgorithm, environment.CRYPTO_KEY);
@@ -210,9 +245,15 @@ export class AppService {
           emailDataCopy.noConfirmationUrl = `https://revolutionuc.com/attendance?confirm=false&id=${encrypted}`;
           emailDataCopy.offWaitlist = false;
           sendHelper('confirmAttendance', emailDataCopy, el.email, payload.dryRun);
-          el.emailsReceived.push('confirmAttendance');
-          if (!payload.dryRun) { this.registrantRepository.save(user); }
+          numSent++;
+          console.log(`Sending ${numSent} emails`);
+          if(!el.emailsReceived.includes('confirmAttendance')) {
+            el.emailsReceived.push('confirmAttendance');
+            usersToUpdate.push(el);
+          }
         });
+        if (!payload.dryRun) { this.registrantRepository.save(usersToUpdate); }
+        console.log(`Sent emails to ${user.length}`)
       }
       else {
         const user: Registrant = await this.registrantRepository.findOneOrFail({ where: { email: payload.recipent } });
@@ -242,17 +283,48 @@ export class AppService {
         subject: 'Thank you for confirming your attendance at RevolutionUC',
         shortDescription: 'Please read this email for important information.',
         firstName: null,
-        qrImageSrc: null
+        offWaitlist: null
       };
       const user: Registrant = await this.registrantRepository.findOneOrFail({ where: { email: payload.recipent} });
-      const cipher = crypto.createCipher(this.userCryptoAlgorithm, environment.CRYPTO_KEY);
-      let encrypted = cipher.update(user.email, 'utf8', 'hex');
-      encrypted += cipher.final('hex');
+      if (user.isWaitlisted === true) {
+        emailData.offWaitlist = true;
+        user.isWaitlisted = false;
+        user.confirmedAttendance1 = 'true';
+      }
+      else {
+        emailData.offWaitlist = false;
+      }
       emailData.firstName = user.firstName;
-      emailData.qrImageSrc = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encrypted}`;
       user.emailsReceived.push('confirmAttendanceFollowUp');
       sendHelper('confirmAttendanceFollowUp', emailData, user.email, payload.dryRun);
       if (!payload.dryRun) { this.registrantRepository.save(user); }
+    }
+    else if (payload.template === 'infoEmail3') {
+      const emailData = {
+        subject: 'RevolutionUC Is This Weekend!',
+        shortDescription: "RevolutionUC is coming up. Here's some important information for the event",
+        firstName: null,
+      };
+      if (payload.recipent === 'all') {
+        const user: Registrant[] = await this.registrantRepository.createQueryBuilder('user')
+                                              .where('user.emailVerfied = true')
+                                              .andWhere("user.confirmedAttendance1 = 'true'")
+                                              .getMany();
+        console.log(`Sending emails to ${user.length}`)
+        let numSent: number = 0;
+        user.forEach(el => {
+          const emailDataCopy = { ...emailData };
+          emailDataCopy.firstName = el.firstName;
+          sendHelper('infoEmail3', emailDataCopy, el.email, payload.dryRun);
+          numSent++
+          console.log(`Sent ${numSent} emails`);
+        });
+      }
+      else {
+        const user: Registrant = await this.registrantRepository.findOneOrFail({ where: { email: payload.recipent } });
+        emailData.firstName = user.firstName;
+        sendHelper('infoEmail3', emailData, user.email, payload.dryRun);
+      }
     }
   function sendHelper(template: string, emailData, recipent: string, dryRun: boolean) {
     if (dryRun) {

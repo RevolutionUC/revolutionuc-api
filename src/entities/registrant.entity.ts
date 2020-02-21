@@ -107,6 +107,7 @@ export class Registrant {
   })
   otherAllergens: string;
 
+
   @IsString()
   @Column({
     enum: EDUCATION_LEVEL
@@ -116,6 +117,10 @@ export class Registrant {
   @IsBoolean()
   @Column({default: false})
   checkedIn: boolean;
+
+  @IsBoolean()
+  @Column({default: false})
+  acceptedWaiver: boolean;
 
   @IsBoolean()
   @Column({default: false})

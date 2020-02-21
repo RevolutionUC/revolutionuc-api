@@ -4,6 +4,12 @@ export class StatsDto {
   numRegistrants: number;
 
   @ApiModelProperty()
+  numConfirmed: number;
+
+  @ApiModelProperty()
+  numCheckedIn: number;
+
+  @ApiModelProperty()
   last24hrs: number;
 
   @ApiModelProperty()
