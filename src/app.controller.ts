@@ -56,4 +56,11 @@ export class AppController {
   checkInRegistrant(@Param('uuid') uuid: string) {
     return this.appService.checkInRegistrant(uuid);
   }
+
+  @Get('admin/registrants/:uuid/checkout')
+  @ApiImplicitHeader({ name: 'X-API-KEY' })
+  @UseGuards(AdminGuard)
+  checkOutRegistrant(@Param('uuid') uuid: string) {
+    return this.appService.checkOutRegistrant(uuid);
+  }
 }

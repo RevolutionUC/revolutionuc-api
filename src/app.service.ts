@@ -178,6 +178,9 @@ export class AppService {
   checkInRegistrant(uuid: string): any {
     this.registrantRepository.update({id: uuid}, {checkedIn: true});
   }
+  checkOutRegistrant(uuid: string): any {
+    this.registrantRepository.update({id: uuid}, {checkedIn: false});
+  }
   async sendEmail(payload: SendEmailDto) {
     if (payload.dryRun === undefined) {
       payload.dryRun = false;
