@@ -7,7 +7,7 @@ export class StatsDto {
   numConfirmed: number;
 
   @ApiModelProperty()
-  numCheckedIn: number;
+  numCheckedIn: any;
 
   @ApiModelProperty()
   last24hrs: number;
