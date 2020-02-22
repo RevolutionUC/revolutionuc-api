@@ -297,10 +297,10 @@ export class AppService {
       sendHelper('confirmAttendanceFollowUp', emailData, user.email, payload.dryRun);
       if (!payload.dryRun) { this.registrantRepository.save(user); }
     }
-    else if (payload.template === 'infoEmail3') {
+    else if (payload.template === 'infoEmail4') {
       const emailData = {
-        subject: 'RevolutionUC Is This Weekend!',
-        shortDescription: "RevolutionUC is coming up. Here's some important information for the event",
+        subject: 'RevolutionUC Is Tomorrow!',
+        shortDescription: "RevolutionUC is here. Here's some important information for the event",
         firstName: null,
       };
       if (payload.recipent === 'all') {
@@ -308,6 +308,30 @@ export class AppService {
                                               .where('user.emailVerfied = true')
                                               .andWhere("user.confirmedAttendance1 = 'true'")
                                               .getMany();
+        console.log(`Sending emails to ${user.length}`)
+        let numSent: number = 0;
+        user.forEach(el => {
+          const emailDataCopy = { ...emailData };
+          emailDataCopy.firstName = el.firstName;
+          sendHelper('infoEmail4', emailDataCopy, el.email, payload.dryRun);
+          numSent++
+          console.log(`Sent ${numSent} emails`);
+        });
+      }
+      else {
+        const user: Registrant = await this.registrantRepository.findOneOrFail({ where: { email: payload.recipent } });
+        emailData.firstName = user.firstName;
+        sendHelper('infoEmail4', emailData, user.email, payload.dryRun);
+      }
+    }
+    else if (payload.template === 'infoEmailMinors') {
+      const emailData = {
+        subject: 'Important information for minors going to RevolutionUC',
+        shortDescription: "Additional information for minors going to RevolutionUC",
+        firstName: null,
+      };
+      if (payload.recipent === 'all') {
+        const user: Registrant[] = await this.registrantRepository.query("SELECT * FROM registrant WHERE \"dateOfBirth\"::date > '2002-02-22'::date AND \"confirmedAttendance1\" = 'true'")
         console.log(`Sending emails to ${user.length}`)
         let numSent: number = 0;
         user.forEach(el => {
@@ -321,7 +345,7 @@ export class AppService {
       else {
         const user: Registrant = await this.registrantRepository.findOneOrFail({ where: { email: payload.recipent } });
         emailData.firstName = user.firstName;
-        sendHelper('infoEmail3', emailData, user.email, payload.dryRun);
+        sendHelper('infoEmailMinors', emailData, user.email, payload.dryRun);
       }
     }
   function sendHelper(template: string, emailData, recipent: string, dryRun: boolean) {
