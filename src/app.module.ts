@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { environment } from '../environments/environment';
 import { Registrant } from './entities/registrant.entity';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -15,7 +16,7 @@ import { Registrant } from './entities/registrant.entity';
     synchronize: environment.database_config.synchronize,
     logging: environment.database_config.logging,
     ssl: true
-  }), TypeOrmModule.forFeature([Registrant])],
+  }), TypeOrmModule.forFeature([Registrant]), AdminModule],
   controllers: [AppController],
   providers: [AppService],
 })

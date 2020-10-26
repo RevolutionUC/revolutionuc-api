@@ -43,14 +43,14 @@ export class AppService {
       waitlist: user.isWaitlisted
     };
     build('verifyEmail', emailData)
-    .then(html => {
-      send(environment.MAILGUN_API_KEY, environment.MAILGUN_DOMAIN, 'RevolutionUC <info@revolutionuc.com>',
-           user.email, emailData.subject, html);
-    })
-    .catch((e) => {
-      console.log('Email error:', e);
-      throw new HttpException('Error while generating email', 500);
-    });
+      .then(html => {
+        send(environment.MAILGUN_API_KEY, environment.MAILGUN_DOMAIN, 'RevolutionUC <info@revolutionuc.com>',
+            user.email, emailData.subject, html);
+      })
+      .catch((e) => {
+        console.log('Email error:', e);
+        throw new HttpException('Error while generating email', 500);
+      });
     payload.uploadKey = encrypted;
     payload.isWaitlisted = user.isWaitlisted;
     return payload;
@@ -352,20 +352,20 @@ export class AppService {
         sendHelper('infoEmailMinors', emailData, user.email, payload.dryRun);
       }
     }
-  function sendHelper(template: string, emailData, recipent: string, dryRun: boolean) {
-    if (dryRun) {
-      console.log({template: template, emailData: emailData, recipent: recipent});
-    }
-    else {
-      build(template, emailData)
-        .then(html => {
-          send(environment.MAILGUN_API_KEY, environment.MAILGUN_DOMAIN, 'RevolutionUC <info@revolutionuc.com>',
-            recipent, emailData.subject, html);
-        })
-        .catch((e) => {
-          console.log('Email error:', e);
-          throw new HttpException('Error while generating email', 500);
-        });
+    function sendHelper(template: string, emailData, recipent: string, dryRun: boolean) {
+      if (dryRun) {
+        console.log({template: template, emailData: emailData, recipent: recipent});
+      }
+      else {
+        build(template, emailData)
+          .then(html => {
+            send(environment.MAILGUN_API_KEY, environment.MAILGUN_DOMAIN, 'RevolutionUC <info@revolutionuc.com>',
+              recipent, emailData.subject, html);
+          })
+          .catch((e) => {
+            console.log('Email error:', e);
+            throw new HttpException('Error while generating email', 500);
+          });
       }
     }
   }

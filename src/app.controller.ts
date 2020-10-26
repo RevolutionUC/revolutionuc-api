@@ -2,7 +2,7 @@ import { Post, Body, Controller, Param, Get, Patch, UseGuards, Req, Res, Query }
 import { AppService } from './app.service';
 import { RegistrantDto, SendEmailDto, VerifyAttendanceDto as ConfirmAttendanceDto } from './dtos/Registrant.dto';
 import { Registrant, UploadKeyDto } from './entities/registrant.entity';
-import { AdminGuard } from './admin.guard';
+import { AdminGuard } from './admin/admin.guard';
 import { ApiImplicitParam, ApiResponse, ApiImplicitHeader } from '@nestjs/swagger';
 import { StatsDto } from './dtos/Stats.dto';
 
