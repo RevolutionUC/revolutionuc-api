@@ -1,19 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Raw, getRepository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
-import { RegistrantDto, SendEmailDto, VerifyAttendanceDto } from '../dtos/Registrant.dto';
-import { Registrant, SortKey, SortOrder, UploadKeyDto } from '../entities/registrant.entity';
-import { environment } from '../../environments/environment';
-import * as crypto from 'crypto';
+import { RegistrantDto } from '../dtos/Registrant.dto';
+import { Registrant, SortKey, SortOrder } from '../entities/registrant.entity';
 import * as multer from 'multer';
 import * as multers3 from 'multer-s3';
 import * as aws from 'aws-sdk';
-import { StatsDto } from '../dtos/Stats.dto';
-import { updateFunctionDeclaration } from 'typescript';
-
-const { build, send } = require('revolutionuc-emails');
-
 
 @Injectable()
 export class AdminService {
