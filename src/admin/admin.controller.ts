@@ -2,13 +2,13 @@ import { Post, Body, Controller, Param, Get, Patch, UseGuards, Req, Res, Query, 
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { RegistrantDto } from '../dtos/Registrant.dto';
 import { Registrant, SortKey, SortOrder } from '../entities/registrant.entity';
-import { AdminGuard } from './admin.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { ApiImplicitHeader, ApiUseTags } from '@nestjs/swagger';
 import { AdminService } from 'admin/admin.service';
 
 @ApiUseTags('admin')
 @Controller('v2/admin')
-@UseGuards(AdminGuard)
+@UseGuards(AuthGuard)
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 

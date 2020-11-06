@@ -2,7 +2,7 @@ import { Post, Body, Controller, Param, Get, Patch, UseGuards, Req, Res, Query }
 import { AppService } from './app.service';
 import { RegistrantDto, SendEmailDto, VerifyAttendanceDto as ConfirmAttendanceDto } from './dtos/Registrant.dto';
 import { Registrant, UploadKeyDto } from './entities/registrant.entity';
-import { AdminGuard } from './admin/admin.guard';
+import { AuthGuard } from './auth/auth.guard';
 import { ApiImplicitParam, ApiResponse, ApiImplicitHeader } from '@nestjs/swagger';
 import { StatsDto } from './dtos/Stats.dto';
 
@@ -32,34 +32,34 @@ export class AppController {
   }
   @Get('admin/registrants')
   @ApiImplicitHeader({name: 'X-API-KEY'})
-  @UseGuards(AdminGuard)
+  @UseGuards(AuthGuard)
   async getRegistrants(@Query('q') searchQuery: string, @Query('id') id: string,
                        @Query('limit') limit: number): Promise<Registrant[] | Registrant> {
     return await this.appService.getRegistrants(searchQuery, id, limit);
   }
   @Get('admin/stats')
   @ApiImplicitHeader({name: 'X-API-KEY'})
-  @UseGuards(AdminGuard)
+  @UseGuards(AuthGuard)
   async getStats(@Query('stats') inclduedStats: string): Promise<StatsDto> {
     return this.appService.getStats(inclduedStats);
   }
   @Post('admin/email')
   @ApiImplicitHeader({ name: 'X-API-KEY' })
-  @UseGuards(AdminGuard)
+  @UseGuards(AuthGuard)
   async sendEmail(@Body() payload: SendEmailDto) {
     return this.appService.sendEmail(payload);
   }
 
   @Get('admin/registrants/:uuid/checkin')
   @ApiImplicitHeader({ name: 'X-API-KEY' })
-  @UseGuards(AdminGuard)
+  @UseGuards(AuthGuard)
   checkInRegistrant(@Param('uuid') uuid: string) {
     return this.appService.checkInRegistrant(uuid);
   }
 
   @Get('admin/registrants/:uuid/checkout')
   @ApiImplicitHeader({ name: 'X-API-KEY' })
-  @UseGuards(AdminGuard)
+  @UseGuards(AuthGuard)
   checkOutRegistrant(@Param('uuid') uuid: string) {
     return this.appService.checkOutRegistrant(uuid);
   }
