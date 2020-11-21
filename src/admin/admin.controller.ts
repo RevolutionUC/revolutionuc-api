@@ -4,9 +4,9 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { RegistrantDto } from '../dtos/Registrant.dto';
 import { Registrant, SortKey, SortOrder } from '../entities/registrant.entity';
-import { AdminService } from 'admin/admin.service';
-import { CurrentUser } from 'auth/currentuser';
-import { RoleGuard, Roles } from 'auth/role.guard';
+import { AdminService } from '../admin/admin.service';
+import { CurrentUser } from '../auth/currentuser';
+import { RoleGuard, Roles } from '../auth/role.guard';
 
 @ApiTags('admin')
 @ApiBearerAuth()
