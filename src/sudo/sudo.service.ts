@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Role, User } from 'entities/user.entity';
 import { validateOrReject } from 'class-validator';
-import { UserDto } from 'dtos/User.dto';
+import { Role, User } from '../entities/user.entity';
+import { UserDto } from '../dtos/User.dto';
 
 @Injectable()
 export class SudoService {

@@ -1,9 +1,9 @@
 import { Post, Body, Controller, Param, Get, Delete, UseGuards, Patch } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SudoService } from './sudo.service';
-import { User } from 'entities/user.entity';
-import { UserDto } from 'dtos/User.dto';
-import { RoleGuard, Roles } from 'auth/role.guard';
+import { User } from '../entities/user.entity';
+import { UserDto } from '../dtos/User.dto';
+import { RoleGuard, Roles } from '../auth/role.guard';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('sudo')
