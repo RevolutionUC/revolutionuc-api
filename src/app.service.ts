@@ -7,7 +7,7 @@ import { environment } from '../environments/environment';
 import * as crypto from 'crypto';
 import * as multer from 'multer';
 import * as multers3 from 'multer-s3';
-import * as aws from 'aws-sdk';
+import { S3 } from 'aws-sdk';
 import { StatsDto } from './dtos/Stats.dto';
 
 const { build, send } = require('revolutionuc-emails');
@@ -61,7 +61,7 @@ export class AppService {
     const email = dec;
     const upload = multer({
       storage: multers3({
-        s3: new aws.S3(),
+        s3: new S3(),
         bucket: 'revolutionuc-resumes-2020',
         key: function (_req, file, cb) {
           const fileArray = file.originalname.split('.');

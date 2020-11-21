@@ -13,7 +13,9 @@
     "sourceMap": true,
     "allowJs": true,
     "outDir": "./dist",
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "diagnostics": true,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*",

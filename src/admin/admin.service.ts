@@ -6,7 +6,7 @@ import { RegistrantDto } from '../dtos/Registrant.dto';
 import { Registrant, SortKey, SortOrder } from '../entities/registrant.entity';
 import * as multer from 'multer';
 import * as multers3 from 'multer-s3';
-import * as aws from 'aws-sdk';
+import { S3 } from 'aws-sdk';
 
 @Injectable()
 export class AdminService {
@@ -79,7 +79,7 @@ export class AdminService {
       }
       const upload = multer({
         storage: multers3({
-          s3: new aws.S3(),
+          s3: new S3(),
           bucket: 'revolutionuc-resumes-2020',
           key: function (_req, file, cb) {
             const fileArray = file.originalname.split('.');
