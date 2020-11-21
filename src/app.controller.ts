@@ -2,8 +2,8 @@ import { Post, Body, Controller, Param, Get, Patch, UseGuards, Req, Res, Query }
 import { AppService } from './app.service';
 import { RegistrantDto, SendEmailDto, VerifyAttendanceDto as ConfirmAttendanceDto } from './dtos/Registrant.dto';
 import { Registrant, UploadKeyDto } from './entities/registrant.entity';
-import { AdminGuard } from './admin.guard';
-import { ApiImplicitParam, ApiResponse, ApiImplicitHeader } from '@nestjs/swagger';
+import { RoleGuard } from './auth/role.guard';
+import { ApiParam, ApiResponse, ApiHeader } from '@nestjs/swagger';
 import { StatsDto } from './dtos/Stats.dto';
 
 @Controller()
@@ -26,40 +26,40 @@ export class AppController {
     return this.appService.confirmAttendance(payload);
   }
   @Post('verify/:key')
-  @ApiImplicitParam({ name: 'Key', description: 'Key from email sent to registrant' })
+  @ApiParam({ name: 'Key', description: 'Key from email sent to registrant' })
   verify(@Param('key') key: string) {
     return this.appService.verify(key);
   }
   @Get('admin/registrants')
-  @ApiImplicitHeader({name: 'X-API-KEY'})
-  @UseGuards(AdminGuard)
+  @ApiHeader({name: 'X-API-KEY'})
+  @UseGuards(RoleGuard)
   async getRegistrants(@Query('q') searchQuery: string, @Query('id') id: string,
                        @Query('limit') limit: number): Promise<Registrant[] | Registrant> {
     return await this.appService.getRegistrants(searchQuery, id, limit);
   }
   @Get('admin/stats')
-  @ApiImplicitHeader({name: 'X-API-KEY'})
-  @UseGuards(AdminGuard)
+  @ApiHeader({name: 'X-API-KEY'})
+  @UseGuards(RoleGuard)
   async getStats(@Query('stats') inclduedStats: string): Promise<StatsDto> {
     return this.appService.getStats(inclduedStats);
   }
   @Post('admin/email')
-  @ApiImplicitHeader({ name: 'X-API-KEY' })
-  @UseGuards(AdminGuard)
+  @ApiHeader({ name: 'X-API-KEY' })
+  @UseGuards(RoleGuard)
   async sendEmail(@Body() payload: SendEmailDto) {
     return this.appService.sendEmail(payload);
   }
 
   @Get('admin/registrants/:uuid/checkin')
-  @ApiImplicitHeader({ name: 'X-API-KEY' })
-  @UseGuards(AdminGuard)
+  @ApiHeader({ name: 'X-API-KEY' })
+  @UseGuards(RoleGuard)
   checkInRegistrant(@Param('uuid') uuid: string) {
     return this.appService.checkInRegistrant(uuid);
   }
 
   @Get('admin/registrants/:uuid/checkout')
-  @ApiImplicitHeader({ name: 'X-API-KEY' })
-  @UseGuards(AdminGuard)
+  @ApiHeader({ name: 'X-API-KEY' })
+  @UseGuards(RoleGuard)
   checkOutRegistrant(@Param('uuid') uuid: string) {
     return this.appService.checkOutRegistrant(uuid);
   }
