@@ -1,10 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
 import { IsIn, IsNotEmpty, IsString } from 'class-validator';
 import { hash, compare } from 'bcrypt';
 
-export type Role = 'SUDO' | 'ADMIN' | 'JUDGE';
+export type Role = 'SUDO' | 'ADMIN' | 'JUDGE' | 'HACKER';
 
-const ROLES: Role[] = ['SUDO', 'ADMIN', 'JUDGE'];
+export const ROLES: Role[] = ['SUDO', 'ADMIN', 'JUDGE', 'HACKER'];
 
 @Entity()
 export class User {
@@ -14,7 +14,7 @@ export class User {
 
   @IsNotEmpty()
   @IsString()
-  @Column()
+  @Column({ unique: true })
   username: string;
 
   @IsNotEmpty()

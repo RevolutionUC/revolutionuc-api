@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn} from 'typeorm';
 import { IsNotEmpty, IsString, IsEmail, IsPhoneNumber, IsIn, IsInt, IsDateString, IsBoolean } from 'class-validator';
+import { truncateSync } from 'fs';
 
 const GENDERS: string[] = ['Male', 'Female', 'NonBinary', 'Other', 'PreferNot'];
 const ETHNICITIES: string[] = ['Indian', 'Asian', 'Black', 'Islander', 'White', 'Latino', 'Prefer Not'];
@@ -47,6 +48,11 @@ export class Registrant {
   @IsNotEmpty()
   @IsString()
   @Column()
+  country: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @Column()
   major: string;
 
   @IsNotEmpty()
@@ -57,11 +63,12 @@ export class Registrant {
   gender: string;
 
   @IsString()
-  @Column({
+  @Column('enum', {
     nullable: true,
-    enum: ETHNICITIES
+    enum: ETHNICITIES,
+    array: true
   })
-  ethnicity: string;
+  ethnicity: string[];
 
   @IsString()
   @Column({
@@ -76,7 +83,8 @@ export class Registrant {
   hackathons: number;
 
   @Column({
-    enum: SHIRT_SIZES
+    enum: SHIRT_SIZES,
+    nullable: true
   })
   shirtSize: string;
 
@@ -107,7 +115,6 @@ export class Registrant {
     nullable: true
   })
   otherAllergens: string;
-
 
   @IsString()
   @Column({

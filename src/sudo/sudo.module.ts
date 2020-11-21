@@ -5,8 +5,8 @@ import { SudoService } from './sudo.service';
 import { User } from 'entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
-  controllers: [SudoController],
-  providers: [SudoService],
+  imports: [ TypeOrmModule.forFeature([ User ]) ],
+  controllers: [ SudoController ],
+  providers: [ SudoService ],
 })
 export class SudoModule {}

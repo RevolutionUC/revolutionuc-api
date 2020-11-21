@@ -1,93 +1,98 @@
-import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsPhoneNumber, IsEnum, IsIn, IsInt, IsNotEmpty, IsString, IsDateString, IsBoolean } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsEmail, IsPhoneNumber, IsArray, IsEnum, IsIn, IsInt, IsNotEmpty, IsString, IsDateString, IsBoolean } from 'class-validator';
 const GENDERS: string[] = ['Male', 'Female', 'NonBinary', 'Other', 'PreferNot'];
 const ETHNICITIES: string[] = ['Indian', 'Asian', 'Black', 'Islander', 'White', 'Latino', 'Prefer Not'];
 const SHIRT_SIZES: string[] = ['X-Small', 'Small', 'Medium', 'Large', 'X-Large', 'XX-Large'];
 const ALLERGENS: string[] = ['Vegetatian', 'Vegan', 'PeanutAllergy', 'GlutenFree'];
 const EDUCATION_LEVEL: string[] = ['HighSchool', 'Undergraduate', 'Graduate'];
 export class RegistrantDto {
-  @ApiModelPropertyOptional()
+  @ApiPropertyOptional()
   id: string;
 
-  @ApiModelPropertyOptional()
+  @ApiPropertyOptional()
   createdAt: Date;
 
-  @ApiModelPropertyOptional()
+  @ApiPropertyOptional()
   updatedAt: Date;
 
   @IsNotEmpty()
   @IsString()
-  @ApiModelProperty()
+  @ApiProperty()
   firstName: string;
 
   @IsNotEmpty()
   @IsString()
-  @ApiModelProperty()
+  @ApiProperty()
   lastName: string;
 
   @IsNotEmpty()
   @IsEmail()
-  @ApiModelProperty()
+  @ApiProperty()
   email: string;
 
-  @ApiModelPropertyOptional()
+  @ApiPropertyOptional()
   emailVerfied: boolean;
 
   @IsNotEmpty()
   @IsPhoneNumber('US')
-  @ApiModelProperty()
+  @ApiProperty()
   phoneNumber: string;
 
   @IsNotEmpty()
   @IsString()
-  @ApiModelProperty()
+  @ApiProperty()
   school: string;
 
   @IsNotEmpty()
   @IsString()
-  @ApiModelProperty()
+  @ApiProperty()
+  country: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty()
   major: string;
 
   @IsNotEmpty()
   @IsIn(GENDERS)
   @IsString()
-  @ApiModelProperty({
+  @ApiProperty({
     enum: GENDERS
   })
   gender: string;
 
-  @IsIn(ETHNICITIES)
-  @IsString()
-  @ApiModelProperty({
+  @IsIn(ETHNICITIES, { each: true })
+  @IsArray()
+  @ApiProperty({
     enum: ETHNICITIES
   })
-  ethnicity: string;
+  ethnicity: string[];
 
   @IsString()
-  @ApiModelProperty()
+  @ApiProperty()
   howYouHeard: string;
 
   @IsInt()
-  @ApiModelProperty()
+  @ApiProperty()
   hackathons: number;
 
   @IsIn(SHIRT_SIZES)
-  @ApiModelProperty({
+  @ApiProperty({
     enum: SHIRT_SIZES
   })
   shirtSize: string;
 
   @IsString()
-  @ApiModelPropertyOptional()
+  @ApiPropertyOptional()
   githubUsername: string;
 
   @IsDateString()
-  @ApiModelProperty()
+  @ApiProperty()
   dateOfBirth: string;
 
   @IsNotEmpty()
   @IsBoolean()
-  @ApiModelProperty()
+  @ApiProperty()
   acceptedWaiver: boolean;
 
   @IsIn(ALLERGENS, {
@@ -96,35 +101,35 @@ export class RegistrantDto {
   @IsString({
     each: true
   })
-  @ApiModelProperty({
+  @ApiProperty({
     enum: ALLERGENS,
     isArray: true
   })
   allergens: string[];
 
   @IsString()
-  @ApiModelProperty()
+  @ApiProperty()
   otherAllergens: string;
 
   @IsIn(EDUCATION_LEVEL)
   @IsString()
-  @ApiModelProperty({
+  @ApiProperty({
     enum: EDUCATION_LEVEL
   })
   educationLevel: string;
 
   @IsBoolean()
-  @ApiModelPropertyOptional()
+  @ApiPropertyOptional()
   checkedIn: boolean;
 
   @IsString()
-  @ApiModelPropertyOptional()
+  @ApiPropertyOptional()
   confirmedAttendance1: string;
 
-  @ApiModelPropertyOptional()
+  @ApiPropertyOptional()
   emailsReceived: string[];
   @IsBoolean()
-  @ApiModelPropertyOptional()
+  @ApiPropertyOptional()
   isWaitlisted: boolean;
 }
 export class VerifyAttendanceDto {

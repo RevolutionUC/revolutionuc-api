@@ -12,7 +12,6 @@ import { StatsDto } from './dtos/Stats.dto';
 
 const { build, send } = require('revolutionuc-emails');
 
-
 @Injectable()
 export class AppService {
   constructor(
@@ -370,4 +369,3 @@ export class AppService {
     }
   }
 }
-
