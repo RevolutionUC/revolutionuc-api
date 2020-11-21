@@ -29,7 +29,7 @@
     "@nestjs/swagger": "^4.7.5",
     "@nestjs/typeorm": "^7.1.4",
     "aws-sdk": "^2.353.0",
-    "bcrypt": "^3.0.8",
+    "bcrypt": "^5.0.0",
     "class-transformer": "^0.1.9",
     "class-validator": "^0.9.1",
     "dotenv": "^6.1.0",
