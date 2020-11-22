@@ -12,7 +12,7 @@ import { SudoModule } from './sudo/sudo.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: environment.database_config.url,
-      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: environment.database_config.synchronize,
       logging: environment.database_config.logging,
       ssl: true,
