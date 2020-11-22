@@ -7,8 +7,8 @@ import { AdminService } from './admin.service';
 import { AdminLoginController } from './login.controller';
 
 @Module({
-  imports: [ TypeOrmModule.forFeature([Registrant]), AuthModule ],
-  controllers: [ AdminController, AdminLoginController ],
-  providers: [ AdminService ],
+  imports: [TypeOrmModule.forFeature([Registrant]), AuthModule],
+  controllers: [AdminController, AdminLoginController],
+  providers: [AdminService],
 })
 export class AdminModule {}

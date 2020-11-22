@@ -1,7 +1,7 @@
-import { Post, Body, Controller, Get, UseGuards } from '@nestjs/common';
-import { RoleGuard } from './role.guard';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { User } from '../entities/user.entity';
+import { RoleGuard } from './role.guard';
 import { AuthService } from './auth.service';
 
 @ApiTags('auth')

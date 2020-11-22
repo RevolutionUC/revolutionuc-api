@@ -23,7 +23,7 @@ export class SudoService {
 
   async changePassword(id: string, password: string): Promise<void> {
     const user = await this.userRepository.findOne(id);
-    if(!user) {
+    if (!user) {
       throw new HttpException(`User not found`, HttpStatus.NOT_FOUND);
     }
 
@@ -34,7 +34,7 @@ export class SudoService {
 
   async changeRole(id: string, role: Role): Promise<void> {
     const user = await this.userRepository.findOne(id);
-    if(!user) {
+    if (!user) {
       throw new HttpException(`User not found`, HttpStatus.NOT_FOUND);
     }
 
@@ -44,7 +44,7 @@ export class SudoService {
 
   async deleteUser(id: string): Promise<void> {
     const { affected } = await this.userRepository.delete(id);
-    if(!affected) {
+    if (!affected) {
       throw new HttpException(`User not found`, HttpStatus.NOT_FOUND);
     }
 

@@ -1,7 +1,10 @@
+import { config } from 'dotenv';
+config();
+
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { environment } from '../environments/environment';
+import { environment } from '../environment';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -21,20 +24,27 @@ async function bootstrap() {
 
   if (environment.production) {
     app.enableCors({
-      origin: ['https://www.revuc.com', 'https://revuc.com', 'https://revolutionuc.com', /\.revolutionuc.com$/],
-      allowedHeaders: ['Authorization', 'Content-Type']
+      origin: [
+        'https://www.revuc.com',
+        'https://revuc.com',
+        'https://revolutionuc.com',
+        /\.revolutionuc.com$/,
+      ],
+      allowedHeaders: ['Authorization', 'Content-Type'],
     });
   } else {
     app.enableCors({
       origin: '*',
-      allowedHeaders: ['Authorization', 'Content-Type']
+      allowedHeaders: ['Authorization', 'Content-Type'],
     });
   }
 
-  app.useGlobalPipes(new ValidationPipe({
-    disableErrorMessages: false,
-    skipMissingProperties: true
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      disableErrorMessages: false,
+      skipMissingProperties: true,
+    }),
+  );
 
   await app.listen(environment.PORT || 3000);
 }

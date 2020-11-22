@@ -1,9 +1,40 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsPhoneNumber, IsArray, IsEnum, IsIn, IsInt, IsNotEmpty, IsString, IsDateString, IsBoolean } from 'class-validator';
+import {
+  IsEmail,
+  IsPhoneNumber,
+  IsArray,
+  IsEnum,
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  IsDateString,
+  IsBoolean,
+} from 'class-validator';
 const GENDERS: string[] = ['Male', 'Female', 'NonBinary', 'Other', 'PreferNot'];
-const ETHNICITIES: string[] = ['Indian', 'Asian', 'Black', 'Islander', 'White', 'Latino', 'Prefer Not'];
-const SHIRT_SIZES: string[] = ['X-Small', 'Small', 'Medium', 'Large', 'X-Large', 'XX-Large'];
-const ALLERGENS: string[] = ['Vegetatian', 'Vegan', 'PeanutAllergy', 'GlutenFree'];
+const ETHNICITIES: string[] = [
+  'Indian',
+  'Asian',
+  'Black',
+  'Islander',
+  'White',
+  'Latino',
+  'Prefer Not',
+];
+const SHIRT_SIZES: string[] = [
+  'X-Small',
+  'Small',
+  'Medium',
+  'Large',
+  'X-Large',
+  'XX-Large',
+];
+const ALLERGENS: string[] = [
+  'Vegetatian',
+  'Vegan',
+  'PeanutAllergy',
+  'GlutenFree',
+];
 const EDUCATION_LEVEL: string[] = ['HighSchool', 'Undergraduate', 'Graduate'];
 export class RegistrantDto {
   @ApiPropertyOptional()
@@ -57,14 +88,14 @@ export class RegistrantDto {
   @IsIn(GENDERS)
   @IsString()
   @ApiProperty({
-    enum: GENDERS
+    enum: GENDERS,
   })
   gender: string;
 
   @IsIn(ETHNICITIES, { each: true })
   @IsArray()
   @ApiProperty({
-    enum: ETHNICITIES
+    enum: ETHNICITIES,
   })
   ethnicity: string[];
 
@@ -78,7 +109,7 @@ export class RegistrantDto {
 
   @IsIn(SHIRT_SIZES)
   @ApiProperty({
-    enum: SHIRT_SIZES
+    enum: SHIRT_SIZES,
   })
   shirtSize: string;
 
@@ -96,14 +127,14 @@ export class RegistrantDto {
   acceptedWaiver: boolean;
 
   @IsIn(ALLERGENS, {
-    each: true
+    each: true,
   })
   @IsString({
-    each: true
+    each: true,
   })
   @ApiProperty({
     enum: ALLERGENS,
-    isArray: true
+    isArray: true,
   })
   allergens: string[];
 
@@ -114,7 +145,7 @@ export class RegistrantDto {
   @IsIn(EDUCATION_LEVEL)
   @IsString()
   @ApiProperty({
-    enum: EDUCATION_LEVEL
+    enum: EDUCATION_LEVEL,
   })
   educationLevel: string;
 

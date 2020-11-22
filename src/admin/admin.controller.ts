@@ -1,4 +1,17 @@
-import { Post, Body, Controller, Param, Get, Patch, UseGuards, Req, Res, Query, Put, SetMetadata } from '@nestjs/common';
+import {
+  Post,
+  Body,
+  Controller,
+  Param,
+  Get,
+  Patch,
+  UseGuards,
+  Req,
+  Res,
+  Query,
+  Put,
+  SetMetadata,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
@@ -24,10 +37,15 @@ export class AdminController {
     @Query('sortKey') sortKey: SortKey,
     @Query('sortOrder') sortOrder: SortOrder,
     @Query('q') q: string,
-    @CurrentUser() user
+    @CurrentUser() user,
   ): Promise<Pagination<Registrant>> {
     console.log({ user });
-    return this.adminService.searchRegistrants({ page, limit }, sortKey, sortOrder, q);
+    return this.adminService.searchRegistrants(
+      { page, limit },
+      sortKey,
+      sortOrder,
+      q,
+    );
   }
 
   @Get('registrants/:uuid')
@@ -36,7 +54,10 @@ export class AdminController {
   }
 
   @Patch('registrants/:uuid')
-  updateRegistrant(@Param('uuid') uuid: string, @Body() data: Partial<RegistrantDto>): Promise<Registrant> {
+  updateRegistrant(
+    @Param('uuid') uuid: string,
+    @Body() data: Partial<RegistrantDto>,
+  ): Promise<Registrant> {
     return this.adminService.updateRegistrant(uuid, data);
   }
 
