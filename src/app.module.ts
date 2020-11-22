@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { environment } from '../environment';
+import { environment } from './environment';
 import { Registrant } from './entities/registrant.entity';
 import { AdminModule } from './admin/admin.module';
 import { SudoModule } from './sudo/sudo.module';
