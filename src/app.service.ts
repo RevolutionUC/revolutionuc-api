@@ -7,7 +7,7 @@ import {
   VerifyAttendanceDto,
 } from './dtos/Registrant.dto';
 import { Registrant, UploadKeyDto } from './entities/registrant.entity';
-import { environment } from '../environment';
+import { environment } from './environment';
 import * as crypto from 'crypto';
 import * as multer from 'multer';
 import * as multers3 from 'multer-s3';
