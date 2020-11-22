@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { environment } from '../environments/environment';
+import { environment } from '../environment';
 import { Registrant } from './entities/registrant.entity';
 import { AdminModule } from './admin/admin.module';
 import { SudoModule } from './sudo/sudo.module';
@@ -12,16 +12,14 @@ import { SudoModule } from './sudo/sudo.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: environment.database_config.url,
-      entities: [
-        __dirname + '/../**/*.entity{.ts,.js}',
-      ],
+      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       synchronize: environment.database_config.synchronize,
       logging: environment.database_config.logging,
-      ssl: true
+      ssl: true,
     }),
     TypeOrmModule.forFeature([Registrant]),
     AdminModule,
-    SudoModule
+    SudoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

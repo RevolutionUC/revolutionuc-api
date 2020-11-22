@@ -10,25 +10,34 @@ import { LoginDto } from '../dtos/User.dto';
 export class AuthService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) {}
 
-  private invalidError = new HttpException(`Invalid credentials`, HttpStatus.UNAUTHORIZED);
+  private invalidError = new HttpException(
+    `Invalid credentials`,
+    HttpStatus.UNAUTHORIZED,
+  );
 
   private async findUser(username: string, roles: Role[]): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { username, role: In(roles) }});
-    if(!user) {
+    const user = await this.userRepository.findOne({
+      where: { username, role: In(roles) },
+    });
+    if (!user) {
       throw this.invalidError;
     }
 
     return user;
   }
 
-  async login(username: string, password: string, roles: Role[]): Promise<LoginDto> {
+  async login(
+    username: string,
+    password: string,
+    roles: Role[],
+  ): Promise<LoginDto> {
     const user = await this.findUser(username, roles);
     const legit = await user.comparePassword(password);
 
-    if(!legit) {
+    if (!legit) {
       throw this.invalidError;
     }
 

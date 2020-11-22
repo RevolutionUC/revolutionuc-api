@@ -1,18 +1,18 @@
-import { ApiProperty } from "@nestjs/swagger"
-import { Role, ROLES } from "../entities/user.entity"
+import { ApiProperty } from '@nestjs/swagger';
+import { Role, ROLES } from '../entities/user.entity';
 
 export class UserDto {
   @ApiProperty()
-  username: string
+  username: string;
 
   @ApiProperty()
-  password: string
+  password: string;
 
   @ApiProperty({ enum: ROLES })
-  role: Role
+  role: Role;
 }
 
 export class LoginDto {
-  token: string
-  user: Pick<UserDto, 'username' | 'role'>
+  token: string;
+  user: Pick<UserDto, 'username' | 'role'>;
 }

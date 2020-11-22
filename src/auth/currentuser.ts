@@ -9,6 +9,6 @@ export const CurrentUser = createParamDecorator(
 );
 
 export class CurrentUserDTO {
-  id: string
-  role: Role
+  id: string;
+  role: Role;
 }

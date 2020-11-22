@@ -9,7 +9,12 @@ export class AdminLoginController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  login(@Body() credentials: Pick<UserDto, 'username' | 'password'>): Promise<LoginDto> {
-    return this.authService.login(credentials.username, credentials.password, [`ADMIN`, `SUDO`]);
+  login(
+    @Body() credentials: Pick<UserDto, 'username' | 'password'>,
+  ): Promise<LoginDto> {
+    return this.authService.login(credentials.username, credentials.password, [
+      `ADMIN`,
+      `SUDO`,
+    ]);
   }
 }

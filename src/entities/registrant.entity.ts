@@ -1,15 +1,40 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn} from 'typeorm';
-import { IsNotEmpty, IsString, IsEmail, IsPhoneNumber, IsIn, IsInt, IsDateString, IsBoolean } from 'class-validator';
-import { truncateSync } from 'fs';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import {
+  IsNotEmpty,
+  IsString,
+  IsEmail,
+  IsPhoneNumber,
+  IsInt,
+  IsDateString,
+  IsBoolean,
+} from 'class-validator';
 
 const GENDERS: string[] = ['Male', 'Female', 'NonBinary', 'Other', 'PreferNot'];
-const ETHNICITIES: string[] = ['Indian', 'Asian', 'Black', 'Islander', 'White', 'Latino', 'Prefer Not'];
+const ETHNICITIES: string[] = [
+  'Indian',
+  'Asian',
+  'Black',
+  'Islander',
+  'White',
+  'Latino',
+  'Prefer Not',
+];
 const SHIRT_SIZES: string[] = ['Small', 'Medium', 'Large', 'X-Large'];
-const ALLERGENS: string[] = ['Vegetatian', 'Vegan', 'PeanutAllergy', 'GlutenFree'];
+const ALLERGENS: string[] = [
+  'Vegetatian',
+  'Vegan',
+  'PeanutAllergy',
+  'GlutenFree',
+];
 const EDUCATION_LEVEL: string[] = ['HighSchool', 'Undergraduate', 'Graduate'];
 @Entity()
 export class Registrant {
-
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -26,12 +51,12 @@ export class Registrant {
   @IsNotEmpty()
   @IsEmail()
   @Column({
-    unique: true
+    unique: true,
   })
   email: string;
 
   @Column({
-    default: false
+    default: false,
   })
   emailVerfied: boolean;
 
@@ -58,7 +83,7 @@ export class Registrant {
   @IsNotEmpty()
   @IsString()
   @Column({
-    enum: GENDERS
+    enum: GENDERS,
   })
   gender: string;
 
@@ -66,31 +91,31 @@ export class Registrant {
   @Column('enum', {
     nullable: true,
     enum: ETHNICITIES,
-    array: true
+    array: true,
   })
   ethnicity: string[];
 
   @IsString()
   @Column({
-    nullable: true
+    nullable: true,
   })
   howYouHeard: string;
 
   @IsInt()
   @Column({
-    nullable: true
+    nullable: true,
   })
   hackathons: number;
 
   @Column({
     enum: SHIRT_SIZES,
-    nullable: true
+    nullable: true,
   })
   shirtSize: string;
 
   @IsString()
   @Column({
-    nullable: true
+    nullable: true,
   })
   githubUsername: string;
 
@@ -112,26 +137,26 @@ export class Registrant {
 
   @IsString()
   @Column({
-    nullable: true
+    nullable: true,
   })
   otherAllergens: string;
 
   @IsString()
   @Column({
-    enum: EDUCATION_LEVEL
+    enum: EDUCATION_LEVEL,
   })
   educationLevel: string;
 
   @IsBoolean()
-  @Column({default: false})
+  @Column({ default: false })
   checkedIn: boolean;
 
   @IsBoolean()
-  @Column({default: false})
+  @Column({ default: false })
   acceptedWaiver: boolean;
 
   @IsBoolean()
-  @Column({default: false})
+  @Column({ default: false })
   isWaitlisted: boolean;
 
   @Column('text', {

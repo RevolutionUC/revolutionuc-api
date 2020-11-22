@@ -1,4 +1,13 @@
-import { Post, Body, Controller, Param, Get, Delete, UseGuards, Patch } from '@nestjs/common';
+import {
+  Post,
+  Body,
+  Controller,
+  Param,
+  Get,
+  Delete,
+  UseGuards,
+  Patch,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SudoService } from './sudo.service';
 import { User } from '../entities/user.entity';
@@ -25,12 +34,18 @@ export class SudoController {
   }
 
   @Patch('users/:id/password')
-  changePassword(@Param(`id`) id: string, @Body() { password }: Pick<UserDto, 'password'>): Promise<void> {
+  changePassword(
+    @Param(`id`) id: string,
+    @Body() { password }: Pick<UserDto, 'password'>,
+  ): Promise<void> {
     return this.sudoService.changePassword(id, password);
   }
 
   @Patch('users/:id/role')
-  changeRole(@Param(`id`) id: string, @Body() { role }: Pick<UserDto, 'role'>): Promise<void> {
+  changeRole(
+    @Param(`id`) id: string,
+    @Body() { role }: Pick<UserDto, 'role'>,
+  ): Promise<void> {
     return this.sudoService.changePassword(id, role);
   }
 
