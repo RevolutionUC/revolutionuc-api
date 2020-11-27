@@ -18,7 +18,6 @@ export class RoleGuard implements CanActivate {
     const req = ctx.switchToHttp().getRequest();
     const user: CurrentUserDTO = req.user;
     const roles = this.reflector.get<Role[]>('roles', ctx.getClass());
-    console.log({ roles });
     return roles.includes(user.role);
   }
 }

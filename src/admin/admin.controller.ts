@@ -9,23 +9,20 @@ import {
   Req,
   Res,
   Query,
-  Put,
-  SetMetadata,
+  Put
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { RegistrantDto } from '../dtos/Registrant.dto';
+import { RegistrantDto, SendEmailDto } from '../dtos/Registrant.dto';
 import { Registrant, SortKey, SortOrder } from '../entities/registrant.entity';
 import { AdminService } from '../admin/admin.service';
-import { CurrentUser } from '../auth/currentuser';
 import { RoleGuard, Roles } from '../auth/role.guard';
 
 @ApiTags('admin')
 @ApiBearerAuth()
 @Controller('v2/admin')
-// @Roles([`SUDO`, `ADMIN`])
-@SetMetadata('roles', ['SUDO', 'ADMIN'])
+@Roles([`SUDO`, `ADMIN`])
 @UseGuards(AuthGuard(`jwt`), RoleGuard)
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
@@ -36,10 +33,8 @@ export class AdminController {
     @Query('limit') limit: number,
     @Query('sortKey') sortKey: SortKey,
     @Query('sortOrder') sortOrder: SortOrder,
-    @Query('q') q: string,
-    @CurrentUser() user,
+    @Query('q') q: string
   ): Promise<Pagination<Registrant>> {
-    console.log({ user });
     return this.adminService.searchRegistrants(
       { page, limit },
       sortKey,
@@ -74,5 +69,10 @@ export class AdminController {
   @Post('registrants/:uuid/checkin')
   checkInRegistrant(@Param('uuid') uuid: string): Promise<void> {
     return this.adminService.checkInRegistrant(uuid);
+  }
+
+  @Post('registrants/email')
+  async sendEmail(@Body() payload: SendEmailDto) {
+    return this.adminService.sendEmail(payload);
   }
 }
