@@ -26,12 +26,12 @@ const ETHNICITIES: string[] = [
   'Prefer Not',
 ];
 const SHIRT_SIZES: string[] = ['Small', 'Medium', 'Large', 'X-Large'];
-const ALLERGENS: string[] = [
+/* const ALLERGENS: string[] = [
   'Vegetatian',
   'Vegan',
   'PeanutAllergy',
   'GlutenFree',
-];
+]; */
 const EDUCATION_LEVEL: string[] = ['HighSchool', 'Undergraduate', 'Graduate'];
 @Entity()
 export class Registrant {
@@ -61,7 +61,7 @@ export class Registrant {
   emailVerfied: boolean;
 
   @IsNotEmpty()
-  @IsPhoneNumber('US')
+  @IsPhoneNumber(null)
   @Column()
   phoneNumber: string;
 

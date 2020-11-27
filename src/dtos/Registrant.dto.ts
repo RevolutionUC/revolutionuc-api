@@ -3,7 +3,6 @@ import {
   IsEmail,
   IsPhoneNumber,
   IsArray,
-  IsEnum,
   IsIn,
   IsInt,
   IsNotEmpty,
@@ -65,7 +64,7 @@ export class RegistrantDto {
   emailVerfied: boolean;
 
   @IsNotEmpty()
-  @IsPhoneNumber('US')
+  @IsPhoneNumber(null)
   @ApiProperty()
   phoneNumber: string;
 
