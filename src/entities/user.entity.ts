@@ -2,8 +2,7 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  BeforeInsert,
-  BeforeUpdate,
+  BeforeInsert
 } from 'typeorm';
 import { IsIn, IsNotEmpty, IsString } from 'class-validator';
 import { hash, compare } from 'bcrypt';

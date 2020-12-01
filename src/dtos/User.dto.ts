@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Role, ROLES } from '../entities/user.entity';
+import { Role, ROLES, User } from '../entities/user.entity';
 
 export class UserDto {
   @ApiProperty()
@@ -14,5 +14,5 @@ export class UserDto {
 
 export class LoginDto {
   token: string;
-  user: Pick<UserDto, 'username' | 'role'>;
+  user: Pick<User, 'id' | 'username' | 'role'>;
 }
