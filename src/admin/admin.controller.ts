@@ -5,25 +5,21 @@ import {
   Param,
   Get,
   Patch,
-  UseGuards,
   Req,
   Res,
   Query,
   Put
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { RegistrantDto, SendEmailDto } from '../dtos/Registrant.dto';
 import { Registrant, SortKey, SortOrder } from '../entities/registrant.entity';
 import { AdminService } from '../admin/admin.service';
-import { RoleGuard, Roles } from '../auth/role.guard';
+import { UseAuth } from '../auth/auth.decorator';
 
 @ApiTags('admin')
-@ApiBearerAuth()
 @Controller('v2/admin')
-@Roles([`SUDO`, `ADMIN`])
-@UseGuards(AuthGuard(`jwt`), RoleGuard)
+@UseAuth([`SUDO`, `ADMIN`])
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
