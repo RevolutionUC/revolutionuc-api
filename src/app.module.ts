@@ -6,6 +6,7 @@ import { environment } from './environment';
 import { Registrant } from './entities/registrant.entity';
 import { AdminModule } from './admin/admin.module';
 import { SudoModule } from './sudo/sudo.module';
+import { LatticeModule } from './lattice/lattice.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { SudoModule } from './sudo/sudo.module';
     TypeOrmModule.forFeature([Registrant]),
     AdminModule,
     SudoModule,
+    LatticeModule
   ],
   controllers: [AppController],
   providers: [AppService],

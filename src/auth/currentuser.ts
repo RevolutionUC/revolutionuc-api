@@ -8,7 +8,7 @@ export const CurrentUser = createParamDecorator(
   },
 );
 
-export class CurrentUserDTO {
+export class CurrentUserDto {
   id: string;
   role: Role;
 }

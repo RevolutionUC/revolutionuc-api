@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { In, Repository } from 'typeorm';
 import { Role, User } from '../entities/user.entity';
-import { CurrentUserDTO } from './currentuser';
+import { CurrentUserDto } from './currentuser';
 import { LoginDto } from '../dtos/User.dto';
 import { validateOrReject } from 'class-validator';
 
@@ -42,7 +42,7 @@ export class AuthService {
       throw this.invalidError;
     }
 
-    const payload: CurrentUserDTO = { id: user.id, role: user.role };
+    const payload: CurrentUserDto = { id: user.id, role: user.role };
 
     const token = await this.jwtService.signAsync(payload);
 
@@ -64,14 +64,14 @@ export class AuthService {
     await validateOrReject(user);
     const newUser = await this.userRepository.save(user);
 
-    const payload: CurrentUserDTO = { id: newUser.id, role: newUser.role };
+    const payload: CurrentUserDto = { id: newUser.id, role: newUser.role };
 
     const token = await this.jwtService.signAsync(payload);
 
     return { token, user: { id: newUser.id, username: newUser.username, role: newUser.role } };
   }
 
-  async validateUser({ id, role }: CurrentUserDTO): Promise<User> {
+  async validateUser({ id, role }: CurrentUserDto): Promise<User> {
     return this.userRepository.findOne({ id, role });
   }
 
