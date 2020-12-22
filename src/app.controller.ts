@@ -44,40 +44,11 @@ export class AppController {
   verify(@Param('key') key: string) {
     return this.appService.verify(key);
   }
-  @Get('admin/registrants')
-  @ApiHeader({ name: 'X-API-KEY' })
-  @UseGuards(RoleGuard)
-  async getRegistrants(
-    @Query('q') searchQuery: string,
-    @Query('id') id: string,
-    @Query('limit') limit: number,
-  ): Promise<Registrant[] | Registrant> {
-    return await this.appService.getRegistrants(searchQuery, id, limit);
-  }
+
   @Get('admin/stats')
   @ApiHeader({ name: 'X-API-KEY' })
   @UseGuards(RoleGuard)
   async getStats(@Query('stats') inclduedStats: string): Promise<StatsDto> {
     return this.appService.getStats(inclduedStats);
-  }
-  @Post('admin/email')
-  @ApiHeader({ name: 'X-API-KEY' })
-  @UseGuards(RoleGuard)
-  async sendEmail(@Body() payload: SendEmailDto) {
-    return this.appService.sendEmail(payload);
-  }
-
-  @Get('admin/registrants/:uuid/checkin')
-  @ApiHeader({ name: 'X-API-KEY' })
-  @UseGuards(RoleGuard)
-  checkInRegistrant(@Param('uuid') uuid: string) {
-    return this.appService.checkInRegistrant(uuid);
-  }
-
-  @Get('admin/registrants/:uuid/checkout')
-  @ApiHeader({ name: 'X-API-KEY' })
-  @UseGuards(RoleGuard)
-  checkOutRegistrant(@Param('uuid') uuid: string) {
-    return this.appService.checkOutRegistrant(uuid);
   }
 }

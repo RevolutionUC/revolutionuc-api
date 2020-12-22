@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Raw } from 'typeorm';
 import {
   RegistrantDto,
-  SendEmailDto,
   VerifyAttendanceDto,
 } from './dtos/Registrant.dto';
 import { Registrant, UploadKeyDto } from './entities/registrant.entity';
@@ -13,20 +12,29 @@ import * as multer from 'multer';
 import * as multers3 from 'multer-s3';
 import { S3 } from 'aws-sdk';
 import { StatsDto } from './dtos/Stats.dto';
+import { EmailService, EMAIL } from './admin/email.service';
+import { build, send } from 'revolutionuc-emails';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { build, send } = require('revolutionuc-emails');
+const currentInfoEmail: EMAIL = environment.CURRENT_INFO_EMAIL as EMAIL;
 
 @Injectable()
 export class AppService {
   constructor(
-    @InjectRepository(Registrant)
-    private readonly registrantRepository: Repository<Registrant>,
+    @InjectRepository(Registrant) private readonly registrantRepository: Repository<Registrant>,
+    private emailService: EmailService
   ) {}
+
   private userCryptoAlgorithm = 'aes-256-ctr';
+
+  private async getRegistrantsConfirmedCount(): Promise<number> {
+    return await this.registrantRepository.count({
+      confirmedAttendance1: 'true',
+    });
+  }
+
   async register(registrant: RegistrantDto): Promise<UploadKeyDto> {
     let user: Registrant;
-    if ((await this.getRegistrantsCount()) >= environment.WAITLIST_THRESHOLD) {
+    if ((await this.getRegistrantsConfirmedCount()) >= environment.WAITLIST_THRESHOLD) {
       registrant.isWaitlisted = true;
     }
     try {
@@ -71,6 +79,7 @@ export class AppService {
     payload.isWaitlisted = user.isWaitlisted;
     return payload;
   }
+
   uploadResume(req, res, key: string) {
     const decipher = crypto.createDecipher(
       this.userCryptoAlgorithm,
@@ -98,68 +107,28 @@ export class AppService {
       }
     });
   }
-  private async getRegistrantsCount(): Promise<number> {
-    return await this.registrantRepository.count();
-  }
-  private async getRegistrantsConfirmedCount(): Promise<number> {
-    return await this.registrantRepository.count({
-      confirmedAttendance1: 'true',
-    });
-  }
 
   verify(encryptedKey: string): HttpStatus {
     const decipher = crypto.createDecipher(
       this.userCryptoAlgorithm,
       environment.CRYPTO_KEY,
     );
-    let dec = decipher.update(encryptedKey, 'hex', 'utf8');
-    dec += decipher.final('utf8');
+    let email = decipher.update(encryptedKey, 'hex', 'utf8');
+    email += decipher.final('utf8');
     try {
-      this.registrantRepository.update({ email: dec }, { emailVerfied: true });
+      this.registrantRepository.update({ email: email }, { emailVerfied: true });
+      if(currentInfoEmail !== 'infoEmail1') {
+        this.emailService.sendEmail({
+          template: currentInfoEmail,
+          recipent: email,
+        });
+      }
       return HttpStatus.OK;
     } catch (error) {
       throw new HttpException(error, 500);
     }
   }
-  async getRegistrants(
-    searchQuery: string,
-    id: string,
-    limit: number = null,
-  ): Promise<Registrant[] | Registrant> {
-    if (searchQuery) {
-      return await this.registrantRepository
-        .createQueryBuilder('user')
-        .where("user.firstName || ' ' || user.lastName ILIKE :query")
-        .orWhere('user.email ILIKE :query')
-        .setParameter('query', '%' + searchQuery + '%')
-        .take(limit)
-        .orderBy('user.createdAt', 'DESC')
-        .printSql()
-        .getMany();
-    } else if (id) {
-      const decipher = crypto.createDecipher(
-        this.userCryptoAlgorithm,
-        environment.CRYPTO_KEY,
-      );
-      let dec = decipher.update(id, 'hex', 'utf8');
-      dec += decipher.final('utf8');
-      try {
-        return await this.registrantRepository.findOneOrFail({ email: dec });
-      } catch (e) {
-        if (e.name === 'EntityNotFound') {
-          throw new HttpException('Could not find a user by that id', 404);
-        }
-        throw new HttpException(e.name, 500);
-      }
-    } else {
-      return await this.registrantRepository.find({
-        take: limit,
-        order: {
-          createdAt: 'DESC',
-        },
-      });
-    }
-  }
+
   async getStats(includedStats: string): Promise<StatsDto> {
     const stats = new StatsDto();
     if (includedStats == null) {
@@ -222,23 +191,18 @@ export class AppService {
     }
     return await stats;
   }
+
   async confirmAttendance(payload: VerifyAttendanceDto) {
-    if (payload.uuid === 'b2df7a9b8251b7deff909c75d3d6a68491033449') {
-      throw new HttpException(
-        'This id has been blacklisted, please look for a newer confirmation email',
-        500,
-      );
-    }
     const decipher = crypto.createDecipher(
       this.userCryptoAlgorithm,
       environment.CRYPTO_KEY,
     );
-    let dec = decipher.update(payload.uuid, 'hex', 'utf8');
-    dec += decipher.final('utf8');
-    if ((await this.getRegistrantsConfirmedCount()) >= 314) {
+    let email = decipher.update(payload.uuid, 'hex', 'utf8');
+    email += decipher.final('utf8');
+    if ((await this.getRegistrantsConfirmedCount()) >= environment.WAITLIST_THRESHOLD) {
       try {
         this.registrantRepository.update(
-          { email: dec },
+          { email },
           { isWaitlisted: true },
         );
       } catch (error) {
@@ -247,221 +211,21 @@ export class AppService {
       throw new HttpException({ error: 'ConfirmedQuotaReached' }, 500);
     } else {
       try {
-        this.registrantRepository.update(
-          { email: dec },
-          { confirmedAttendance1: payload.isConfirmed.toString() },
+        await this.registrantRepository.update(
+          { email },
+          { confirmedAttendance1: payload.isConfirmed.toString() }
         );
+
+        if (payload.isConfirmed) {
+          this.emailService.sendEmail({
+            template: currentInfoEmail,
+            recipent: email,
+          });
+        }
       } catch (error) {
         throw new HttpException(error, 500);
       }
-      if (payload.isConfirmed) {
-        this.sendEmail({
-          template: 'confirmAttendanceFollowUp',
-          recipent: dec,
-        });
-      }
     }
     return HttpStatus.OK;
-  }
-  checkInRegistrant(uuid: string): any {
-    this.registrantRepository.update({ id: uuid }, { checkedIn: true });
-  }
-  checkOutRegistrant(uuid: string): any {
-    this.registrantRepository.update({ id: uuid }, { checkedIn: false });
-  }
-  async sendEmail(payload: SendEmailDto) {
-    if (payload.dryRun === undefined) {
-      payload.dryRun = false;
-    }
-    if (payload.template === 'confirmAttendance') {
-      const emailData = {
-        subject: 'Confirm Your Attendance for RevolutionUC!',
-        shortDescription: 'Please confirm your attendance for RevolutionUC',
-        firstName: null,
-        yesConfirmationUrl: '',
-        noConfirmationUrl: '',
-        offWaitlist: null,
-      };
-      if (payload.recipent === 'all') {
-        const user: Registrant[] = await this.registrantRepository
-          .createQueryBuilder('user')
-          .where('user.emailVerfied = true')
-          .andWhere('user.isWaitlisted = false')
-          .andWhere('user.confirmedAttendance1 IS NULL')
-          .getMany();
-        console.log(`Sending emails to ${user.length}`);
-        let numSent = 0;
-        const usersToUpdate: Registrant[] = [];
-        user.forEach((el) => {
-          const emailDataCopy = { ...emailData };
-          const cipher = crypto.createCipher(
-            this.userCryptoAlgorithm,
-            environment.CRYPTO_KEY,
-          );
-          let encrypted = cipher.update(el.email, 'utf8', 'hex');
-          encrypted += cipher.final('hex');
-          emailDataCopy.firstName = el.firstName;
-          emailDataCopy.yesConfirmationUrl = `https://revolutionuc.com/attendance?confirm=true&id=${encrypted}`;
-          emailDataCopy.noConfirmationUrl = `https://revolutionuc.com/attendance?confirm=false&id=${encrypted}`;
-          emailDataCopy.offWaitlist = false;
-          sendHelper(
-            'confirmAttendance',
-            emailDataCopy,
-            el.email,
-            payload.dryRun,
-          );
-          numSent++;
-          console.log(`Sending ${numSent} emails`);
-          if (!el.emailsReceived.includes('confirmAttendance')) {
-            el.emailsReceived.push('confirmAttendance');
-            usersToUpdate.push(el);
-          }
-        });
-        if (!payload.dryRun) {
-          this.registrantRepository.save(usersToUpdate);
-        }
-        console.log(`Sent emails to ${user.length}`);
-      } else {
-        const user: Registrant = await this.registrantRepository.findOneOrFail({
-          where: { email: payload.recipent },
-        });
-        if (user.isWaitlisted === true) {
-          emailData.offWaitlist = true;
-          user.isWaitlisted = false;
-        } else {
-          emailData.offWaitlist = false;
-        }
-        emailData.firstName = user.firstName;
-        const cipher = crypto.createCipher(
-          this.userCryptoAlgorithm,
-          environment.CRYPTO_KEY,
-        );
-        let encrypted = cipher.update(user.email, 'utf8', 'hex');
-        encrypted += cipher.final('hex');
-        emailData.yesConfirmationUrl = `https://revolutionuc.com/attendance?confirm=true&id=${encrypted}`;
-        emailData.noConfirmationUrl = `https://revolutionuc.com/attendance?confirm=false&id=${encrypted}`;
-        sendHelper('confirmAttendance', emailData, user.email, payload.dryRun);
-        user.emailsReceived.push('confirmAttendance');
-        if (!payload.dryRun) {
-          this.registrantRepository.save(user);
-        }
-      }
-    } else if (payload.template === 'confirmAttendanceFollowUp') {
-      if (payload.recipent === 'all') {
-        throw new HttpException(
-          'This template cannot be sent in bulk, please specify an email addrese',
-          500,
-        );
-      }
-      const emailData = {
-        subject: 'Thank you for confirming your attendance at RevolutionUC',
-        shortDescription: 'Please read this email for important information.',
-        firstName: null,
-        offWaitlist: null,
-      };
-      const user: Registrant = await this.registrantRepository.findOneOrFail({
-        where: { email: payload.recipent },
-      });
-      if (user.isWaitlisted === true) {
-        emailData.offWaitlist = true;
-        user.isWaitlisted = false;
-        user.confirmedAttendance1 = 'true';
-      } else {
-        emailData.offWaitlist = false;
-      }
-      emailData.firstName = user.firstName;
-      user.emailsReceived.push('confirmAttendanceFollowUp');
-      sendHelper(
-        'confirmAttendanceFollowUp',
-        emailData,
-        user.email,
-        payload.dryRun,
-      );
-      if (!payload.dryRun) {
-        this.registrantRepository.save(user);
-      }
-    } else if (payload.template === 'infoEmail4') {
-      const emailData = {
-        subject: 'RevolutionUC Is Tomorrow!',
-        shortDescription:
-          "RevolutionUC is here. Here's some important information for the event",
-        firstName: null,
-      };
-      if (payload.recipent === 'all') {
-        const user: Registrant[] = await this.registrantRepository
-          .createQueryBuilder('user')
-          .where('user.emailVerfied = true')
-          .andWhere("user.confirmedAttendance1 = 'true'")
-          .getMany();
-        console.log(`Sending emails to ${user.length}`);
-        let numSent = 0;
-        user.forEach((el) => {
-          const emailDataCopy = { ...emailData };
-          emailDataCopy.firstName = el.firstName;
-          sendHelper('infoEmail4', emailDataCopy, el.email, payload.dryRun);
-          numSent++;
-          console.log(`Sent ${numSent} emails`);
-        });
-      } else {
-        const user: Registrant = await this.registrantRepository.findOneOrFail({
-          where: { email: payload.recipent },
-        });
-        emailData.firstName = user.firstName;
-        sendHelper('infoEmail4', emailData, user.email, payload.dryRun);
-      }
-    } else if (payload.template === 'infoEmailMinors') {
-      const emailData = {
-        subject: 'Important information for minors going to RevolutionUC',
-        shortDescription:
-          'Additional information for minors going to RevolutionUC',
-        firstName: null,
-      };
-      if (payload.recipent === 'all') {
-        const user: Registrant[] = await this.registrantRepository.query(
-          'SELECT * FROM registrant WHERE "dateOfBirth"::date > \'2002-02-22\'::date AND "confirmedAttendance1" = \'true\'',
-        );
-        console.log(`Sending emails to ${user.length}`);
-        let numSent = 0;
-        user.forEach((el) => {
-          const emailDataCopy = { ...emailData };
-          emailDataCopy.firstName = el.firstName;
-          sendHelper('infoEmail3', emailDataCopy, el.email, payload.dryRun);
-          numSent++;
-          console.log(`Sent ${numSent} emails`);
-        });
-      } else {
-        const user: Registrant = await this.registrantRepository.findOneOrFail({
-          where: { email: payload.recipent },
-        });
-        emailData.firstName = user.firstName;
-        sendHelper('infoEmailMinors', emailData, user.email, payload.dryRun);
-      }
-    }
-    function sendHelper(
-      template: string,
-      emailData,
-      recipent: string,
-      dryRun: boolean,
-    ) {
-      if (dryRun) {
-        console.log({ template, emailData, recipent });
-      } else {
-        build(template, emailData)
-          .then((html) => {
-            send(
-              environment.MAILGUN_API_KEY,
-              environment.MAILGUN_DOMAIN,
-              'RevolutionUC <info@revolutionuc.com>',
-              recipent,
-              emailData.subject,
-              html,
-            );
-          })
-          .catch((e) => {
-            console.log('Email error:', e);
-            throw new HttpException('Error while generating email', 500);
-          });
-      }
-    }
   }
 }

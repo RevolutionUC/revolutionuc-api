@@ -166,6 +166,7 @@ export class VerifyAttendanceDto {
   uuid: string;
   isConfirmed: boolean;
 }
+
 export class SendEmailDto {
   template: string;
   recipent: string;

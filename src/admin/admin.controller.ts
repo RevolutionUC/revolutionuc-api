@@ -12,16 +12,17 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { RegistrantDto, SendEmailDto } from '../dtos/Registrant.dto';
+import { RegistrantDto } from '../dtos/Registrant.dto';
 import { Registrant, SortKey, SortOrder } from '../entities/registrant.entity';
-import { AdminService } from '../admin/admin.service';
+import { AdminService } from './admin.service';
+import { EmailService, SendEmailDto } from './email.service';
 import { UseAuth } from '../auth/auth.decorator';
 
 @ApiTags('admin')
 @Controller('v2/admin')
 @UseAuth([`SUDO`, `ADMIN`])
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(private readonly adminService: AdminService, private readonly emailService: EmailService) {}
 
   @Get('registrants')
   searchRegistrants(
@@ -69,6 +70,6 @@ export class AdminController {
 
   @Post('registrants/email')
   async sendEmail(@Body() payload: SendEmailDto) {
-    return this.adminService.sendEmail(payload);
+    return this.emailService.sendEmail(payload);
   }
 }
