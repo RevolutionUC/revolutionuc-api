@@ -120,7 +120,7 @@ export class EmailService {
 
       registrants.forEach(async reg => {
         try {
-          const emailDataCopy = { ...emailData, firstName: reg.firstName };
+          const emailDataCopy = { ...emailData, firstName: reg.firstName, registrantId: reg.id };
 
           await this.sendHelper(payload.template, emailDataCopy, reg.email, payload.dryRun);
 
@@ -140,6 +140,7 @@ export class EmailService {
       try {
         const registrant = await this.registrantRepository.findOneOrFail({ email: payload.recipent });
         emailData.firstName = registrant.firstName;
+        emailData.registrantId = registrant.id;
         await this.sendHelper(payload.template, emailData, registrant.email, payload.dryRun);
         if (!payload.dryRun) {
           if(!registrant.emailsReceived.includes(payload.template)) {
