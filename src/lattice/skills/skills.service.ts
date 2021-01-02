@@ -14,8 +14,12 @@ export class SkillsService {
     return this.skillsRepository.find();
   }
 
-  async createSkill(data: SkillDto): Promise<Skill> {
+  private async createSkill(data: SkillDto): Promise<Skill> {
     const skill = this.skillsRepository.create(data);
     return this.skillsRepository.save(skill);
+  }
+
+  async createSkills(data: Array<SkillDto>): Promise<Array<Skill>> {
+    return Promise.all(data.map(skill => this.createSkill(skill)));
   }
 }

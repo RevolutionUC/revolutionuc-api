@@ -13,7 +13,7 @@ export class SkillsController {
   }
 
   @Post()
-  createSkill(@Body() data: SkillDto): Promise<Skill> {
-    return this.matchService.createSkill(data);
+  createSkills(@Body() data: Array<SkillDto>): Promise<Array<Skill>> {
+    return this.matchService.createSkills(data);
   }
 }
