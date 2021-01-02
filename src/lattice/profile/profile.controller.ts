@@ -1,10 +1,9 @@
 import { Controller, Get, Put, Body, Post, Param } from '@nestjs/common';
-import { Tour, Hacker } from '../entities/hacker.entity';
 import { UseAuth } from '../../auth/auth.decorator';
 import { CurrentUserDto, CurrentUser } from '../../auth/currentuser';
+import { Tour, Hacker } from '../entities/hacker.entity';
 import { ProfileService } from './profile.service';
-import { ProfileDTO, ScoredProfileDTO, SkillDTO } from './profile.dto';
-import skills from './skills';
+import { ProfileDTO, ScoredProfileDTO } from './profile.dto';
 
 @Controller(`v2/lattice/profile`)
 @UseAuth([`HACKER`])
@@ -34,11 +33,6 @@ export class ProfileController {
   @Put(`visible`)
   setVisible(@CurrentUser() user: CurrentUserDto, @Body() body: { visible: boolean }): Promise<Hacker> {
     return this.profileService.setVisible(user.id, body.visible);
-  }
-
-  @Get(`skills`)
-  getSkills(): Array<SkillDTO> {
-    return skills;
   }
 
   @Post(`tour/:tour`)
