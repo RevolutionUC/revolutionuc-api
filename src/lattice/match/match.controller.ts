@@ -1,12 +1,12 @@
-import { Controller, Post, Body, Delete, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Controller, Post, Body, Delete } from '@nestjs/common';
 import { MatchService } from './match.service';
 import { CurrentUserDto, CurrentUser } from '../../auth/currentuser';
 import { SwipeDto } from './swipe.dto';
 import { Swipe } from '../entities/swipe.entity';
+import { UseAuth } from 'src/auth/auth.decorator';
 
 @Controller(`v2/lattice/match`)
-@UseGuards(AuthGuard(`jwt`))
+@UseAuth([`HACKER`])
 export class MatchController {
   constructor(private readonly matchService: MatchService) {}
 
