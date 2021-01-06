@@ -11,13 +11,13 @@ import {
   Put
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { JudgingService } from './judging.service';
-import { UseAuth } from '../auth/auth.decorator';
+import { JudgeService } from './judge.service';
+import { UseAuth } from '../../auth/auth.decorator';
 
 @ApiTags('admin')
 @Controller('v2/admin')
 @UseAuth([`SUDO`, `JUDGE`])
-export class JudgingController {
-  constructor(private readonly judgingService: JudgingService) {}
+export class JudgeController {
+  constructor(private readonly judgeService: JudgeService) {}
 
 }

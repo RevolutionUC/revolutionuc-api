@@ -3,7 +3,7 @@ import {
   Column,
   PrimaryGeneratedColumn
 } from 'typeorm';
-import { ArrayMaxSize, ArrayUnique, IsArray, IsDefined, IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { ArrayMaxSize, ArrayUnique, IsArray, IsDefined, IsEmail, IsNotEmpty, IsString, IsBoolean } from 'class-validator';
 
 @Entity()
 export class Judge {
@@ -34,4 +34,8 @@ export class Judge {
   @ArrayUnique()
   @Column('text', { array: true })
   rankings: Array<string>
+
+  @IsBoolean()
+  @Column({ default: false })
+  isFinal: boolean
 }

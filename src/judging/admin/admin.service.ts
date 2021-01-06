@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { JudgeDto } from './dtos/judge.dto';
-import { ProjectDto } from './dtos/project.dto';
-import { Judge } from './entities/judge.entity';
-import { Project } from './entities/project.entity';
+import { JudgeDto } from '../dtos/judge.dto';
+import { ProjectDto } from '../dtos/project.dto';
+import { Judge } from '../entities/judge.entity';
+import { Project } from '../entities/project.entity';
 
 @Injectable()
-export class JudgingService {
+export class AdminService {
   constructor(
     @InjectRepository(Judge) private readonly judgeRepository: Repository<Judge>,
     @InjectRepository(Project) private readonly projectRepository: Repository<Project>
@@ -36,26 +36,7 @@ export class JudgingService {
     return Promise.all(data.map(project => this.createProject(project)));
   }
 
-  async listProjects(userId?: string): Promise<Array<Project>> {
-    if(userId) {
-      const judge = await this.judgeRepository.findOne({ userId });
-
-      if(judge?.category !== `general`) {
-        return this.projectRepository.find({ category: judge.category });
-      }
-    }
-
+  async listProjects(): Promise<Array<Project>> {
     return this.projectRepository.find();
-  }
-
-  async rankProject(userId: string, rankings: Array<string>): Promise<void> {
-    const judge = await this.judgeRepository.findOneOrFail({ userId });
-    const projects = await Promise.all(
-      rankings.map(projectId => this.projectRepository.findOneOrFail(projectId))
-    );
-
-    judge.rankings = projects.map(project => project.id);
-
-    this.judgeRepository.save(judge);
   }
 }

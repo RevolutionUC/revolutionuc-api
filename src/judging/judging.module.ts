@@ -1,13 +1,16 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
-import { Registrant } from '../entities/registrant.entity';
-import { JudgingController } from './judging.controller';
-import { JudgingService } from './judging.service';
+import { Project } from './entities/project.entity';
+import { Judge } from './entities/judge.entity';
+import { JudgeController } from './judge/judge.controller';
+import { AdminController } from './admin/admin.controller';
+import { JudgeService } from './judge/judge.service';
+import { AdminService } from './admin/admin.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Registrant]), AuthModule],
-  controllers: [JudgingController],
-  providers: [JudgingService]
+  imports: [TypeOrmModule.forFeature([Project, Judge]), AuthModule],
+  controllers: [JudgeController, AdminController],
+  providers: [JudgeService, AdminService]
 })
 export class JudgingModule {}
