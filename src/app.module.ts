@@ -7,6 +7,7 @@ import { Registrant } from './entities/registrant.entity';
 import { AdminModule } from './admin/admin.module';
 import { SudoModule } from './sudo/sudo.module';
 import { LatticeModule } from './lattice/lattice.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { LatticeModule } from './lattice/lattice.module';
       ssl: true,
     }),
     TypeOrmModule.forFeature([Registrant]),
+    EmailModule,
     AdminModule,
     SudoModule,
     LatticeModule
