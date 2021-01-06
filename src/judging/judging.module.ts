@@ -7,9 +7,10 @@ import { JudgeController } from './judge/judge.controller';
 import { AdminController } from './admin/admin.controller';
 import { JudgeService } from './judge/judge.service';
 import { AdminService } from './admin/admin.service';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Project, Judge]), AuthModule],
+  imports: [TypeOrmModule.forFeature([Project, Judge]), AuthModule, EmailModule],
   controllers: [JudgeController, AdminController],
   providers: [JudgeService, AdminService]
 })

@@ -2,11 +2,13 @@ import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
-import { Registrant } from '../entities/registrant.entity';
 import { build, send } from 'revolutionuc-emails';
+import { Registrant } from '../entities/registrant.entity';
 import { environment } from '../environment';
+import { AuthService } from '../auth/auth.service';
+import { Judge } from 'src/judging/entities/judge.entity';
 
-export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4';
+export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4' | 'infoEmailJudges1' | 'infoEmailJudges2';
 
 export class SendEmailDto {
   template: EMAIL;
@@ -22,12 +24,15 @@ class EmailDataDto {
   yesConfirmationUrl?: string
   noConfirmationUrl?: string
   offWaitlist?: boolean
+  judgingLoginLink?: string
 }
 
 @Injectable()
 export class EmailService {
   constructor(
     @InjectRepository(Registrant) private readonly registrantRepository: Repository<Registrant>,
+    @InjectRepository(Judge) private readonly judgeRepository: Repository<Judge>,
+    private authService: AuthService
   ) {}
 
   emailData: {[key in EMAIL]: EmailDataDto} = {
@@ -61,6 +66,17 @@ export class EmailService {
       shortDescription: `RevolutionUC is here. Here's some important information for the event`,
       firstName: '',
       registrantId: ''
+    },
+    infoEmailJudges1: {
+      subject: `RevolutionUC Judging`,
+      shortDescription: `Thank you for signing up to judge at RevolutionUC. Here is some important information regarding the event.`,
+      firstName: ``
+    },
+    infoEmailJudges2: {
+      subject: `RevolutionUC Judging`,
+      shortDescription: `Thank you for signing up to judge at RevolutionUC. Here is some important information regarding the event.`,
+      firstName: ``,
+      judgingLoginLink: ``
     }
   }
 
@@ -78,6 +94,11 @@ export class EmailService {
     return { yesConfirmationUrl, noConfirmationUrl }
   }
 
+  private async getJudgingLoginLink(email: string) {
+    const { token } = await this.authService.trustedLogin(email);
+    return `https://judging.revolutionuc.com/login?token=${token}`;
+  }
+
   private async sendHelper(template: EMAIL, emailData: EmailDataDto, recipentEmail: string, dryRun: boolean) {
     if (dryRun) {
       console.log({ template, emailData, recipentEmail });
@@ -87,6 +108,10 @@ export class EmailService {
         const { yesConfirmationUrl, noConfirmationUrl } = this.getConfirmationLinks(recipentEmail);
         emailData.yesConfirmationUrl = yesConfirmationUrl;
         emailData.noConfirmationUrl = noConfirmationUrl;
+      }
+      if(template === 'infoEmailJudges2') {
+        const judgingLoginLink = await this.getJudgingLoginLink(recipentEmail);
+        emailData.judgingLoginLink = judgingLoginLink;
       }
       return build(template, emailData)
         .then(html => {
@@ -111,7 +136,7 @@ export class EmailService {
       payload.dryRun = false;
     }
 
-    const emailData = this.emailData[payload.template];
+    const emailData = { ...this.emailData[payload.template] };
 
     if (payload.recipent === 'all') {
       const registrants = await this.registrantRepository.find({ emailVerfied: true });
@@ -138,18 +163,26 @@ export class EmailService {
       });
     } else {
       try {
-        const registrant = await this.registrantRepository.findOneOrFail({ email: payload.recipent });
-        emailData.firstName = registrant.firstName;
-        emailData.registrantId = registrant.id;
-        await this.sendHelper(payload.template, emailData, registrant.email, payload.dryRun);
-        if (!payload.dryRun) {
-          if(!registrant.emailsReceived.includes(payload.template)) {
-            registrant.emailsReceived.push(payload.template);
-            await this.registrantRepository.save(registrant);
+        if(payload.template.includes(`Judges`)) {
+          // email meant for judge
+          const judge = await this.judgeRepository.findOneOrFail({ email: payload.recipent });
+          emailData.firstName = judge.name;
+          await this.sendHelper(payload.template, emailData, judge.email, payload.dryRun);
+        } else {
+          // email meant for registrant
+          const registrant = await this.registrantRepository.findOneOrFail({ email: payload.recipent });
+          emailData.firstName = registrant.firstName;
+          emailData.registrantId = registrant.id;
+          await this.sendHelper(payload.template, emailData, registrant.email, payload.dryRun);
+          if (!payload.dryRun) {
+            if(!registrant.emailsReceived.includes(payload.template)) {
+              registrant.emailsReceived.push(payload.template);
+              await this.registrantRepository.save(registrant);
+            }
           }
+  
+          Logger.log(`Successfully sent ${payload.template} to ${registrant.email}`);
         }
-
-        Logger.log(`Successfully sent ${payload.template} to ${registrant.email}`);
       } catch(err) {
         Logger.error(`Could not send ${payload.template} to ${payload.recipent}: ${err.message}`);
       }

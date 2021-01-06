@@ -30,6 +30,20 @@ export class AuthService {
     return user;
   }
 
+  private async getLoginDetails(user: User): Promise<LoginDto> {
+    const payload: CurrentUserDto = { id: user.id, role: user.role };
+
+    const token = await this.jwtService.signAsync(payload);
+
+    return { token, user: { id: user.id, username: user.username, role: user.role } };
+  }
+
+  async trustedLogin(username: string): Promise<LoginDto> {
+    const user = await this.userRepository.findOne({ username });
+
+    return this.getLoginDetails(user);
+  }
+
   async login(
     username: string,
     password: string,
@@ -42,11 +56,7 @@ export class AuthService {
       throw this.invalidError;
     }
 
-    const payload: CurrentUserDto = { id: user.id, role: user.role };
-
-    const token = await this.jwtService.signAsync(payload);
-
-    return { token, user: { id: user.id, username: user.username, role: user.role } };
+    return this.getLoginDetails(user);
   }
 
   async register(
@@ -64,11 +74,7 @@ export class AuthService {
     await validateOrReject(user);
     const newUser = await this.userRepository.save(user);
 
-    const payload: CurrentUserDto = { id: newUser.id, role: newUser.role };
-
-    const token = await this.jwtService.signAsync(payload);
-
-    return { token, user: { id: newUser.id, username: newUser.username, role: newUser.role } };
+    return this.getLoginDetails(newUser);
   }
 
   async validateUser({ id, role }: CurrentUserDto): Promise<User> {
