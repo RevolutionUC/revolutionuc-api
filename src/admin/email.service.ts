@@ -6,7 +6,7 @@ import { Registrant } from '../entities/registrant.entity';
 import { build, send } from 'revolutionuc-emails';
 import { environment } from '../environment';
 
-export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4';
+export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4' | 'waiverUpdate';
 
 export class SendEmailDto {
   template: EMAIL;
@@ -61,6 +61,11 @@ export class EmailService {
       shortDescription: `RevolutionUC is here. Here's some important information for the event`,
       firstName: '',
       registrantId: ''
+    },
+    waiverUpdate: {
+      subject: `RevolutionUC waiver has been updated`,
+      shortDescription: `Thank you for registering for RevolutionUC. We have updated our waiver.`,
+      firstName: ``
     }
   }
 
