@@ -63,8 +63,8 @@ export class EmailService {
       registrantId: ''
     },
     waiverUpdate: {
-      subject: `RevolutionUC waiver has been updated`,
-      shortDescription: `Thank you for registering for RevolutionUC. We have updated our waiver.`,
+      subject: `RevolutionUC waiver of liability has been updated`,
+      shortDescription: `Thank you for registering for RevolutionUC. We have updated our waiver of liability.`,
       firstName: ``
     }
   }
