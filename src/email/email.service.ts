@@ -8,7 +8,7 @@ import { environment } from '../environment';
 import { AuthService } from '../auth/auth.service';
 import { Judge } from 'src/judging/entities/judge.entity';
 
-export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4' | 'infoEmailJudges1' | 'infoEmailJudges2';
+export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4' | 'infoEmailJudges1' | 'infoEmailJudges2' | 'waiverUpdate';
 
 export class SendEmailDto {
   template: EMAIL;
@@ -77,6 +77,11 @@ export class EmailService {
       shortDescription: `Thank you for signing up to judge at RevolutionUC. Here is some important information regarding the event.`,
       firstName: ``,
       judgingLoginLink: ``
+    },
+    waiverUpdate: {
+      subject: `RevolutionUC waiver has been updated`,
+      shortDescription: `Thank you for registering for RevolutionUC. We have updated our waiver.`,
+      firstName: ``
     }
   }
 
