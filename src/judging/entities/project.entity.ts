@@ -43,6 +43,6 @@ export class Project {
 
   @IsNotEmpty()
   @IsString()
-  @Column()
-  category: string;
+  @Column(`text`, { array: true })
+  categories: string[];
 }

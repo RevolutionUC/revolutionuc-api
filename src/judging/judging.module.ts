@@ -7,10 +7,11 @@ import { JudgeController } from './judge/judge.controller';
 import { AdminController } from './admin/admin.controller';
 import { JudgeService } from './judge/judge.service';
 import { AdminService } from './admin/admin.service';
-import { EmailModule } from 'src/email/email.module';
+import { EmailModule } from '../email/email.module';
+import { JudgingConfig } from './entities/config.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Project, Judge]), AuthModule, EmailModule],
+  imports: [TypeOrmModule.forFeature([Project, Judge, JudgingConfig]), AuthModule, EmailModule],
   controllers: [JudgeController, AdminController],
   providers: [JudgeService, AdminService]
 })
