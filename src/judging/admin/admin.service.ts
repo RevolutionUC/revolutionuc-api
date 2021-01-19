@@ -42,7 +42,7 @@ export class AdminService {
     return Promise.all(data.map(project => this.createProject(project)));
   }
 
-  async uploadCsv(file: any): Promise<Array<Project>> {
+  async uploadCsv(file: Express.Multer.File): Promise<Array<Project>> {
     const csvString = file.buffer.toString();
     const config = await this.configRepository.findOne({ year: 2021 });
     const projects = devpostParser(csvString, config);
