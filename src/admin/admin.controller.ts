@@ -15,7 +15,7 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 import { RegistrantDto } from '../dtos/Registrant.dto';
 import { Registrant, SortKey, SortOrder } from '../entities/registrant.entity';
 import { AdminService } from './admin.service';
-import { EmailService, SendEmailDto } from './email.service';
+import { EmailService, SendEmailDto } from '../email/email.service';
 import { UseAuth } from '../auth/auth.decorator';
 
 @ApiTags('admin')

@@ -26,7 +26,7 @@ export class Hacker {
   @Column('text', { array: true })
   @IsDefined()
   @IsArray()
-  @ArrayMaxSize(6)
+  @ArrayMaxSize(10)
   @ArrayUnique()
   @IsString({ each: true })
   skills: string[]
@@ -40,7 +40,7 @@ export class Hacker {
   @Column('text', { array: true })
   @IsDefined()
   @IsArray()
-  @ArrayMaxSize(3)
+  @ArrayMaxSize(5)
   @ArrayUnique()
   @IsString({ each: true })
   lookingFor: string[]

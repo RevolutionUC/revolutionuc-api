@@ -12,7 +12,7 @@ import * as multer from 'multer';
 import * as multers3 from 'multer-s3';
 import { S3 } from 'aws-sdk';
 import { StatsDto } from './dtos/Stats.dto';
-import { EmailService, EMAIL } from './admin/email.service';
+import { EmailService, EMAIL } from './email/email.service';
 import { build, send } from 'revolutionuc-emails';
 
 const currentInfoEmail: EMAIL = environment.CURRENT_INFO_EMAIL as EMAIL;

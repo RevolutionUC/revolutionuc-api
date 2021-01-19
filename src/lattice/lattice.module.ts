@@ -5,6 +5,7 @@ import { Hacker } from './entities/hacker.entity';
 import { Swipe } from './entities/swipe.entity';
 import { LatticeAuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
+import { SkillsModule } from './skills/skills.module';
 import { MatchModule } from './match/match.module';
 import { NotificationModule } from './notification/notification.module';
 
@@ -13,6 +14,7 @@ import { NotificationModule } from './notification/notification.module';
     TypeOrmModule.forFeature([ Registrant, Hacker, Swipe ]),
     LatticeAuthModule,
     ProfileModule,
+    SkillsModule,
     MatchModule,
     NotificationModule
   ],

@@ -11,8 +11,3 @@ export class ProfileDTO {
 export class ScoredProfileDTO extends ProfileDTO {
   score: number
 }
-
-export class SkillDTO {
-  title: string
-  icon: string
-}
