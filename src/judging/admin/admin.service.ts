@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Express } from 'express';
 import { Repository } from 'typeorm';
 import { JudgeDto } from '../dtos/judge.dto';
 import { ProjectDto } from '../dtos/project.dto';
@@ -43,7 +42,7 @@ export class AdminService {
     return Promise.all(data.map(project => this.createProject(project)));
   }
 
-  async uploadCsv(file: Express.Multer.File): Promise<Array<Project>> {
+  async uploadCsv(file: any): Promise<Array<Project>> {
     const csvString = file.buffer.toString();
     const config = await this.configRepository.findOne({ year: 2021 });
     const projects = devpostParser(csvString, config);
