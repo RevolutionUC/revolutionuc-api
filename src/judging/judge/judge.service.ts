@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { JudgeDto } from '../dtos/judge.dto';
-import { ProjectDto } from '../dtos/project.dto';
 import { Judge } from '../entities/judge.entity';
 import { Project } from '../entities/project.entity';
 
@@ -21,7 +19,7 @@ export class JudgeService {
     const judge = await this.judgeRepository.findOneOrFail({ userId });
 
     if(judge.category !== `general`) {
-      return this.projectRepository.find({ category: judge.category });
+      return this.projectRepository.find({ where: { categories: judge.category } });
     }
 
     return this.projectRepository.find();

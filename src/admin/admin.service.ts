@@ -12,8 +12,6 @@ import * as multer from 'multer';
 import * as multers3 from 'multer-s3';
 import { S3 } from 'aws-sdk';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-
 @Injectable()
 export class AdminService {
   constructor(
