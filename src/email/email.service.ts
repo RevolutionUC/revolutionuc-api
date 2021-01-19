@@ -6,7 +6,7 @@ import { build, send } from 'revolutionuc-emails';
 import { Registrant } from '../entities/registrant.entity';
 import { environment } from '../environment';
 import { AuthService } from '../auth/auth.service';
-import { Judge } from 'src/judging/entities/judge.entity';
+import { Judge } from '../judging/entities/judge.entity';
 
 export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4' | 'infoEmailJudges1' | 'infoEmailJudges2' | 'waiverUpdate';
 
