@@ -49,6 +49,7 @@ export class ProfileService {
       `skills`,
       `idea`,
       `lookingFor`,
+      `discord`,
       `started`,
       `completed`,
       `visible`,

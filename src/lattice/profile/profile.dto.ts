@@ -3,6 +3,7 @@ export class ProfileDTO {
   skills: string[]
   idea: string
   lookingFor: string[]
+  discord: string
   started: boolean
   completed: boolean
   visible: boolean
