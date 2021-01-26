@@ -8,31 +8,39 @@ import { Project } from '../entities/project.entity';
 import { JudgingConfig } from '../entities/config.entity';
 import { JudgingConfigDto } from '../dtos/config.dto';
 import { devpostParser } from './util/devpost-export-parser';
+import { Category } from '../entities/category.entity';
+import { Submission } from '../entities/submission.entity';
+
+const scoreRanks = [ 5, 4, 3, 2, 1 ];
 
 @Injectable()
 export class AdminService {
   constructor(
+    @InjectRepository(JudgingConfig) private readonly configRepository: Repository<JudgingConfig>,
     @InjectRepository(Judge) private readonly judgeRepository: Repository<Judge>,
     @InjectRepository(Project) private readonly projectRepository: Repository<Project>,
-    @InjectRepository(JudgingConfig) private readonly configRepository: Repository<JudgingConfig>
+    @InjectRepository(Category) private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(Submission) private readonly submissionRepository: Repository<Submission>
   ) {}
-  
-  // CRUD judges
+
+  // judges
   async getJudges(): Promise<Array<Judge>> {
     return this.judgeRepository.find();
   }
 
-  async createJudge(data: JudgeDto): Promise<Judge> {
-    const judge = this.judgeRepository.create(data);
+  async createJudge({ name, email }: JudgeDto): Promise<Judge> {
+    const judge = this.judgeRepository.create({ name, email });
     return this.judgeRepository.save(judge);
   }
+
+  async assignJudgeToCategory(judgeId: string, category: string): Promise<Judge> {};
 
   async deleteJudge(id: string): Promise<void> {
     await this.judgeRepository.delete(id);
     return;
   }
 
-  // CRUD projects
+  // projects
   private async createProject(data: ProjectDto): Promise<Project> {
     const project = this.projectRepository.create(data);
     return this.projectRepository.save(project);
@@ -53,7 +61,7 @@ export class AdminService {
     return this.projectRepository.find();
   }
 
-  // CRUD config
+  // config
   async updateConfig(data: JudgingConfigDto): Promise<JudgingConfig> {
     const existingConfig = await this.configRepository.findOne({ year: data.year });
 
@@ -66,5 +74,26 @@ export class AdminService {
     }
 
     return this.configRepository.save(config);
+  }
+
+  // prizing
+  private async scoreSubmissions(): Promise<void> {
+    const submissions = await this.submissionRepository.find();
+    const judges = await this.judgeRepository.find();
+
+    judges.forEach(judge => {
+      judge.rankings.forEach((submissionId, i) => {
+        const submission = submissions.find(({ id }) => id === submissionId);
+        submission.score += scoreRanks[i];
+      });
+    });
+
+    const jobs = submissions.map(submission => {
+      if(submission.score) {
+        return this.submissionRepository.save(submission);
+      }
+    });
+
+    await Promise.all(jobs);
   }
 }

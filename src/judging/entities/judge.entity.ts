@@ -1,9 +1,12 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
+  ManyToOne
 } from 'typeorm';
 import { ArrayMaxSize, ArrayUnique, IsArray, IsDefined, IsEmail, IsNotEmpty, IsString, IsBoolean } from 'class-validator';
+import { Category } from './category.entity';
+import { Group } from './group.entity';
 
 @Entity()
 export class Judge {
@@ -25,10 +28,6 @@ export class Judge {
   @Column()
   email: string;
 
-  @IsString()
-  @Column()
-  category: string;
-
   @IsArray()
   @ArrayMaxSize(5)
   @ArrayUnique()
@@ -38,4 +37,10 @@ export class Judge {
   @IsBoolean()
   @Column({ default: false })
   isFinal: boolean
+
+  @ManyToOne(() => Category, category => category.judges)
+  category: Category
+
+  @ManyToOne(() => Group, group => group.judges)
+  group: Group
 }
