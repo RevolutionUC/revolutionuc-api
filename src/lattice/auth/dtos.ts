@@ -13,6 +13,12 @@ export class ChangePasswordDTO {
   newPassword: string
 }
 
+export class ResetTokenDTO {
+  id: string
+  currentPassword: string
+  createdAt: Date
+}
+
 export class ResetPasswordDTO {
   resetToken: string
   password: string

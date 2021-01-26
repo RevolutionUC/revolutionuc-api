@@ -23,7 +23,7 @@ export class LatticeAuthController {
     return this.registrationService.login(email, password);
   }
 
-  @Get(`reset`)
+  @Post(`reset`)
   sendResetLink(@Body() { email }: Pick<LoginDTO, 'email'>): Promise<void> {
     return this.registrationService.sendResetLink(email);
   }
