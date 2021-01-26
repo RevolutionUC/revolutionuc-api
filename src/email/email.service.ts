@@ -8,12 +8,13 @@ import { environment } from '../environment';
 import { AuthService } from '../auth/auth.service';
 import { Judge } from 'src/judging/entities/judge.entity';
 
-export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4' | 'infoEmailJudges1' | 'infoEmailJudges2' | 'waiverUpdate';
+export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4' | 'infoEmailJudges1' | 'infoEmailJudges2' | 'waiverUpdate' | 'latticeResetPassword';
 
 export class SendEmailDto {
   template: EMAIL;
   recipent: string;
   dryRun?: boolean;
+  resetToken?: string;
 }
 
 class EmailDataDto {
@@ -25,6 +26,7 @@ class EmailDataDto {
   noConfirmationUrl?: string
   offWaitlist?: boolean
   judgingLoginLink?: string
+  resetToken?: string
 }
 
 @Injectable()
@@ -82,6 +84,12 @@ export class EmailService {
       subject: `RevolutionUC waiver of liability has been updated`,
       shortDescription: `Thank you for registering for RevolutionUC. We have updated our waiver of liability.`,
       firstName: ``
+    },
+    latticeResetPassword: {
+      subject: `Reset password request for Lattice`,
+      shortDescription: `Reset your Lattice password, RevolutionUC Hacker matching app.`,
+      firstName: ``,
+      resetToken: ``
     }
   }
 
@@ -178,6 +186,9 @@ export class EmailService {
           const registrant = await this.registrantRepository.findOneOrFail({ email: payload.recipent });
           emailData.firstName = registrant.firstName;
           emailData.registrantId = registrant.id;
+
+          emailData.resetToken = payload.resetToken;
+
           await this.sendHelper(payload.template, emailData, registrant.email, payload.dryRun);
           if (!payload.dryRun) {
             if(!registrant.emailsReceived.includes(payload.template)) {
