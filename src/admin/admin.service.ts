@@ -24,20 +24,12 @@ export class AdminService {
     sortKey: SortKey = 'createdAt',
     sortOrder: SortOrder = 'DESC',
     q: string,
+    full: boolean
   ): Promise<Pagination<Registrant>> {
     console.log({ options: { page, limit }, sortKey, sortOrder, q });
 
     let query = this.registrantRepository
       .createQueryBuilder('user')
-      .select([
-        'user.id',
-        'user.firstName',
-        'user.lastName',
-        'user.email',
-        'user.createdAt',
-        'user.emailVerfied',
-        'user.checkedIn',
-      ])
       .orderBy(`user.${sortKey}`, sortOrder);
 
     if (q) {
@@ -45,6 +37,18 @@ export class AdminService {
         .where("user.firstName || ' ' || user.lastName ILIKE :query")
         .orWhere('user.email ILIKE :query')
         .setParameter('query', '%' + q + '%');
+    }
+
+    if(!full) {
+      query = query.select([
+        'user.id',
+        'user.firstName',
+        'user.lastName',
+        'user.email',
+        'user.createdAt',
+        'user.emailVerfied',
+        'user.checkedIn',
+      ]);
     }
 
     query.printSql();
