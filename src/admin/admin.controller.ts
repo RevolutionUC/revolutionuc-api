@@ -30,13 +30,15 @@ export class AdminController {
     @Query('limit') limit: number,
     @Query('sortKey') sortKey: SortKey,
     @Query('sortOrder') sortOrder: SortOrder,
-    @Query('q') q: string
+    @Query('q') q: string,
+    @Query('full') full = `false`
   ): Promise<Pagination<Registrant>> {
     return this.adminService.searchRegistrants(
       { page, limit },
       sortKey,
       sortOrder,
       q,
+      full === `true`
     );
   }
 
