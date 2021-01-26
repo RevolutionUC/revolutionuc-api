@@ -1,9 +1,12 @@
-import { Controller, Get, Body, Post, Put, Param } from '@nestjs/common';
-import { CurrentUser, CurrentUserDto } from 'src/auth/currentuser';
+import { Controller, Get, Body, Post, Put, Param, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { CurrentUser, CurrentUserDto } from '../../auth/currentuser';
+import { Roles, RoleGuard } from '../../auth/role.guard';
 import { LatticeAuthService } from './auth.service';
 import { LoginDTO, RegisterDTO, ChangePasswordDTO, ResetPasswordDTO } from './dtos';
 
 @Controller(`v2/lattice/auth`)
+@Roles([`HACKER`])
 export class LatticeAuthController {
   constructor(private readonly registrationService: LatticeAuthService) {}
 
@@ -39,6 +42,7 @@ export class LatticeAuthController {
   }
 
   @Put(`password`)
+  @UseGuards(AuthGuard(`jwt`), RoleGuard)
   changePassword(@CurrentUser() user: CurrentUserDto, @Body() { oldPassword, newPassword }: ChangePasswordDTO): Promise<void> {
     return this.registrationService.changePassword(user.id, oldPassword, newPassword);
   }
