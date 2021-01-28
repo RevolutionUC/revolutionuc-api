@@ -1,16 +1,21 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { EmailService } from '../../email/email.service';
 import { AuthService } from '../../auth/auth.service';
 import { Registrant } from '../../entities/registrant.entity';
 import { Hacker } from '../entities/hacker.entity';
+import { ResetTokenDTO } from './dtos';
 
 @Injectable()
 export class LatticeAuthService {
   constructor(
     @InjectRepository(Registrant) private registrantRepository: Repository<Registrant>,
     @InjectRepository(Hacker) private hackerRepository: Repository<Hacker>,
-    private authService: AuthService
+    private readonly authService: AuthService,
+    private readonly jwtService: JwtService,
+    private readonly emailService: EmailService
   ) {}
 
   async getRegistrantEmail(registrantId: string): Promise<string> {
@@ -59,18 +64,48 @@ export class LatticeAuthService {
   }
 
   async sendResetLink(email: string): Promise<void> {
-    return Promise.resolve();
+    const user = await this.authService.findUser(email, [`HACKER`]);
+
+    const payload: ResetTokenDTO = {
+      id: user.id,
+      currentPassword: user.password,
+      createdAt: new Date()
+    };
+    const resetToken = await this.jwtService.signAsync(payload);
+
+    await this.emailService.sendEmail({
+      template: `latticeResetPassword`,
+      recipent: user.username,
+      resetToken
+    });
   }
 
   async getResetInfo(resetToken: string): Promise<string> {
-    return Promise.resolve(``);
+    try {
+      const payload: ResetTokenDTO = await this.jwtService.verifyAsync(resetToken);
+      const user = await this.authService.getUserDetails(payload.id, [`HACKER`]);
+      if(!user || (user.password !== payload.currentPassword)) {
+        throw new HttpException(`This link is either invalid or expired`, HttpStatus.UNAUTHORIZED);
+      }
+      return user.username;
+    } catch (err) {
+      throw new HttpException(`Please check the link or try again later`, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async resetPassword(resetToken: string, password: string): Promise<void> {
-    return Promise.resolve();
+    const payload: ResetTokenDTO = await this.jwtService.verifyAsync(resetToken);
+    await this.authService.changePassword(payload.id, password);
   }
 
   async changePassword(userId: string, oldPassword: string, newPassword: string): Promise<void> {
-    return Promise.resolve();
+    const user = await this.authService.getUserDetails(userId, [`HACKER`]);
+    const legit = await user.comparePassword(oldPassword);
+
+    if(!legit) {
+      throw new HttpException(`Old password is invalid`, HttpStatus.UNAUTHORIZED);
+    }
+    
+    await this.authService.changePassword(userId, newPassword);
   }
 }

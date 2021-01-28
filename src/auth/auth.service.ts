@@ -19,7 +19,7 @@ export class AuthService {
     HttpStatus.UNAUTHORIZED,
   );
 
-  private async findUser(username: string, roles: Role[]): Promise<User> {
+  async findUser(username: string, roles: Role[]): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { username, role: In(roles) },
     });
@@ -81,7 +81,24 @@ export class AuthService {
     return this.userRepository.findOne({ id, role });
   }
 
-  getUserDetails(uuid: string): Promise<User> {
-    return this.userRepository.findOne(uuid);
+  async getUserDetails(id: string, roles: Role[] = []): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id, role: In(roles) } });
+    if (!user) {
+      throw this.invalidError;
+    }
+
+    return user;
+  }
+
+  async changePassword(id: string, newPassword: string): Promise<User> {
+    const user = await this.userRepository.findOne(id);
+    if (!user) {
+      throw this.invalidError;
+    }
+
+    user.password = newPassword;
+    await user.hashPassword();
+
+    return this.userRepository.save(user);
   }
 }
