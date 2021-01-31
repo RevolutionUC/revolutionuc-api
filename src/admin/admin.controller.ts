@@ -71,7 +71,7 @@ export class AdminController {
   }
 
   @Post('registrants/checkin')
-  checkInRegistrantByEmail(@Query('email') email: string): Promise<void> {
+  checkInRegistrantByEmail(@Query('email') email: string): Promise<Registrant> {
     return this.adminService.checkInRegistrantByEmail(email);
   }
 

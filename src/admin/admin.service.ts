@@ -159,15 +159,16 @@ export class AdminService {
     }
   }
 
-  async checkInRegistrantByEmail(email: string): Promise<void> {
+  async checkInRegistrantByEmail(email: string): Promise<Registrant> {
     try {
-      const result = await this.registrantRepository.update({ email }, {
-        checkedIn: true,
-      });
-      if (!result.affected) {
+      const registrant = await this.registrantRepository.findOne({ email });
+      if (!registrant) {
         throw new HttpException(`Invalid registrant email`, HttpStatus.NOT_FOUND);
       }
-      return;
+
+      registrant.checkedIn = true;
+
+      return this.registrantRepository.save(registrant);
     } catch (err) {
       throw new HttpException(
         `Error checking in registrant: ${err.message}`,
