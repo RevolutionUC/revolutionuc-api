@@ -33,8 +33,6 @@ export class AdminService {
     return this.judgeRepository.save(judge);
   }
 
-  async assignJudgeToCategory(judgeId: string, category: string): Promise<Judge> {};
-
   async deleteJudge(id: string): Promise<void> {
     await this.judgeRepository.delete(id);
     return;
