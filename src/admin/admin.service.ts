@@ -158,4 +158,21 @@ export class AdminService {
       );
     }
   }
+
+  async checkInRegistrantByEmail(email: string): Promise<void> {
+    try {
+      const result = await this.registrantRepository.update({ email }, {
+        checkedIn: true,
+      });
+      if (!result.affected) {
+        throw new HttpException(`Invalid registrant email`, HttpStatus.NOT_FOUND);
+      }
+      return;
+    } catch (err) {
+      throw new HttpException(
+        `Error checking in registrant: ${err.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
