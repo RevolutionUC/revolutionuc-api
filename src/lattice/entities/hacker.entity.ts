@@ -45,7 +45,7 @@ export class Hacker {
   @IsString({ each: true })
   lookingFor: string[]
 
-  @Column({ nullable: true })
+  @Column()
   @IsDefined()
   @IsString()
   discord: string

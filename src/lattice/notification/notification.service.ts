@@ -53,7 +53,8 @@ export class NotificationService {
       `lookingFor`,
       `started`,
       `completed`,
-      `visible`
+      `visible`,
+      `discord`
     ]});
 
     const user = await this.authService.getUserDetails(hacker.userId, [`HACKER`]);
