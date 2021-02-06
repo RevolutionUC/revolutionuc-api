@@ -81,7 +81,7 @@ export class AuthService {
     return this.userRepository.findOne({ id, role });
   }
 
-  async getUserDetails(id: string, roles: Role[] = []): Promise<User> {
+  async getUserDetails(id: string, roles: Role[]): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id, role: In(roles) } });
     if (!user) {
       throw this.invalidError;

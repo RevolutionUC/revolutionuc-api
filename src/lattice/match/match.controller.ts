@@ -3,7 +3,7 @@ import { MatchService } from './match.service';
 import { CurrentUserDto, CurrentUser } from '../../auth/currentuser';
 import { SwipeDto } from './swipe.dto';
 import { Swipe } from '../entities/swipe.entity';
-import { UseAuth } from 'src/auth/auth.decorator';
+import { UseAuth } from '../../auth/auth.decorator';
 
 @Controller(`v2/lattice/match`)
 @UseAuth([`HACKER`])
