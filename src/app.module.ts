@@ -17,7 +17,9 @@ import { EmailModule } from './email/email.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: environment.database_config.synchronize,
       logging: environment.database_config.logging,
-      ssl: true,
+      ssl: {
+        rejectUnauthorized: false
+      },
     }),
     TypeOrmModule.forFeature([Registrant]),
     EmailModule,
