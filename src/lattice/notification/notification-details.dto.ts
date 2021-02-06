@@ -3,5 +3,5 @@ import { Hacker } from '../entities/hacker.entity';
 
 export class NotificationDetailsDto {
   notification: Notification
-  to: Hacker
+  to: Hacker & { email: string }
 }
