@@ -11,7 +11,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { SudoService } from './sudo.service';
 import { User } from '../entities/user.entity';
 import { UserDto } from '../dtos/User.dto';
-import { UseAuth } from 'src/auth/auth.decorator';
+import { UseAuth } from '../auth/auth.decorator';
 
 @ApiTags('sudo')
 @Controller('v2/sudo')

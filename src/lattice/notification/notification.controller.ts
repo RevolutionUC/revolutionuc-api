@@ -4,7 +4,7 @@ import { NotificationService } from './notification.service';
 import { NotificationDetailsDto } from './notification-details.dto';
 import { PushSubscription } from './push-subscription.dto';
 import { Subscription } from '../entities/subscription.entity';
-import { UseAuth } from 'src/auth/auth.decorator';
+import { UseAuth } from '../../auth/auth.decorator';
 
 @Controller(`v2/lattice/notification`)
 @UseAuth([`HACKER`])
