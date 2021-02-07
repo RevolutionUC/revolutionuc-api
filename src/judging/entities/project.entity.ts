@@ -2,8 +2,10 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
+import { Submission } from './submission.entity';
 
 @Entity()
 export class Project {
@@ -41,8 +43,10 @@ export class Project {
   @Column()
   submitterName: string;
 
-  @IsNotEmpty()
   @IsString()
-  @Column(`text`, { array: true })
-  categories: string[];
+  @Column({ nullable: true })
+  disqualified?: string;
+
+  @OneToMany(() => Submission, score => score.project)
+  submissions: Submission[]
 }

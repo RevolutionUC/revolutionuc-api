@@ -3,6 +3,7 @@ export class ProfileDTO {
   skills: string[]
   idea: string
   lookingFor: string[]
+  discord: string
   started: boolean
   completed: boolean
   visible: boolean
@@ -10,4 +11,8 @@ export class ProfileDTO {
 
 export class ScoredProfileDTO extends ProfileDTO {
   score: number
+}
+
+export class ProfileWithEmail extends ProfileDTO {
+  email: string
 }

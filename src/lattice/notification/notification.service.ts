@@ -46,15 +46,18 @@ export class NotificationService {
 
   private async hydrateNotification(notification: Notification): Promise<NotificationDetailsDto> {
     const hacker = await this.hackerRepository.findOne(notification.to, { select: [
+      `userId`,
       `name`,
       `skills`,
       `idea`,
       `lookingFor`,
       `started`,
       `completed`,
-      `visible`
+      `visible`,
+      `discord`
     ]});
-    const user = await this.authService.getUserDetails(hacker.userId);
+
+    const user = await this.authService.getUserDetails(hacker.userId, [`HACKER`]);
 
     return { notification, to: { ...hacker, email: user.username } };
   }

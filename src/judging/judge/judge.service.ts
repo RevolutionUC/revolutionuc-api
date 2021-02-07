@@ -3,36 +3,38 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Judge } from '../entities/judge.entity';
 import { Project } from '../entities/project.entity';
+import { Submission } from '../entities/submission.entity';
 
 @Injectable()
 export class JudgeService {
   constructor(
     @InjectRepository(Judge) private readonly judgeRepository: Repository<Judge>,
-    @InjectRepository(Project) private readonly projectRepository: Repository<Project>
+    @InjectRepository(Submission) private readonly submissionRepository: Repository<Submission>
   ) {}
 
   async getInfo(userId: string): Promise<Judge> {
     return this.judgeRepository.findOne({ userId });
   }
 
-  async listProjects(userId: string): Promise<Array<Project>> {
-    const judge = await this.judgeRepository.findOneOrFail({ userId });
-
-    if(judge.category !== `general`) {
-      return this.projectRepository.find({ where: { categories: judge.category } });
-    }
-
-    return this.projectRepository.find();
+  async listSubmissions(userId: string): Promise<Array<Submission>> {
+    const judge = await this.judgeRepository.findOneOrFail({
+      where: { userId },
+      relations: [`group`, `group.submissions`, `group.submissions.project`]
+    });
+    return judge.group.submissions;
   }
 
-  async rankProject(userId: string, rankings: Array<string>): Promise<void> {
-    const judge = await this.judgeRepository.findOneOrFail({ userId, isFinal: false });
+  async rankSubmission(userId: string, rankings: Array<string>): Promise<void> {
+    const judge = await this.judgeRepository.findOneOrFail({
+      where: { userId, isFinal: false },
+      relations: [`group`, `group.submissions`]
+    });
 
-    const projects = await Promise.all(
-      rankings.map(projectId => this.projectRepository.findOneOrFail(projectId))
+    const submissions = rankings.map(
+      submissionId => judge.group.submissions.find(({ id }) => id === submissionId)
     );
 
-    judge.rankings = projects.map(project => project.id);
+    judge.rankings = submissions.map(({ id }) => id);
 
     await this.judgeRepository.save(judge);
   }

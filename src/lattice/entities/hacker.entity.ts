@@ -45,6 +45,11 @@ export class Hacker {
   @IsString({ each: true })
   lookingFor: string[]
 
+  @Column()
+  @IsDefined()
+  @IsString()
+  discord: string
+
   @Column({ default: false })
   started: boolean
 
