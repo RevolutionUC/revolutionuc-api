@@ -8,6 +8,7 @@ import { AdminModule } from './admin/admin.module';
 import { SudoModule } from './sudo/sudo.module';
 import { LatticeModule } from './lattice/lattice.module';
 import { EmailModule } from './email/email.module';
+import { AttendeeModule } from './attendee/attendee.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { EmailModule } from './email/email.module';
     EmailModule,
     AdminModule,
     SudoModule,
-    LatticeModule
+    LatticeModule,
+    AttendeeModule
   ],
   controllers: [AppController],
   providers: [AppService],
