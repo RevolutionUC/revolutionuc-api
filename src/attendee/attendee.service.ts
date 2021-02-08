@@ -29,20 +29,12 @@ export class AttendeeService {
     return this.attendeeRepository.save(attendees);
   }
 
-  async checkInAttendee(email: string): Promise<void> {
-    try {
-      const result = await this.attendeeRepository.update({ email }, {
-        checkedIn: true,
-      });
-      if (!result.affected) {
-        throw new HttpException(`Invalid email`, HttpStatus.NOT_FOUND);
-      }
-      return;
-    } catch (err) {
-      throw new HttpException(
-        `Error checking in attendee: ${err.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+  async checkInAttendee(email: string): Promise<Attendee> {
+    const attendee = await this.attendeeRepository.findOne({ email });
+    if (!attendee) {
+      throw new HttpException(`Invalid email`, HttpStatus.NOT_FOUND);
     }
+    attendee.checkedIn = true;
+    return this.attendeeRepository.save(attendee);
   }
 }

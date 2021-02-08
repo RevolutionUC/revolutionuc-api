@@ -12,13 +12,13 @@ import { UseAuth } from '../auth/auth.decorator';
 import { Attendee } from '../entities/attendee.entity';
 
 @ApiTags('attendee')
-@Controller('v2/checkin')
+@Controller('v2/attendee')
 @UseAuth([`SUDO`, `ADMIN`])
 export class AttendeeController {
   constructor(private readonly adminService: AttendeeService) {}
 
   @Post(`checkin`)
-  checkInAttendee(@Body() data: { email: string }): Promise<void> {
+  checkInAttendee(@Body() data: { email: string }): Promise<Attendee> {
     return this.adminService.checkInAttendee(data.email);
   }
 
