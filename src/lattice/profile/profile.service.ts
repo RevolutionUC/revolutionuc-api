@@ -2,18 +2,20 @@ import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Not, Repository } from 'typeorm';
 import { validateOrReject } from 'class-validator';
+import { AuthService } from '../../auth/auth.service';
 import { Swipe } from '../entities/swipe.entity';
 import { Hacker, Tour } from '../entities/hacker.entity';
 import { ScoreService } from './score.service';
-import { ProfileDTO, ScoredProfileDTO } from './profile.dto';
+import { ProfileDTO, ScoredProfileDTO, ProfileWithEmail } from './profile.dto';
 
 @Injectable()
 export class ProfileService {
   constructor(
     @InjectRepository(Hacker) private hackerRepository: Repository<Hacker>,
     @InjectRepository(Swipe) private swipeRepository: Repository<Swipe>,
-    private scoreService: ScoreService
-  ) {}
+    private scoreService: ScoreService,
+    private authService: AuthService
+    ) {}
 
   private async getSwipes(from: Hacker): Promise<Array<Swipe>> {
     return this.swipeRepository.find({ from: from.id });
@@ -43,8 +45,8 @@ export class ProfileService {
     return scoredProfiles.reverse();
   }
 
-  async getProfile(userId: string): Promise<Hacker> {
-    const hacker = this.hackerRepository.findOne({ userId }, { select: [
+  async getProfile(userId: string): Promise<ProfileWithEmail> {
+    const hacker = await this.hackerRepository.findOne({ userId }, { select: [
       `name`,
       `skills`,
       `idea`,
@@ -56,12 +58,14 @@ export class ProfileService {
       `completedTours`
     ]});
 
+    const { username: email } = await this.authService.getUserDetails(userId, [`HACKER`]);
+
     if(!hacker) {
       Logger.error(`Hacker profile for user ${userId} not found`);
       throw new HttpException(`Hacker profile for user ${userId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    return hacker;
+    return { ...hacker, email };
   }
 
   async startProfile(userId: string): Promise<void> {
@@ -74,7 +78,7 @@ export class ProfileService {
     await this.hackerRepository.save(profile);
   }
 
-  async updateProfile(userId: string, updates: ProfileDTO): Promise<Hacker> {
+  async updateProfile(userId: string, updates: ProfileDTO): Promise<ProfileWithEmail> {
     const profile = await this.hackerRepository.findOne({ userId });
     if(!profile) {
       Logger.error(`Hacker profile for user ${userId} not found`);
@@ -105,10 +109,11 @@ export class ProfileService {
     return this.getProfile(userId);
   }
 
-  async setVisible(userId: string, visible: boolean): Promise<Hacker> {
+  async setVisible(userId: string, visible: boolean): Promise<ProfileWithEmail> {
     const profile = await this.hackerRepository.findOne({ userId });
     profile.visible = !!visible;
-    return this.hackerRepository.save(profile);
+    await this.hackerRepository.save(profile);
+    return this.getProfile(userId);
   }
 
   async completeTour(userId: string, tour: Tour): Promise<void> {

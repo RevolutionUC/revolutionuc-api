@@ -5,7 +5,7 @@ import { Registrant } from '../entities/registrant.entity';
 import { AdminController } from './admin.controller';
 import { AdminLoginController } from './login.controller';
 import { AdminService } from './admin.service';
-import { EmailModule } from 'src/email/email.module';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Registrant]), AuthModule, EmailModule],

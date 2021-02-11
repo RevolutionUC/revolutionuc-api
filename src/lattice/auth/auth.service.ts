@@ -50,7 +50,8 @@ export class LatticeAuthService {
       skills: [],
       idea: ``,
       lookingFor: [],
-      completedTours: []
+      completedTours: [],
+      discord: ``
     });
     await this.hackerRepository.save(hacker);
 

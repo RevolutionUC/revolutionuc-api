@@ -1,13 +1,13 @@
-import { Controller, Get, UseGuards, Post, Body, Delete, Param } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Controller, Get, Post, Body, Delete, Param } from '@nestjs/common';
 import { CurrentUserDto, CurrentUser } from '../../auth/currentuser';
 import { NotificationService } from './notification.service';
 import { NotificationDetailsDto } from './notification-details.dto';
 import { PushSubscription } from './push-subscription.dto';
 import { Subscription } from '../entities/subscription.entity';
+import { UseAuth } from '../../auth/auth.decorator';
 
 @Controller(`v2/lattice/notification`)
-@UseGuards(AuthGuard(`jwt`))
+@UseAuth([`HACKER`])
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 

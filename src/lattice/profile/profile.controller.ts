@@ -1,9 +1,9 @@
 import { Controller, Get, Put, Body, Post, Param } from '@nestjs/common';
 import { UseAuth } from '../../auth/auth.decorator';
 import { CurrentUserDto, CurrentUser } from '../../auth/currentuser';
-import { Tour, Hacker } from '../entities/hacker.entity';
+import { Tour } from '../entities/hacker.entity';
 import { ProfileService } from './profile.service';
-import { ProfileDTO, ScoredProfileDTO } from './profile.dto';
+import { ProfileDTO, ProfileWithEmail, ScoredProfileDTO } from './profile.dto';
 
 @Controller(`v2/lattice/profile`)
 @UseAuth([`HACKER`])
@@ -16,7 +16,7 @@ export class ProfileController {
   }
 
   @Get()
-  getProfile(@CurrentUser() user: CurrentUserDto): Promise<Hacker> {
+  getProfile(@CurrentUser() user: CurrentUserDto): Promise<ProfileWithEmail> {
     return this.profileService.getProfile(user.id);
   }
 
@@ -26,12 +26,12 @@ export class ProfileController {
   }
 
   @Put()
-  updateProfile(@CurrentUser() user: CurrentUserDto, @Body() newProfile: ProfileDTO): Promise<Hacker> {
+  updateProfile(@CurrentUser() user: CurrentUserDto, @Body() newProfile: ProfileDTO): Promise<ProfileWithEmail> {
     return this.profileService.updateProfile(user.id, newProfile);
   }
 
   @Put(`visible`)
-  setVisible(@CurrentUser() user: CurrentUserDto, @Body() body: { visible: boolean }): Promise<Hacker> {
+  setVisible(@CurrentUser() user: CurrentUserDto, @Body() body: { visible: boolean }): Promise<ProfileWithEmail> {
     return this.profileService.setVisible(user.id, body.visible);
   }
 

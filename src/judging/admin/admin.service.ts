@@ -115,9 +115,9 @@ export class AdminService {
     return this.configRepository.save(config);
   }
 
-  async generateGroups(): Promise<void> {
+  /* async generateGroups(): Promise<void> {
     
-  }
+  } */
 
   //#endregion
 

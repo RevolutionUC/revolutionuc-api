@@ -8,6 +8,7 @@ import { AdminModule } from './admin/admin.module';
 import { SudoModule } from './sudo/sudo.module';
 import { LatticeModule } from './lattice/lattice.module';
 import { EmailModule } from './email/email.module';
+import { AttendeeModule } from './attendee/attendee.module';
 
 @Module({
   imports: [
@@ -17,13 +18,16 @@ import { EmailModule } from './email/email.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: environment.database_config.synchronize,
       logging: environment.database_config.logging,
-      ssl: true,
+      ssl: {
+        rejectUnauthorized: false
+      },
     }),
     TypeOrmModule.forFeature([Registrant]),
     EmailModule,
     AdminModule,
     SudoModule,
-    LatticeModule
+    LatticeModule,
+    AttendeeModule
   ],
   controllers: [AppController],
   providers: [AppService],

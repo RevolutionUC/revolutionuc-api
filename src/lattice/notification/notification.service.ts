@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { setVapidDetails, sendNotification } from 'web-push';
+import { AuthService } from '../../auth/auth.service';
 import { Notification } from '../entities/notification.entity';
 import { Hacker } from '../entities/hacker.entity';
 import { NotificationDetailsDto } from './notification-details.dto';
@@ -16,6 +17,7 @@ setVapidDetails(`https://revolutionuc.com`, publicKey, privateKey);
 @Injectable()
 export class NotificationService {
   constructor(
+    private authService: AuthService,
     @InjectRepository(Hacker) private hackerRepository: Repository<Hacker>,
     @InjectRepository(Notification) private notificationRepository: Repository<Notification>,
     @InjectRepository(Subscription) private subscriptionRepository: Repository<Subscription>
@@ -43,16 +45,21 @@ export class NotificationService {
   }
 
   private async hydrateNotification(notification: Notification): Promise<NotificationDetailsDto> {
-    const to = await this.hackerRepository.findOne(notification.to, { select: [
+    const hacker = await this.hackerRepository.findOne(notification.to, { select: [
+      `userId`,
       `name`,
       `skills`,
       `idea`,
       `lookingFor`,
       `started`,
       `completed`,
-      `visible`
+      `visible`,
+      `discord`
     ]});
-    return { notification, to };
+
+    const user = await this.authService.getUserDetails(hacker.userId, [`HACKER`]);
+
+    return { notification, to: { ...hacker, email: user.username } };
   }
 
   private async sendPushNotification(sub: PushSubscription, data: string): Promise<unknown> {

@@ -70,6 +70,11 @@ export class AdminController {
     return this.adminService.checkInRegistrant(uuid);
   }
 
+  @Post('registrants/checkin')
+  checkInRegistrantByEmail(@Query('email') email: string): Promise<Registrant> {
+    return this.adminService.checkInRegistrantByEmail(email);
+  }
+
   @Post('registrants/email')
   async sendEmail(@Body() payload: SendEmailDto) {
     return this.emailService.sendEmail(payload);

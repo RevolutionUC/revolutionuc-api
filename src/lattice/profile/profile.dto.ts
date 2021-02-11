@@ -12,3 +12,7 @@ export class ProfileDTO {
 export class ScoredProfileDTO extends ProfileDTO {
   score: number
 }
+
+export class ProfileWithEmail extends ProfileDTO {
+  email: string
+}

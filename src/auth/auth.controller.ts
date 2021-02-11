@@ -12,6 +12,6 @@ export class AuthController {
   @Get('/me')
   @UseGuards(RoleGuard)
   getUserDetails(): Promise<User> {
-    return this.authService.getUserDetails(``);
+    return this.authService.getUserDetails(``, []);
   }
 }
