@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Judge } from '../entities/judge.entity';
-import { Project } from '../entities/project.entity';
 import { Submission } from '../entities/submission.entity';
 
 @Injectable()
@@ -13,10 +12,10 @@ export class JudgeService {
   ) {}
 
   async getInfo(userId: string): Promise<Judge> {
-    return this.judgeRepository.findOne({ userId });
+    return this.judgeRepository.findOneOrFail({ userId });
   }
 
-  async listSubmissions(userId: string): Promise<Array<Submission>> {
+  async getSubmissions(userId: string): Promise<Array<Submission>> {
     const judge = await this.judgeRepository.findOneOrFail({
       where: { userId },
       relations: [`group`, `group.submissions`, `group.submissions.project`]
@@ -24,7 +23,7 @@ export class JudgeService {
     return judge.group.submissions;
   }
 
-  async rankSubmission(userId: string, rankings: Array<string>): Promise<void> {
+  async rankSubmissions(userId: string, rankings: Array<string>): Promise<void> {
     const judge = await this.judgeRepository.findOneOrFail({
       where: { userId, isFinal: false },
       relations: [`group`, `group.submissions`]

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import csvToJson from 'csvjson-csv2json';
 import { JudgeDto } from '../dtos/judge.dto';
 import { ProjectDto } from '../dtos/project.dto';
 import { Judge } from '../entities/judge.entity';
@@ -23,45 +24,83 @@ export class AdminService {
     @InjectRepository(Submission) private readonly submissionRepository: Repository<Submission>
   ) {}
 
-  // judges
+  //#region categories
+  async getCategories(): Promise<Array<Category>> {
+    return this.categoryRepository.find();
+  }
+
+  async createCategory(name: string): Promise<Category> {
+    const category = this.categoryRepository.create({ name });
+    return this.categoryRepository.save(category);
+  }
+
+  //#endregion
+
+  //#region judges
   async getJudges(): Promise<Array<Judge>> {
     return this.judgeRepository.find();
   }
 
-  async createJudge({ name, email }: JudgeDto): Promise<Judge> {
-    const judge = this.judgeRepository.create({ name, email });
+  async createJudge({ name, email, category: categoryName = `General` }: JudgeDto): Promise<Judge> {
+    const category = await this.categoryRepository.findOneOrFail({ name: categoryName });
+    const judge = this.judgeRepository.create({ name, email, category });
     return this.judgeRepository.save(judge);
   }
 
-  async assignJudgeToCategory(judgeId: string, category: string): Promise<Judge> {};
+  async uploadJudgesCsv(file: Express.Multer.File): Promise<Array<Judge>> {
+    const csvString = file.buffer.toString();
+    const json: JudgeDto[] = csvToJson(csvString);
+    return Promise.all(json.map(judge => this.createJudge(judge)));
+  }
+
+  async assignJudgeToCategory(judgeId: string, categoryId: string): Promise<Judge> {
+    const category = await this.categoryRepository.findOneOrFail(categoryId);
+    const judge = await this.judgeRepository.findOneOrFail(judgeId);
+
+    judge.category = category;
+
+    return this.judgeRepository.save(judge);
+  };
 
   async deleteJudge(id: string): Promise<void> {
     await this.judgeRepository.delete(id);
-    return;
   }
 
-  // projects
-  private async createProject(data: ProjectDto): Promise<Project> {
+  //#endregion
+
+  //#region projects
+  private createSubmissionsForProject({ categories: categoryNames, ...data }: ProjectDto, allCategories: Array<Category>): Array<Submission> {
     const project = this.projectRepository.create(data);
-    return this.projectRepository.save(project);
+    const categories = allCategories.filter(category => categoryNames.includes(category.name));
+    const submissions = categories.map(category => this.submissionRepository.create({ project, category }));
+    return submissions;
   }
 
-  private async createProjects(data: Array<ProjectDto>): Promise<Array<Project>> {
-    return Promise.all(data.map(project => this.createProject(project)));
+  private async createSubmissions(data: Array<ProjectDto>, allCategories: Array<Category>): Promise<Array<Submission>> {
+    const allSubmissions: Array<Submission> = [];
+
+    data.forEach(
+      project => allSubmissions.push(...this.createSubmissionsForProject(project, allCategories))
+    );
+
+    return this.submissionRepository.save(allSubmissions);
   }
 
-  async uploadCsv(file: Express.Multer.File): Promise<Array<Project>> {
+  async uploadDevpostCsv(file: Express.Multer.File): Promise<Array<Submission>> {
     const csvString = file.buffer.toString();
-    const config = await this.configRepository.findOne({ year: 2021 });
+    const config = await this.configRepository.findOneOrFail({ year: 2021 });
+    const allCategories = await this.categoryRepository.find();
     const projects = devpostParser(csvString, config);
-    return this.createProjects(projects);
+    return this.createSubmissions(projects, allCategories);
   }
 
-  async listProjects(): Promise<Array<Project>> {
-    return this.projectRepository.find();
+  async getProjects(): Promise<Array<Project>> {
+    return this.projectRepository.find({ relations: [`submissions`, `submissions.category`] });
   }
 
-  // config
+  //#endregion
+
+  //#region config
   async updateConfig(data: JudgingConfigDto): Promise<JudgingConfig> {
     const existingConfig = await this.configRepository.findOne({ year: data.year });
 
@@ -76,7 +115,13 @@ export class AdminService {
     return this.configRepository.save(config);
   }
 
-  // prizing
+  async generateGroups(): Promise<void> {
+    
+  }
+
+  //#endregion
+
+  //#region prizing
   private async scoreSubmissions(): Promise<void> {
     const submissions = await this.submissionRepository.find();
     const judges = await this.judgeRepository.find();
@@ -96,4 +141,6 @@ export class AdminService {
 
     await Promise.all(jobs);
   }
+
+  //#endregion
 }

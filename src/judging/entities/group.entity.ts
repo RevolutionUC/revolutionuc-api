@@ -1,9 +1,11 @@
+import { IsNotEmpty, IsString } from 'class-validator';
 import {
   Entity,
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToMany,
-  JoinTable
+  JoinTable,
+  Column
 } from 'typeorm';
 import { Judge } from './judge.entity';
 import { Submission } from './submission.entity';
@@ -12,6 +14,11 @@ import { Submission } from './submission.entity';
 export class Group {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @Column()
+  name: string;
 
   @OneToMany(() => Judge, judge => judge.category)
   judges: Judge[]
