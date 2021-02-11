@@ -30,5 +30,9 @@ export class Attendee {
 
   @IsBoolean()
   @Column({ default: false })
+  isMinor: boolean;
+
+  @IsBoolean()
+  @Column({ default: false })
   checkedIn: boolean;
 }

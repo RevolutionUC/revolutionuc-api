@@ -31,9 +31,15 @@ export class AttendeeService {
 
   async checkInAttendee(email: string): Promise<Attendee> {
     const attendee = await this.attendeeRepository.findOne({ email });
+
     if (!attendee) {
       throw new HttpException(`Invalid email`, HttpStatus.NOT_FOUND);
     }
+
+    if(attendee.checkedIn) {
+      throw new HttpException(`Already checked in`, HttpStatus.FORBIDDEN);
+    }
+
     attendee.checkedIn = true;
     return this.attendeeRepository.save(attendee);
   }
