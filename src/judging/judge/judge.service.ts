@@ -8,11 +8,13 @@ import { Submission } from '../entities/submission.entity';
 export class JudgeService {
   constructor(
     @InjectRepository(Judge) private readonly judgeRepository: Repository<Judge>,
-    @InjectRepository(Submission) private readonly submissionRepository: Repository<Submission>
   ) {}
 
-  async getInfo(userId: string): Promise<Judge> {
-    return this.judgeRepository.findOneOrFail({ userId });
+  async getJudgeDetails(userId: string): Promise<Judge> {
+    return this.judgeRepository.findOneOrFail({
+      where: { userId },
+      relations: [`category`, `group`, `group.submissions`, `group.submissions.project`]
+    });
   }
 
   async getSubmissions(userId: string): Promise<Array<Submission>> {
@@ -23,7 +25,7 @@ export class JudgeService {
     return judge.group.submissions;
   }
 
-  async rankSubmissions(userId: string, rankings: Array<string>): Promise<void> {
+  async rankSubmissions(userId: string, rankings: Array<string>): Promise<Judge> {
     const judge = await this.judgeRepository.findOneOrFail({
       where: { userId, isFinal: false },
       relations: [`group`, `group.submissions`]
@@ -35,7 +37,7 @@ export class JudgeService {
 
     judge.rankings = submissions.map(({ id }) => id);
 
-    await this.judgeRepository.save(judge);
+    return this.judgeRepository.save(judge);
   }
 
   async submitRanking(userId: string): Promise<void> {

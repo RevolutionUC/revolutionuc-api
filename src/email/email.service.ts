@@ -8,7 +8,7 @@ import { environment } from '../environment';
 import { AuthService } from '../auth/auth.service';
 import { Judge } from '../judging/entities/judge.entity';
 
-export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4' | 'infoEmailJudges1' | 'infoEmailJudges2' | 'waiverUpdate' | 'latticeResetPassword';
+export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4' | 'infoEmailJudges' | 'waiverUpdate' | 'latticeResetPassword';
 
 export class SendEmailDto {
   template: EMAIL;
@@ -69,12 +69,7 @@ export class EmailService {
       firstName: '',
       registrantId: ''
     },
-    infoEmailJudges1: {
-      subject: `RevolutionUC Judging`,
-      shortDescription: `Thank you for signing up to judge at RevolutionUC. Here is some important information regarding the event.`,
-      firstName: ``
-    },
-    infoEmailJudges2: {
+    infoEmailJudges: {
       subject: `RevolutionUC Judging`,
       shortDescription: `Thank you for signing up to judge at RevolutionUC. Here is some important information regarding the event.`,
       firstName: ``,
@@ -122,7 +117,7 @@ export class EmailService {
         emailData.yesConfirmationUrl = yesConfirmationUrl;
         emailData.noConfirmationUrl = noConfirmationUrl;
       }
-      if(template === 'infoEmailJudges2') {
+      if(template === 'infoEmailJudges') {
         const judgingLoginLink = await this.getJudgingLoginLink(recipentEmail);
         emailData.judgingLoginLink = judgingLoginLink;
       }

@@ -47,6 +47,6 @@ export class Project {
   @Column({ nullable: true })
   disqualified?: string;
 
-  @OneToMany(() => Submission, score => score.project, { cascade: true })
+  @OneToMany(() => Submission, score => score.project)
   submissions: Submission[]
 }

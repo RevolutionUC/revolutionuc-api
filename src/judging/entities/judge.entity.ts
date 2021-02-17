@@ -31,7 +31,7 @@ export class Judge {
   @IsArray()
   @ArrayMaxSize(5)
   @ArrayUnique()
-  @Column('text', { array: true })
+  @Column('text', { array: true, nullable: true })
   rankings: Array<string>
 
   @IsBoolean()
