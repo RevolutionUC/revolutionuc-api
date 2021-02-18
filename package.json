@@ -34,6 +34,7 @@
     "csvjson-csv2json": "^5.0.6",
     "dotenv": "^8.2.0",
     "fs-extra": "^9.0.1",
+    "military-speak": "0.0.2",
     "multer-s3": "^2.9.0",
     "nestjs-typeorm-paginate": "^2.2.3",
     "passport": "^0.4.1",
