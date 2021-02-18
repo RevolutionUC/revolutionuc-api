@@ -12,6 +12,16 @@ export class AttendeeService {
     private readonly attendeeRepository: Repository<Attendee>,
   ) {}
 
+  async createAttendee(data: AttendeeDto): Promise<Attendee> {
+    const existing = await this.attendeeRepository.findOne({ email: data.email });
+    if(existing) {
+      throw new HttpException(`Attendee with this email already exists`, HttpStatus.BAD_REQUEST);
+    }
+
+    const attendee = this.attendeeRepository.create(data);
+    return this.attendeeRepository.save(attendee);
+  }
+
   async createAttendees(file: Express.Multer.File): Promise<Array<Attendee>> {
     const csv = file.buffer.toString();
     const json: AttendeeDto[] = csvToJson(csv);
