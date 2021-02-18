@@ -26,22 +26,12 @@ export class Project {
   @IsNotEmpty()
   @IsString()
   @Column()
-  tagline: string;
+  submitter: string;
 
   @IsNotEmpty()
-  @IsString()
-  @Column()
-  description: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @Column()
-  submitterEmail: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @Column()
-  submitterName: string;
+  @IsString({ each: true })
+  @Column(`text`, { array: true, default: `{}` })
+  team: string[];
 
   @IsString()
   @Column({ nullable: true })

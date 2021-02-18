@@ -2,21 +2,22 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Judge } from '../entities/judge.entity';
-import { Project } from '../entities/project.entity';
 import { Submission } from '../entities/submission.entity';
 
 @Injectable()
 export class JudgeService {
   constructor(
     @InjectRepository(Judge) private readonly judgeRepository: Repository<Judge>,
-    @InjectRepository(Submission) private readonly submissionRepository: Repository<Submission>
   ) {}
 
-  async getInfo(userId: string): Promise<Judge> {
-    return this.judgeRepository.findOne({ userId });
+  async getJudgeDetails(userId: string): Promise<Judge> {
+    return this.judgeRepository.findOneOrFail({
+      where: { userId },
+      relations: [`category`, `group`, `group.submissions`, `group.submissions.project`]
+    });
   }
 
-  async listSubmissions(userId: string): Promise<Array<Submission>> {
+  async getSubmissions(userId: string): Promise<Array<Submission>> {
     const judge = await this.judgeRepository.findOneOrFail({
       where: { userId },
       relations: [`group`, `group.submissions`, `group.submissions.project`]
@@ -24,7 +25,7 @@ export class JudgeService {
     return judge.group.submissions;
   }
 
-  async rankSubmission(userId: string, rankings: Array<string>): Promise<void> {
+  async rankSubmissions(userId: string, rankings: Array<string>): Promise<Judge> {
     const judge = await this.judgeRepository.findOneOrFail({
       where: { userId, isFinal: false },
       relations: [`group`, `group.submissions`]
@@ -36,7 +37,7 @@ export class JudgeService {
 
     judge.rankings = submissions.map(({ id }) => id);
 
-    await this.judgeRepository.save(judge);
+    return this.judgeRepository.save(judge);
   }
 
   async submitRanking(userId: string): Promise<void> {

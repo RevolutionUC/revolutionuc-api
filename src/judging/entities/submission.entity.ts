@@ -17,7 +17,7 @@ export class Submission {
   @Column({ default: 0 })
   score: number;
 
-  @ManyToOne(() => Project, project => project.submissions)
+  @ManyToOne(() => Project, project => project.submissions, { cascade: true })
   project: Project
 
   @ManyToOne(() => Category, cateogry => cateogry.submissions)
