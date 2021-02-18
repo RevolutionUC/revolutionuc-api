@@ -36,22 +36,6 @@ export class JudgingConfig {
 
   @IsString()
   @Column()
-  taglineColumn: string
-
-  @IsString()
-  @Column()
-  descriptionColumn: string
-
-  @IsString()
-  @Column()
-  submitterEmailColumn: string
-
-  @IsString()
-  @Column()
-  submitterNameColumn: string
-
-  @IsString()
-  @Column()
   categoryColumn: string
 
   @IsString()

@@ -160,7 +160,8 @@ export class AdminService {
     Logger.log(`initiateAssignment() created ${assignments.length} groups`);
 
     const groups = this.groupRepository.create(assignments);
-    return this.groupRepository.save(groups);
+    await this.groupRepository.save(groups);
+    return this.getGroups();
   }
 
   //#endregion

@@ -5,10 +5,6 @@ export class JudgingConfigDto {
   generalGroupsPerProject: number
   titleColumn: string
   urlColumn: string
-  taglineColumn: string
-  descriptionColumn: string
-  submitterEmailColumn: string
-  submitterNameColumn: string
   categoryColumn: string
   tableNumberColumn: string
 }
