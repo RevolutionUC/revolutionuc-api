@@ -8,7 +8,7 @@ import { environment } from '../environment';
 import { AuthService } from '../auth/auth.service';
 import { Judge } from '../judging/entities/judge.entity';
 
-export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4' | 'infoEmailJudges' | 'waiverUpdate' | 'latticeResetPassword';
+export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4' | 'infoEmailMinors' | 'infoEmailJudges' | 'waiverUpdate' | 'latticeResetPassword';
 
 export class SendEmailDto {
   template: EMAIL;
@@ -68,6 +68,11 @@ export class EmailService {
       shortDescription: `RevolutionUC is here. Here's some important information for the event`,
       firstName: '',
       registrantId: ''
+    },
+    infoEmailMinors: {
+      subject: 'Important information regarding RevolutionUC!',
+      shortDescription: `You registered for RevolutionUC as a minor. Here's some important information for you.`,
+      firstName: ''
     },
     infoEmailJudges: {
       subject: `RevolutionUC Judging`,
