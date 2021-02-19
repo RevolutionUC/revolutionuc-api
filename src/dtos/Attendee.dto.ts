@@ -4,4 +4,5 @@ export class AttendeeDto {
   name: string;
   email: string;
   role: AttendeeRole;
+  isMinor: boolean;
 }

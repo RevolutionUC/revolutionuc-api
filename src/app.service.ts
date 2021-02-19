@@ -89,15 +89,16 @@ export class AppService {
         throw new HttpException('Error while generating email', 500);
       });
 
-    const attendee = this.attendeeRepository.create({
-      email: registrant.email,
-      name: `${registrant.firstName} ${registrant.lastName}`,
-      role: `HACKER`,
-      isMinor: getAge(registrant.dateOfBirth) < 18
-    });
-    this.attendeeRepository.save(attendee).then(() => {
-      console.log(`Created attendee for ${registrant.email}`);
-    });
+    if(getAge(registrant.dateOfBirth) >= 18) {
+      const attendee = this.attendeeRepository.create({
+        email: registrant.email,
+        name: `${registrant.firstName} ${registrant.lastName}`,
+        role: `HACKER`
+      });
+      this.attendeeRepository.save(attendee).then(() => {
+        console.log(`Created attendee for ${registrant.email}`);
+      });
+    }
 
     payload.uploadKey = encrypted;
     payload.isWaitlisted = user.isWaitlisted;
