@@ -10,6 +10,10 @@ import { Judge } from '../judging/entities/judge.entity';
 
 export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4' | 'infoEmailMinors' | 'infoEmailJudges' | 'waiverUpdate' | 'latticeResetPassword';
 
+const DISCORD_INVITE = process.env.DISCORD_INVITE;
+const HOPIN_INVITE = process.env.HOPIN_INVITE;
+const HOPIN_INVITE_MINOR = process.env.HOPIN_INVITE_MINOR;
+
 export class SendEmailDto {
   template: EMAIL;
   recipent: string;
@@ -27,6 +31,8 @@ class EmailDataDto {
   offWaitlist?: boolean
   judgingLoginLink?: string
   resetToken?: string
+  discordLink?: string
+  hopinLink?: string
 }
 
 @Injectable()
@@ -67,7 +73,9 @@ export class EmailService {
       subject: 'RevolutionUC is tomorrow!',
       shortDescription: `RevolutionUC is here. Here's some important information for the event`,
       firstName: '',
-      registrantId: ''
+      registrantId: '',
+      discordLink: ``,
+      hopinLink: ``
     },
     infoEmailMinors: {
       subject: 'Important information regarding RevolutionUC!',
@@ -112,7 +120,25 @@ export class EmailService {
     return `https://judging.revolutionuc.com/login?token=${token}`;
   }
 
-  private async sendHelper(template: EMAIL, emailData: EmailDataDto, recipentEmail: string, dryRun: boolean) {
+  private getAge(birthDateString: string): number {
+    const today = new Date();
+    const birthDate = new Date(birthDateString);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  }
+
+  private getInviteLinks(registrant: Registrant) {
+    const discordLink = DISCORD_INVITE;
+    const isMinor = this.getAge(registrant.dateOfBirth) < 18;
+    const hopinLink = isMinor ? HOPIN_INVITE_MINOR : HOPIN_INVITE;
+    return { discordLink, hopinLink };
+  }
+
+  private async sendHelper(template: EMAIL, emailData: EmailDataDto, recipentEmail: string, dryRun: boolean, reg?: Registrant) {
     if (dryRun) {
       console.log({ template, emailData, recipentEmail });
       return;
@@ -125,6 +151,11 @@ export class EmailService {
       if(template === 'infoEmailJudges') {
         const judgingLoginLink = await this.getJudgingLoginLink(recipentEmail);
         emailData.judgingLoginLink = judgingLoginLink;
+      }
+      if(template === 'infoEmail4') {
+        const { discordLink, hopinLink } = this.getInviteLinks(reg);
+        emailData.discordLink = discordLink;
+        emailData.hopinLink = hopinLink;
       }
       return build(template, emailData)
         .then(html => {
@@ -160,7 +191,7 @@ export class EmailService {
         try {
           const emailDataCopy = { ...emailData, firstName: reg.firstName, registrantId: reg.id };
 
-          await this.sendHelper(payload.template, emailDataCopy, reg.email, payload.dryRun);
+          await this.sendHelper(payload.template, emailDataCopy, reg.email, payload.dryRun, reg);
 
           if (!payload.dryRun) {
             if(!reg.emailsReceived.includes(payload.template)) {
