@@ -54,6 +54,11 @@ export class AdminController {
     return this.adminService.getProjects();
   }
 
+  @Put(`project/:id/disqualified`)
+  qualifyProject(@Param(`id`) id: string, @Body() data: { disqualified?: string }): Promise<void> {
+    return this.adminService.qualifyProject(id, data.disqualified);
+  }
+
   @Post(`devpost`)
   @UseInterceptors(FileInterceptor('file'))
   uploadDevpostCsv(@UploadedFile() file: Express.Multer.File): Promise<Array<Submission>> {

@@ -116,6 +116,13 @@ export class AdminService {
     return this.projectRepository.find({ relations: [`submissions`, `submissions.category`] });
   }
 
+  async qualifyProject(id: string, disqualified?: string): Promise<void> {
+    const project = await this.projectRepository.findOne(id);
+    Logger.log(`Qualifyin project ${project.title} with ${disqualified}`);
+    project.disqualified = disqualified || null;
+    await this.projectRepository.save(project);
+  }
+
   //#endregion
 
   //#region config
