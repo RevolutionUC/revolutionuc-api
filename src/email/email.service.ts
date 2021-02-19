@@ -220,7 +220,7 @@ export class EmailService {
 
           emailData.resetToken = payload.resetToken;
 
-          await this.sendHelper(payload.template, emailData, registrant.email, payload.dryRun);
+          await this.sendHelper(payload.template, emailData, registrant.email, payload.dryRun, registrant);
           if (!payload.dryRun) {
             if(!registrant.emailsReceived.includes(payload.template)) {
               registrant.emailsReceived.push(payload.template);
