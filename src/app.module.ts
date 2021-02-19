@@ -10,6 +10,7 @@ import { LatticeModule } from './lattice/lattice.module';
 import { EmailModule } from './email/email.module';
 import { AttendeeModule } from './attendee/attendee.module';
 import { JudgingModule } from './judging/judging.module';
+import { Attendee } from './entities/attendee.entity';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { JudgingModule } from './judging/judging.module';
         rejectUnauthorized: false
       },
     }),
-    TypeOrmModule.forFeature([Registrant]),
+    TypeOrmModule.forFeature([Registrant, Attendee]),
     EmailModule,
     AdminModule,
     SudoModule,

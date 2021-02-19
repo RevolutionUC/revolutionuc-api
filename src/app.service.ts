@@ -14,13 +14,26 @@ import { S3 } from 'aws-sdk';
 import { StatsDto } from './dtos/Stats.dto';
 import { EmailService, EMAIL } from './email/email.service';
 import { build, send } from 'revolutionuc-emails';
+import { Attendee } from './entities/attendee.entity';
 
 const currentInfoEmail: EMAIL = environment.CURRENT_INFO_EMAIL as EMAIL;
+
+function getAge(birthDateString: string) {
+  const today = new Date();
+  const birthDate = new Date(birthDateString);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+};
 
 @Injectable()
 export class AppService {
   constructor(
     @InjectRepository(Registrant) private readonly registrantRepository: Repository<Registrant>,
+    @InjectRepository(Attendee) private readonly attendeeRepository: Repository<Attendee>,
     private emailService: EmailService
   ) {}
 
@@ -75,6 +88,17 @@ export class AppService {
         console.log('Email error:', e);
         throw new HttpException('Error while generating email', 500);
       });
+
+    const attendee = this.attendeeRepository.create({
+      email: registrant.email,
+      name: `${registrant.firstName} ${registrant.lastName}`,
+      role: `HACKER`,
+      isMinor: getAge(registrant.dateOfBirth) < 18
+    });
+    this.attendeeRepository.save(attendee).then(() => {
+      console.log(`Created attendee for ${registrant.email}`);
+    });
+
     payload.uploadKey = encrypted;
     payload.isWaitlisted = user.isWaitlisted;
     return payload;
