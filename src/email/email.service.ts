@@ -8,7 +8,7 @@ import { environment } from '../environment';
 import { AuthService } from '../auth/auth.service';
 import { Judge } from '../judging/entities/judge.entity';
 
-export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4' | 'infoEmailMinors' | 'infoEmailJudges' | 'waiverUpdate' | 'latticeResetPassword';
+export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4' | 'infoEmailMinors' | 'infoEmailJudges' | 'waiverUpdate' | 'latticeResetPassword' | 'submissionReminder';
 
 const DISCORD_INVITE = process.env.DISCORD_INVITE;
 const HOPIN_INVITE = process.env.HOPIN_INVITE;
@@ -98,7 +98,12 @@ export class EmailService {
       shortDescription: `Reset your Lattice password, RevolutionUC Hacker matching app.`,
       firstName: ``,
       resetToken: ``
-    }
+    },
+    submissionReminder: {
+      subject: `Hacking time is about to end!`,
+      shortDescription: `Thank you for participating in RevolutionUC. Please submit your project to our Devpost.`,
+      firstName: ``
+    },
   }
 
   private getConfirmationLinks(email: string) {
