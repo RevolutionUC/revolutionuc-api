@@ -8,7 +8,19 @@ import { environment } from '../environment';
 import { AuthService } from '../auth/auth.service';
 import { Judge } from '../judging/entities/judge.entity';
 
-export type EMAIL = 'confirmAttendance' | 'infoEmail1' | 'infoEmail2' | 'infoEmail3' | 'infoEmail4' | 'infoEmailMinors' | 'infoEmailJudges' | 'waiverUpdate' | 'latticeResetPassword' | 'submissionReminder';
+export type EMAIL = 'confirmAttendance' |
+                    'infoEmail1' |
+                    'infoEmail2' |
+                    'infoEmail3' |
+                    'infoEmail4' |
+                    'infoEmailMinors' |
+                    'infoEmailJudges' |
+                    'waiverUpdate' |
+                    'latticeResetPassword' |
+                    'submissionReminder' |
+                    'postEventEmail' |
+                    'postEventJudgeEmail' |
+                    'postEventSurveyReminder';
 
 const DISCORD_INVITE = process.env.DISCORD_INVITE;
 const HOPIN_INVITE = process.env.HOPIN_INVITE;
@@ -104,6 +116,21 @@ export class EmailService {
       shortDescription: `Thank you for participating in RevolutionUC. Please submit your project to our Devpost.`,
       firstName: ``
     },
+    postEventEmail: {
+      subject: `Thank you for participating in RevolutionUC 2021!`,
+      shortDescription: `Thank you for participating in RevolutionUC. Below is important information on the post event survey and prize information.`,
+      firstName: ``
+    },
+    postEventJudgeEmail: {
+      subject: `Thank you for participating in RevolutionUC 2021!`,
+      shortDescription: `Thank you for participating in RevolutionUC. Below is important information on the post event survey and prize information.`,
+      firstName: ``
+    },
+    postEventSurveyReminder: {
+      subject: `We would love your feedback on your experience at RevolutionUC!`,
+      shortDescription: `Thank you for participating in RevolutionUC. We would love your feedback on your experience at RevolutionUC.`,
+      firstName: ``
+    },
   }
 
   private getConfirmationLinks(email: string) {
@@ -162,6 +189,9 @@ export class EmailService {
         emailData.discordLink = discordLink;
         emailData.hopinLink = hopinLink;
       }
+      if(template.includes('post')) {
+        if(!reg?.checkedIn) return;
+      }
       return build(template, emailData)
         .then(html => {
           return send(
@@ -212,7 +242,7 @@ export class EmailService {
       });
     } else {
       try {
-        if(payload.template.includes(`Judges`)) {
+        if(payload.template.includes(`Judge`)) {
           // email meant for judge
           const judge = await this.judgeRepository.findOneOrFail({ email: payload.recipent });
           emailData.firstName = judge.name;
