@@ -27,7 +27,7 @@
     "@nestjs/platform-express": "^7.6.11",
     "@nestjs/swagger": "^4.7.12",
     "@nestjs/typeorm": "^7.1.5",
-    "aws-sdk": "^2.797.0",
+    "aws-sdk": "^2.814.0",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
