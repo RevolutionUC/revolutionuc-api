@@ -241,7 +241,7 @@ export class AppService {
           { confirmedAttendance1: payload.isConfirmed.toString() }
         );
 
-        if (payload.isConfirmed) {
+        if (currentInfoEmail == 'confirmAttendance') {
           this.emailService.sendEmail({
             template: currentInfoEmail,
             recipent: email,
