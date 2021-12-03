@@ -1,10 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Raw } from 'typeorm';
-import {
-  RegistrantDto,
-  VerifyAttendanceDto,
-} from './dtos/Registrant.dto';
+import { RegistrantDto, VerifyAttendanceDto } from './dtos/Registrant.dto';
 import { Registrant, UploadKeyDto } from './entities/registrant.entity';
 import { environment } from './environment';
 import * as crypto from 'crypto';
@@ -27,14 +24,16 @@ function getAge(birthDateString: string) {
     age--;
   }
   return age;
-};
+}
 
 @Injectable()
 export class AppService {
   constructor(
-    @InjectRepository(Registrant) private readonly registrantRepository: Repository<Registrant>,
-    @InjectRepository(Attendee) private readonly attendeeRepository: Repository<Attendee>,
-    private emailService: EmailService
+    @InjectRepository(Registrant)
+    private readonly registrantRepository: Repository<Registrant>,
+    @InjectRepository(Attendee)
+    private readonly attendeeRepository: Repository<Attendee>,
+    private emailService: EmailService,
   ) {}
 
   private userCryptoAlgorithm = 'aes-256-ctr';
@@ -47,7 +46,10 @@ export class AppService {
 
   async register(registrant: RegistrantDto): Promise<UploadKeyDto> {
     let user: Registrant;
-    if ((await this.getRegistrantsConfirmedCount()) >= environment.WAITLIST_THRESHOLD) {
+    if (
+      (await this.getRegistrantsConfirmedCount()) >=
+      environment.WAITLIST_THRESHOLD
+    ) {
       registrant.isWaitlisted = true;
     }
     try {
@@ -89,11 +91,11 @@ export class AppService {
         throw new HttpException('Error while generating email', 500);
       });
 
-    if(getAge(registrant.dateOfBirth) >= 18) {
+    if (getAge(registrant.dateOfBirth) >= 18) {
       const attendee = this.attendeeRepository.create({
         email: registrant.email,
         name: `${registrant.firstName} ${registrant.lastName}`,
-        role: `HACKER`
+        role: `HACKER`,
       });
       this.attendeeRepository.save(attendee).then(() => {
         console.log(`Created attendee for ${registrant.email}`);
@@ -141,8 +143,11 @@ export class AppService {
     let email = decipher.update(encryptedKey, 'hex', 'utf8');
     email += decipher.final('utf8');
     try {
-      this.registrantRepository.update({ email: email }, { emailVerfied: true });
-      if(currentInfoEmail !== 'infoEmail1') {
+      this.registrantRepository.update(
+        { email: email },
+        { emailVerfied: true },
+      );
+      if (currentInfoEmail !== 'infoEmail1') {
         this.emailService.sendEmail({
           template: currentInfoEmail,
           recipent: email,
@@ -224,12 +229,12 @@ export class AppService {
     );
     let email = decipher.update(payload.uuid, 'hex', 'utf8');
     email += decipher.final('utf8');
-    if ((await this.getRegistrantsConfirmedCount()) >= environment.WAITLIST_THRESHOLD) {
+    if (
+      (await this.getRegistrantsConfirmedCount()) >=
+      environment.WAITLIST_THRESHOLD
+    ) {
       try {
-        this.registrantRepository.update(
-          { email },
-          { isWaitlisted: true },
-        );
+        this.registrantRepository.update({ email }, { isWaitlisted: true });
       } catch (error) {
         throw new HttpException(error, 500);
       }
@@ -238,10 +243,10 @@ export class AppService {
       try {
         await this.registrantRepository.update(
           { email },
-          { confirmedAttendance1: payload.isConfirmed.toString() }
+          { confirmedAttendance1: payload.isConfirmed.toString() },
         );
 
-        if (currentInfoEmail == 'confirmAttendance') {
+        if (payload.isConfirmed) {
           this.emailService.sendEmail({
             template: currentInfoEmail,
             recipent: email,
