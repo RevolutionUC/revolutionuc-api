@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import {
-  IsDefined,
+  IsDefined, IsBoolean,
   IsArray, ArrayMaxSize, ArrayUnique,
   IsString, MaxLength
 } from 'class-validator';
@@ -49,6 +49,11 @@ export class Hacker {
   @IsDefined()
   @IsString()
   discord: string
+
+  @Column({ default: false })
+  @IsDefined()
+  @IsBoolean()
+  inPerson: boolean
 
   @Column({ default: false })
   started: boolean

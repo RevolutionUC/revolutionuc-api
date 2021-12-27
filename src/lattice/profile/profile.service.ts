@@ -52,6 +52,7 @@ export class ProfileService {
       `idea`,
       `lookingFor`,
       `discord`,
+      `inPerson`,
       `started`,
       `completed`,
       `visible`,
