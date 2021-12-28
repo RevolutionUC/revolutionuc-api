@@ -1,15 +1,17 @@
-import { Controller, Get, Post, Body, Delete, Param } from '@nestjs/common';
-import { CurrentUserDto, CurrentUser } from '../../auth/currentuser';
-import { NotificationService } from './notification.service';
-import { NotificationDetailsDto } from './notification-details.dto';
-import { PushSubscription } from './push-subscription.dto';
-import { Subscription } from '../entities/subscription.entity';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { UseAuth } from '../../auth/auth.decorator';
+import { CurrentUser, CurrentUserDto } from '../../auth/currentuser';
+import { Subscription } from '../entities/subscription.entity';
+import { NotificationDetailsDto } from './notification-details.dto';
+import { NotificationService } from './notification.service';
+import { PushSubscription } from './push-subscription.dto';
 
+@ApiTags('lattice')
 @Controller(`v2/lattice/notification`)
 @UseAuth([`HACKER`])
 export class NotificationController {
-  constructor(private readonly notificationService: NotificationService) {}
+  constructor(private readonly notificationService: NotificationService) { }
 
   @Get()
   getNotifications(@CurrentUser() user: CurrentUserDto): Promise<Array<NotificationDetailsDto>> {

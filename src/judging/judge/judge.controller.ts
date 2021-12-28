@@ -10,11 +10,11 @@ import { UseAuth } from '../../auth/auth.decorator';
 import { CurrentUser, CurrentUserDto } from '../../auth/currentuser';
 import { Judge } from '../entities/judge.entity';
 
-@ApiTags('admin')
+@ApiTags('judging')
 @Controller('v2/judging/judge')
 @UseAuth([`JUDGE`])
 export class JudgeController {
-  constructor(private readonly judgeService: JudgeService) {}
+  constructor(private readonly judgeService: JudgeService) { }
 
   @Get(`me`)
   getJudgeDetails(@CurrentUser() user: CurrentUserDto): Promise<Judge> {

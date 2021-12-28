@@ -1,18 +1,20 @@
-import { Controller, Get, Body, Post, Put, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser, CurrentUserDto } from '../../auth/currentuser';
-import { Roles, RoleGuard } from '../../auth/role.guard';
+import { RoleGuard, Roles } from '../../auth/role.guard';
 import { LatticeAuthService } from './auth.service';
-import { LoginDTO, RegisterDTO, ChangePasswordDTO, ResetPasswordDTO } from './dtos';
+import { ChangePasswordDTO, LoginDTO, RegisterDTO, ResetPasswordDTO } from './dtos';
 
+@ApiTags('lattice')
 @Controller(`v2/lattice/auth`)
 @Roles([`HACKER`])
 export class LatticeAuthController {
-  constructor(private readonly registrationService: LatticeAuthService) {}
+  constructor(private readonly registrationService: LatticeAuthService) { }
 
   @Get(`email/:id`)
   getRegistrantEmail(@Param(`id`) registrantId: string): Promise<string> {
-    console.log({registrantId});
+    console.log({ registrantId });
     return this.registrationService.getRegistrantEmail(registrantId);
   }
 

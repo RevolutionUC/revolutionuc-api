@@ -23,11 +23,11 @@ import { Group } from '../entities/group.entity';
 import { JudgingConfig } from '../entities/config.entity';
 import { AdminService } from './admin.service';
 
-@ApiTags('admin')
+@ApiTags('judging')
 @Controller('v2/judging/admin')
 @UseAuth([`SUDO`, `ADMIN`])
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(private readonly adminService: AdminService) { }
 
   @Get(`judge`)
   getJudges(): Promise<Array<Judge>> {
@@ -55,7 +55,7 @@ export class AdminController {
   }
 
   @Put(`project/:id/disqualified`)
-  qualifyProject(@Param(`id`) id: string, @Body() data: { disqualified?: string }): Promise<void> {
+  qualifyProject(@Param(`id`) id: string, @Body() data: { disqualified?: string }): Promise<void> {
     return this.adminService.qualifyProject(id, data.disqualified);
   }
 

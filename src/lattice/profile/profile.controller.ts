@@ -1,14 +1,16 @@
-import { Controller, Get, Put, Body, Post, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { UseAuth } from '../../auth/auth.decorator';
-import { CurrentUserDto, CurrentUser } from '../../auth/currentuser';
+import { CurrentUser, CurrentUserDto } from '../../auth/currentuser';
 import { Tour } from '../entities/hacker.entity';
-import { ProfileService } from './profile.service';
 import { ProfileDTO, ProfileWithEmail, ScoredProfileDTO } from './profile.dto';
+import { ProfileService } from './profile.service';
 
+@ApiTags('lattice')
 @Controller(`v2/lattice/profile`)
 @UseAuth([`HACKER`])
 export class ProfileController {
-  constructor(private readonly profileService: ProfileService) {}
+  constructor(private readonly profileService: ProfileService) { }
 
   @Get(`list`)
   getProfiles(@CurrentUser() user: CurrentUserDto): Promise<Array<ScoredProfileDTO>> {

@@ -15,11 +15,11 @@ import { LoginDto, UserDto } from '../../dtos/User.dto';
 
 const judgingRoles: Role[] = [`ADMIN`, `SUDO`, `JUDGE`];
 
-@ApiTags('admin')
+@ApiTags('judging')
 @Controller('v2/judging/auth')
 @Roles(judgingRoles)
 export class JudgingAuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post(`login`)
   login(

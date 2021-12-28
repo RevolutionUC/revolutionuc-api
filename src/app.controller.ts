@@ -4,12 +4,13 @@ import {
   Param, Post, Req,
   Res
 } from '@nestjs/common';
-import { ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import {
   RegistrantDto, VerifyAttendanceDto as ConfirmAttendanceDto
 } from './dtos/Registrant.dto';
 
+@ApiTags('registration')
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) { }
