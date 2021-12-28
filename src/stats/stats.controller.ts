@@ -15,7 +15,7 @@ export class StatsController {
   }
 
   @Get('dailyUpdate')
-  async trigerDailyUpdate() {
-    await this.dailyUpdateService.sendUpdate();
+  trigerDailyUpdate() {
+    return this.dailyUpdateService.sendUpdate();
   }
 }
