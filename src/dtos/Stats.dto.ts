@@ -1,35 +1,38 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-export class StatsDto {
+import { ApiProperty } from '@nestjs/swagger';
+
+export class DailyUpdateDto {
   @ApiProperty()
-  numRegistrants: number;
+  total: {
+    registrants: number;
+    confirmed: number;
+  }
 
   @ApiProperty()
-  numConfirmed: number;
+  last24hrs: {
+    registrants: number;
+    confirmed: number;
+  }
+}
+
+export class AnonymizedRegistrant {
+  @ApiProperty()
+  age: string;
 
   @ApiProperty()
-  numCheckedIn: any;
+  major: string;
 
   @ApiProperty()
-  last24hrs: number;
+  school: string;
 
   @ApiProperty()
-  gender;
+  gender: string;
 
   @ApiProperty()
-  top5schools;
+  ethnicity: string;
 
   @ApiProperty()
-  top5majors;
+  educationLevel: string;
 
   @ApiProperty()
-  ethnicities;
-
-  @ApiPropertyOptional()
-  shirtSizes;
-
-  @ApiProperty()
-  allergens;
-
-  @ApiProperty()
-  educationLevels;
+  hackathonExperience: string;
 }

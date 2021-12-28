@@ -1,19 +1,9 @@
 import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import {
-  IsNotEmpty,
-  IsString,
-  IsEmail,
-  IsPhoneNumber,
-  IsInt,
-  IsDateString,
-  IsBoolean,
+  IsBoolean, IsDateString, IsEmail, IsInt, IsNotEmpty, IsPhoneNumber, IsString
 } from 'class-validator';
+import {
+  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn
+} from 'typeorm';
 
 const GENDERS: string[] = ['Male', 'Female', 'NonBinary', 'Other', 'PreferNot'];
 const ETHNICITIES: string[] = [
@@ -131,9 +121,9 @@ export class Registrant {
 
   @IsString()
   @Column({
-    nullable: true,
+    nullable: true
   })
-  confirmedAttendance1: string;
+  confirmedAttendance?: boolean;
 
   @IsString()
   @Column({

@@ -1,3 +1,8 @@
 {
-  "vsicons.presets.nestjs": true
+  "vsicons.presets.nestjs": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": true
+  },
 }

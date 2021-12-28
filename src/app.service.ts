@@ -1,17 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Raw } from 'typeorm';
-import { RegistrantDto, VerifyAttendanceDto } from './dtos/Registrant.dto';
-import { Registrant, UploadKeyDto } from './entities/registrant.entity';
-import { environment } from './environment';
+import { S3 } from 'aws-sdk';
 import * as crypto from 'crypto';
 import * as multer from 'multer';
 import * as multers3 from 'multer-s3';
-import { S3 } from 'aws-sdk';
-import { StatsDto } from './dtos/Stats.dto';
-import { EmailService, EMAIL } from './email/email.service';
 import { build, send } from 'revolutionuc-emails';
+import { Repository } from 'typeorm';
+import { RegistrantDto, VerifyAttendanceDto } from './dtos/Registrant.dto';
+import { EMAIL, EmailService } from './email/email.service';
 import { Attendee } from './entities/attendee.entity';
+import { Registrant, UploadKeyDto } from './entities/registrant.entity';
+import { environment } from './environment';
 
 const currentInfoEmail: EMAIL = environment.CURRENT_INFO_EMAIL as EMAIL;
 
@@ -34,13 +33,13 @@ export class AppService {
     @InjectRepository(Attendee)
     private readonly attendeeRepository: Repository<Attendee>,
     private emailService: EmailService,
-  ) {}
+  ) { }
 
   private userCryptoAlgorithm = 'aes-256-ctr';
 
   private async getRegistrantsConfirmedCount(): Promise<number> {
     return await this.registrantRepository.count({
-      confirmedAttendance1: 'true',
+      confirmedAttendance: true
     });
   }
 
@@ -159,69 +158,6 @@ export class AppService {
     }
   }
 
-  async getStats(includedStats: string): Promise<StatsDto> {
-    const stats = new StatsDto();
-    if (includedStats == null) {
-      stats.numRegistrants = await this.registrantRepository.count();
-      stats.numConfirmed = await this.registrantRepository.count({
-        confirmedAttendance1: 'true',
-      });
-      stats.numCheckedIn = await this.registrantRepository.count({
-        checkedIn: true,
-      });
-      stats.last24hrs = await this.registrantRepository.count({
-        createdAt: Raw((alias) => `${alias} >= NOW() - '1 day'::INTERVAL`),
-      });
-      stats.gender = await this.registrantRepository
-        .query(`SELECT gender, COUNT(gender) FROM public.registrant
-                                                            GROUP BY gender ORDER BY count DESC`);
-      stats.top5schools = await this.registrantRepository
-        .query(`SELECT school, COUNT(school) FROM public.registrant
-                                                                GROUP BY school ORDER BY count DESC LIMIT 5`);
-      stats.top5majors = await this.registrantRepository
-        .query(`SELECT major, COUNT(major) FROM public.registrant
-                                                                GROUP BY major ORDER BY count DESC LIMIT 5`);
-      stats.ethnicities = await this.registrantRepository
-        .query(`SELECT ethnicity, COUNT(ethnicity) FROM public.registrant
-                                                                GROUP BY ethnicity ORDER BY count DESC`);
-      stats.shirtSizes = await this.registrantRepository
-        .query(`SELECT "shirtSize", COUNT("shirtSize") FROM public.registrant
-                                                                GROUP BY "shirtSize" ORDER BY count DESC`);
-      stats.educationLevels = await this.registrantRepository
-        .query(`SELECT "educationLevel", COUNT("educationLevel") FROM public.registrant
-                                                                    GROUP BY "educationLevel" ORDER BY count DESC`);
-      stats.allergens = await this.registrantRepository
-        .query(`SELECT "allergens", COUNT(*)
-                                                              FROM (
-                                                                SELECT UNNEST("allergens") AS allergens
-                                                                FROM public.registrant
-                                                              ) t
-                                                              GROUP BY allergens
-                                                              ORDER BY count DESC;`);
-    } else {
-      const incStats: string[] = includedStats.split(',');
-      if (incStats.includes('numRegistrants')) {
-        stats.numRegistrants = await this.registrantRepository.count();
-      }
-      if (incStats.includes('numConfirmed')) {
-        stats.numConfirmed = await this.registrantRepository.count({
-          confirmedAttendance1: 'true',
-        });
-      }
-      if (incStats.includes('numCheckedIn')) {
-        stats.numCheckedIn = {};
-        stats.numCheckedIn.all = await this.registrantRepository.count({
-          checkedIn: true,
-        });
-        stats.numCheckedIn.confirmed = await this.registrantRepository.count({
-          checkedIn: true,
-          confirmedAttendance1: 'true',
-        });
-      }
-    }
-    return await stats;
-  }
-
   async confirmAttendance(payload: VerifyAttendanceDto) {
     const decipher = crypto.createDecipher(
       this.userCryptoAlgorithm,
@@ -243,7 +179,7 @@ export class AppService {
       try {
         await this.registrantRepository.update(
           { email },
-          { confirmedAttendance1: payload.isConfirmed.toString() },
+          { confirmedAttendance: payload.isConfirmed },
         );
 
         if (payload.isConfirmed) {

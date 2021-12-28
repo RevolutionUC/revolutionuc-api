@@ -1,28 +1,18 @@
 import {
-  Post,
   Body,
   Controller,
-  Param,
-  Get,
-  UseGuards,
-  Req,
-  Res,
-  Query,
+  Param, Post, Req,
+  Res
 } from '@nestjs/common';
+import { ApiParam, ApiResponse } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import {
-  RegistrantDto,
-  SendEmailDto,
-  VerifyAttendanceDto as ConfirmAttendanceDto,
+  RegistrantDto, VerifyAttendanceDto as ConfirmAttendanceDto
 } from './dtos/Registrant.dto';
-import { Registrant } from './entities/registrant.entity';
-import { RoleGuard } from './auth/role.guard';
-import { ApiParam, ApiResponse, ApiHeader } from '@nestjs/swagger';
-import { StatsDto } from './dtos/Stats.dto';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) { }
 
   @Post('registrant')
   async register(@Body() registrant: RegistrantDto) {
@@ -43,12 +33,5 @@ export class AppController {
   @ApiParam({ name: 'Key', description: 'Key from email sent to registrant' })
   verify(@Param('key') key: string) {
     return this.appService.verify(key);
-  }
-
-  @Get('admin/stats')
-  @ApiHeader({ name: 'X-API-KEY' })
-  @UseGuards(RoleGuard)
-  async getStats(@Query('stats') inclduedStats: string): Promise<StatsDto> {
-    return this.appService.getStats(inclduedStats);
   }
 }
