@@ -27,12 +27,13 @@ export class StatsService {
         'ethnicity',
         'educationLevel',
         'hackathons',
+        'createdAt'
       ]
     });
 
     const today = new Date();
 
-    const processed = registrants.map<AnonymizedRegistrantDto>(r => {
+    return registrants.map<AnonymizedRegistrantDto>(r => {
       const dateOfBirth = new Date(r.dateOfBirth);
 
       const age = today.getFullYear() - dateOfBirth.getFullYear();
@@ -44,8 +45,6 @@ export class StatsService {
         ethnicity: r.ethnicity.join(`, `)
       })
     });
-
-    return processed;
   }
 
   async getDailyUpdate(): Promise<DailyUpdateDto> {

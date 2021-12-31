@@ -35,6 +35,9 @@ export class AnonymizedRegistrantDto {
 
   @ApiProperty()
   hackathonExperience: string;
+
+  @ApiProperty()
+  createdAt: Date;
 }
 
 export class LatticeStatsDto {

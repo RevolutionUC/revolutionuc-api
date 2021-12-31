@@ -11,7 +11,9 @@ $ npm install
 ```
 
 ## Environment Variables
+
 You can either set these manually or by creating a `.env` file in the root directory.
+
 ```bash
 PRODUCTION=false # used for many checks such as supressing certain logging and most importantly if the database should synchronize (see "Database")
 API_KEY=testapikey  # protects routes that use the AdminGuard, to access these routes the `X-API-KEY` header must match this value
@@ -49,21 +51,7 @@ $ npm run start:dev
 # production mode
 npm run start:prod
 ```
+
 ## Documentation
 
 Swagger docs are automatically generated. You can find them at /docs
-
-## Test
-There are currently no tests written. I know, bad me, but here are how to run tests for future reference.
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
