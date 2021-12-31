@@ -1,17 +1,23 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { AnonymizedRegistrant, DailyUpdateDto } from "../dtos/Stats.dto";
+import { AnonymizedRegistrantDto, DailyUpdateDto, LatticeStatsDto } from "../dtos/Stats.dto";
 import { Registrant } from '../entities/registrant.entity';
+import { Hacker } from "../lattice/entities/hacker.entity";
+import { Notification } from "../lattice/entities/notification.entity";
 
 @Injectable()
 export class StatsService {
   constructor(
     @InjectRepository(Registrant)
     private readonly registrantRepository: Repository<Registrant>,
+    @InjectRepository(Hacker)
+    private readonly hackerRepository: Repository<Hacker>,
+    @InjectRepository(Notification)
+    private readonly notificationRepository: Repository<Notification>
   ) { }
 
-  async getAnonymizedData(): Promise<AnonymizedRegistrant[]> {
+  async getAnonymizedData(): Promise<AnonymizedRegistrantDto[]> {
     const registrants = await this.registrantRepository.find({
       select: [
         'dateOfBirth',
@@ -26,7 +32,7 @@ export class StatsService {
 
     const today = new Date();
 
-    const processed = registrants.map<AnonymizedRegistrant>(r => {
+    const processed = registrants.map<AnonymizedRegistrantDto>(r => {
       const dateOfBirth = new Date(r.dateOfBirth);
 
       const age = today.getFullYear() - dateOfBirth.getFullYear();
@@ -59,5 +65,18 @@ export class StatsService {
         confirmed: last24hrs.filter(r => r.confirmedAttendance).length,
       }
     }
+  }
+
+  async getLatticeStats(): Promise<LatticeStatsDto> {
+    const hackers$ = this.hackerRepository.find();
+    const notifications$ = this.notificationRepository.find();
+
+    const [hackers, notifications] = await Promise.all([hackers$, notifications$]);
+
+    return {
+      hackers: hackers.length,
+      visible: hackers.filter(h => h.visible).length,
+      matches: notifications.length / 2,
+    };
   }
 }

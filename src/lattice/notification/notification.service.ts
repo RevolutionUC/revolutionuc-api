@@ -21,7 +21,7 @@ export class NotificationService {
     @InjectRepository(Hacker) private hackerRepository: Repository<Hacker>,
     @InjectRepository(Notification) private notificationRepository: Repository<Notification>,
     @InjectRepository(Subscription) private subscriptionRepository: Repository<Subscription>
-  ) {}
+  ) { }
 
   private async createNotification(from: Hacker, to: Hacker): Promise<Notification> {
     const pushSubscriptions = await this.subscriptionRepository.find({ hackerId: from.id });
@@ -31,7 +31,7 @@ export class NotificationService {
         Logger.log(`Sending match notification to ${from.name}`);
         await this.sendPushNotification(ps.subscription, `You were matched with ${to.name}`);
         Logger.log(`Sent match notification to ${from.name}`);
-      } catch(err) {
+      } catch (err) {
         Logger.error(`Could not push notification to ${from.name}: ${err.message}`);
       }
     });
@@ -45,17 +45,19 @@ export class NotificationService {
   }
 
   private async hydrateNotification(notification: Notification): Promise<NotificationDetailsDto> {
-    const hacker = await this.hackerRepository.findOne(notification.to, { select: [
-      `userId`,
-      `name`,
-      `skills`,
-      `idea`,
-      `lookingFor`,
-      `started`,
-      `completed`,
-      `visible`,
-      `discord`
-    ]});
+    const hacker = await this.hackerRepository.findOne(notification.to, {
+      select: [
+        `userId`,
+        `name`,
+        `skills`,
+        `idea`,
+        `lookingFor`,
+        `started`,
+        `completed`,
+        `visible`,
+        `discord`
+      ]
+    });
 
     const user = await this.authService.getUserDetails(hacker.userId, [`HACKER`]);
 
@@ -104,7 +106,7 @@ export class NotificationService {
     Logger.log(`Unsubscribing ${hacker.id}:${id} from push notifications`);
 
     const subscription = await this.subscriptionRepository.findOne(id);
-    if(subscription.hackerId !== hacker.id) {
+    if (subscription.hackerId !== hacker.id) {
       throw new HttpException(`Invalid subscription id`, HttpStatus.NOT_FOUND);
     }
 

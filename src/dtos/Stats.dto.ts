@@ -14,7 +14,7 @@ export class DailyUpdateDto {
   }
 }
 
-export class AnonymizedRegistrant {
+export class AnonymizedRegistrantDto {
   @ApiProperty()
   age: string;
 
@@ -35,4 +35,15 @@ export class AnonymizedRegistrant {
 
   @ApiProperty()
   hackathonExperience: string;
+}
+
+export class LatticeStatsDto {
+  @ApiProperty()
+  hackers: number
+
+  @ApiProperty()
+  visible: number
+
+  @ApiProperty()
+  matches: number
 }

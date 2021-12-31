@@ -20,4 +20,9 @@ export class StatsController {
   trigerDailyUpdate() {
     return this.dailyUpdateService.sendUpdate();
   }
+
+  @Get('lattice')
+  async getLatticeStats() {
+    return this.statsService.getLatticeStats();
+  }
 }

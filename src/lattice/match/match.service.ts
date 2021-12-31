@@ -12,12 +12,12 @@ export class MatchService {
     @InjectRepository(Hacker) private hackerRepository: Repository<Hacker>,
     @InjectRepository(Swipe) private swipeRepository: Repository<Swipe>,
     private notificationService: NotificationService
-  ) {}
+  ) { }
 
   private async checkMatch(from: string, to: string): Promise<void> {
     const otherWaySwipe = await this.swipeRepository.findOne({ from: to, to: from, like: true });
-    
-    if(!otherWaySwipe) {
+
+    if (!otherWaySwipe) {
       Logger.log(`other way swipe not found`);
       return;
     }
@@ -29,7 +29,7 @@ export class MatchService {
   async swipe(userId: string, swipe: Pick<SwipeDto, 'to' | 'like'>): Promise<Swipe> {
     const from = await this.hackerRepository.findOne({ userId });
     const existing = await this.swipeRepository.findOne({ from: from.id, to: swipe.to });
-    if(existing) {
+    if (existing) {
       Logger.error(`${from.id} already swiped on ${swipe.to}`);
       throw new HttpException(`Already swiped`, HttpStatus.BAD_REQUEST);
     }
@@ -38,7 +38,7 @@ export class MatchService {
     const newSwipe = this.swipeRepository.create({ ...swipe, from: from.id });
     const savedSwipe = await this.swipeRepository.save(newSwipe);
 
-    if(savedSwipe.like) {
+    if (savedSwipe.like) {
       Logger.log(`swipe positive, checking other way`);
       this.checkMatch(savedSwipe.from, savedSwipe.to);
     }
