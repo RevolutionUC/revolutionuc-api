@@ -30,7 +30,6 @@ async function bootstrap() {
         'https://revolutionuc.com',
         /\.revolutionuc.com$/,
         /localhost/,
-        'https://heuristic-shaw-866695.netlify.app'
       ],
       allowedHeaders: ['Authorization', 'Content-Type'],
     });
