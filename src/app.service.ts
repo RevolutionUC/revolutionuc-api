@@ -33,13 +33,13 @@ export class AppService {
     @InjectRepository(Attendee)
     private readonly attendeeRepository: Repository<Attendee>,
     private emailService: EmailService,
-  ) { }
+  ) {}
 
   private userCryptoAlgorithm = 'aes-256-ctr';
 
   private async getRegistrantsConfirmedCount(): Promise<number> {
     return await this.registrantRepository.count({
-      confirmedAttendance: true
+      confirmedAttendance: true,
     });
   }
 
@@ -50,6 +50,15 @@ export class AppService {
       environment.WAITLIST_THRESHOLD
     ) {
       registrant.isWaitlisted = true;
+    }
+    const existingRegistrant = await this.registrantRepository.findOne({
+      email: registrant.email,
+    });
+    if (existingRegistrant) {
+      throw new HttpException(
+        'You are already registered. Please check your email for the confirmation link.',
+        409,
+      );
     }
     try {
       user = await this.registrantRepository.save(registrant);
