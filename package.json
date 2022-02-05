@@ -4,6 +4,9 @@
   "description": "New API for Revolution UC",
   "author": "Isiah Lloyd",
   "license": "MIT",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
