@@ -54,6 +54,7 @@ export class AppService {
     const existingRegistrant = await this.registrantRepository.findOne({
       email: registrant.email,
     });
+    console.log({ existingRegistrant });
     if (existingRegistrant) {
       throw new HttpException(
         'You are already registered. Please check your email for the confirmation link.',
