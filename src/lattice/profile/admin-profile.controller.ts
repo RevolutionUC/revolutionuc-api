@@ -8,10 +8,10 @@ import { ProfileService } from './profile.service';
 @Controller(`v2/lattice/admin/profile`)
 @UseAuth([`ADMIN`, `SUDO`])
 export class AdminProfileController {
-  constructor(private readonly profileService: ProfileService) {}
+  constructor(private readonly profileService: ProfileService) { }
 
   @Get()
-  getProfileByEmail(@Query() email: string): Promise<ProfileDTO> {
+  getProfileByEmail(@Query(`email`) email: string): Promise<ProfileDTO> {
     return this.profileService.getProfileByEmail(email);
   }
 }
