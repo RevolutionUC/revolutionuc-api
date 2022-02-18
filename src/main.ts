@@ -29,7 +29,6 @@ async function bootstrap() {
         'https://revuc.com',
         'https://revolutionuc.com',
         /\.revolutionuc.com$/,
-        /localhost/,
       ],
       allowedHeaders: ['Authorization', 'Content-Type'],
     });
