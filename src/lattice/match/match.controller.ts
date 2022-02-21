@@ -10,10 +10,13 @@ import { SwipeDto } from './swipe.dto';
 @Controller(`v2/lattice/match`)
 @UseAuth([`HACKER`])
 export class MatchController {
-  constructor(private readonly matchService: MatchService) { }
+  constructor(private readonly matchService: MatchService) {}
 
   @Post()
-  swipe(@CurrentUser() user: CurrentUserDto, @Body() swipe: Pick<SwipeDto, 'to' | 'like'>): Promise<Swipe> {
+  swipe(
+    @CurrentUser() user: CurrentUserDto,
+    @Body() swipe: Pick<SwipeDto, 'to' | 'like'>,
+  ): Promise<Swipe> {
     return this.matchService.swipe(user.id, swipe);
   }
 

@@ -8,19 +8,20 @@ import { environment } from '../environment';
 import { AuthService } from '../auth/auth.service';
 import { Judge } from '../judging/entities/judge.entity';
 
-export type EMAIL = 'confirmAttendance' |
-                    'infoEmail1' |
-                    'infoEmail2' |
-                    'infoEmail3' |
-                    'infoEmail4' |
-                    'infoEmailMinors' |
-                    'infoEmailJudges' |
-                    'waiverUpdate' |
-                    'latticeResetPassword' |
-                    'submissionReminder' |
-                    'postEventEmail' |
-                    'postEventJudgeEmail' |
-                    'postEventSurveyReminder';
+export type EMAIL =
+  | 'confirmAttendance'
+  | 'infoEmail1'
+  | 'infoEmail2'
+  | 'infoEmail3'
+  | 'infoEmail4'
+  | 'infoEmailMinors'
+  | 'infoEmailJudges'
+  | 'waiverUpdate'
+  | 'latticeResetPassword'
+  | 'submissionReminder'
+  | 'postEventEmail'
+  | 'postEventJudgeEmail'
+  | 'postEventSurveyReminder';
 
 const DISCORD_INVITE = process.env.DISCORD_INVITE;
 const HOPIN_INVITE = process.env.HOPIN_INVITE;
@@ -34,35 +35,37 @@ export class SendEmailDto {
 }
 
 class EmailDataDto {
-  subject: string
-  shortDescription: string
-  firstName: string
-  registrantId?: string
-  yesConfirmationUrl?: string
-  noConfirmationUrl?: string
-  offWaitlist?: boolean
-  judgingLoginLink?: string
-  resetToken?: string
-  discordLink?: string
-  hopinLink?: string
+  subject: string;
+  shortDescription: string;
+  firstName: string;
+  registrantId?: string;
+  yesConfirmationUrl?: string;
+  noConfirmationUrl?: string;
+  offWaitlist?: boolean;
+  judgingLoginLink?: string;
+  resetToken?: string;
+  discordLink?: string;
+  hopinLink?: string;
 }
 
 @Injectable()
 export class EmailService {
   constructor(
-    @InjectRepository(Registrant) private readonly registrantRepository: Repository<Registrant>,
-    @InjectRepository(Judge) private readonly judgeRepository: Repository<Judge>,
-    private authService: AuthService
+    @InjectRepository(Registrant)
+    private readonly registrantRepository: Repository<Registrant>,
+    @InjectRepository(Judge)
+    private readonly judgeRepository: Repository<Judge>,
+    private authService: AuthService,
   ) {}
 
-  emailData: {[key in EMAIL]: EmailDataDto} = {
+  emailData: { [key in EMAIL]: EmailDataDto } = {
     confirmAttendance: {
       subject: 'Confirm Your Attendance for RevolutionUC!',
       shortDescription: 'Please confirm your attendance for RevolutionUC',
       firstName: '',
       yesConfirmationUrl: '',
       noConfirmationUrl: '',
-      offWaitlist: false
+      offWaitlist: false,
     },
     infoEmail1: {
       subject: 'RevolutionUC is this month!',
@@ -73,13 +76,13 @@ export class EmailService {
       subject: 'RevolutionUC is next weekend!',
       shortDescription: `RevolutionUC is coming up next week. Here's some important information for the event`,
       firstName: '',
-      registrantId: ''
+      registrantId: '',
     },
     infoEmail3: {
       subject: 'RevolutionUC is this weekend!',
       shortDescription: `RevolutionUC is almost here. Here's some important information for the event`,
       firstName: '',
-      registrantId: ''
+      registrantId: '',
     },
     infoEmail4: {
       subject: 'RevolutionUC is tomorrow!',
@@ -87,64 +90,61 @@ export class EmailService {
       firstName: '',
       registrantId: '',
       discordLink: ``,
-      hopinLink: ``
+      hopinLink: ``,
     },
     infoEmailMinors: {
       subject: 'Important information regarding RevolutionUC!',
       shortDescription: `You registered for RevolutionUC as a minor. Here's some important information for you.`,
-      firstName: ''
+      firstName: '',
     },
     infoEmailJudges: {
       subject: `RevolutionUC Judging`,
       shortDescription: `Thank you for signing up to judge at RevolutionUC. Here is some important information regarding the event.`,
       firstName: ``,
-      judgingLoginLink: ``
+      judgingLoginLink: ``,
     },
     waiverUpdate: {
       subject: `RevolutionUC waiver of liability has been updated`,
       shortDescription: `Thank you for registering for RevolutionUC. We have updated our waiver of liability.`,
-      firstName: ``
+      firstName: ``,
     },
     latticeResetPassword: {
       subject: `Reset password request for Lattice`,
       shortDescription: `Reset your Lattice password, RevolutionUC Hacker matching app.`,
       firstName: ``,
-      resetToken: ``
+      resetToken: ``,
     },
     submissionReminder: {
       subject: `Hacking time is about to end!`,
       shortDescription: `Thank you for participating in RevolutionUC. Please submit your project to our Devpost.`,
-      firstName: ``
+      firstName: ``,
     },
     postEventEmail: {
       subject: `Thank you for participating in RevolutionUC 2021!`,
       shortDescription: `Thank you for participating in RevolutionUC. Below is important information on the post event survey and prize information.`,
-      firstName: ``
+      firstName: ``,
     },
     postEventJudgeEmail: {
       subject: `Thank you for participating in RevolutionUC 2021!`,
       shortDescription: `Thank you for participating in RevolutionUC. Below is important information on the post event survey and prize information.`,
-      firstName: ``
+      firstName: ``,
     },
     postEventSurveyReminder: {
       subject: `We would love your feedback on your experience at RevolutionUC!`,
       shortDescription: `Thank you for participating in RevolutionUC. We would love your feedback on your experience at RevolutionUC.`,
-      firstName: ``
+      firstName: ``,
     },
-  }
+  };
 
   private getConfirmationLinks(email: string) {
-    const cipher = crypto.createCipher(
-      `aes-256-ctr`,
-      environment.CRYPTO_KEY,
-    );
+    const cipher = crypto.createCipher(`aes-256-ctr`, environment.CRYPTO_KEY);
     let encrypted = cipher.update(email, 'utf8', 'hex');
     encrypted += cipher.final('hex');
 
     const yesConfirmationUrl = `https://revolutionuc.com/attendance?confirm=true&id=${encrypted}`;
     const noConfirmationUrl = `https://revolutionuc.com/attendance?confirm=false&id=${encrypted}`;
 
-    return { yesConfirmationUrl, noConfirmationUrl }
+    return { yesConfirmationUrl, noConfirmationUrl };
   }
 
   private async getJudgingLoginLink(email: string) {
@@ -170,30 +170,39 @@ export class EmailService {
     return { discordLink, hopinLink };
   }
 
-  private async sendHelper(template: EMAIL, emailData: EmailDataDto, recipentEmail: string, dryRun: boolean, reg?: Registrant) {
+  private async sendHelper(
+    template: EMAIL,
+    emailData: EmailDataDto,
+    recipentEmail: string,
+    dryRun: boolean,
+    reg?: Registrant,
+  ) {
     if (dryRun) {
       console.log({ template, emailData, recipentEmail });
       return;
     } else {
-      if(template === 'confirmAttendance') {
-        const { yesConfirmationUrl, noConfirmationUrl } = this.getConfirmationLinks(recipentEmail);
+      if (template === 'confirmAttendance') {
+        const {
+          yesConfirmationUrl,
+          noConfirmationUrl,
+        } = this.getConfirmationLinks(recipentEmail);
         emailData.yesConfirmationUrl = yesConfirmationUrl;
         emailData.noConfirmationUrl = noConfirmationUrl;
       }
-      if(template === 'infoEmailJudges') {
+      if (template === 'infoEmailJudges') {
         const judgingLoginLink = await this.getJudgingLoginLink(recipentEmail);
         emailData.judgingLoginLink = judgingLoginLink;
       }
-      if(template === 'infoEmail4') {
+      if (template === 'infoEmail4') {
         const { discordLink, hopinLink } = this.getInviteLinks(reg);
         emailData.discordLink = discordLink;
         emailData.hopinLink = hopinLink;
       }
-      if(template.includes('post')) {
-        if(!reg?.checkedIn) return;
+      if (template.includes('post')) {
+        if (!reg?.checkedIn) return;
       }
       return build(template, emailData)
-        .then(html => {
+        .then((html) => {
           return send(
             environment.MAILGUN_API_KEY,
             environment.MAILGUN_DOMAIN,
@@ -218,55 +227,88 @@ export class EmailService {
     const emailData = { ...this.emailData[payload.template] };
 
     if (payload.recipent === 'all') {
-      const registrants = await this.registrantRepository.find({ emailVerfied: true });
+      const registrants = await this.registrantRepository.find({
+        emailVerfied: true,
+      });
 
       Logger.log(`Sending ${payload.template} to ${registrants.length}`);
 
-      registrants.forEach(async reg => {
+      registrants.forEach(async (reg) => {
         try {
-          const emailDataCopy = { ...emailData, firstName: reg.firstName, registrantId: reg.id };
+          const emailDataCopy = {
+            ...emailData,
+            firstName: reg.firstName,
+            registrantId: reg.id,
+          };
 
-          await this.sendHelper(payload.template, emailDataCopy, reg.email, payload.dryRun, reg);
+          await this.sendHelper(
+            payload.template,
+            emailDataCopy,
+            reg.email,
+            payload.dryRun,
+            reg,
+          );
 
           if (!payload.dryRun) {
-            if(!reg.emailsReceived.includes(payload.template)) {
+            if (!reg.emailsReceived.includes(payload.template)) {
               reg.emailsReceived.push(payload.template);
               await this.registrantRepository.save(reg);
             }
           }
 
           Logger.log(`Successfully sent ${payload.template} to ${reg.email}`);
-        } catch(err) {
-          Logger.error(`Could not send ${payload.template} to ${reg.email}: ${err.message}`);
+        } catch (err) {
+          Logger.error(
+            `Could not send ${payload.template} to ${reg.email}: ${err.message}`,
+          );
         }
       });
     } else {
       try {
-        if(payload.template.includes(`Judge`)) {
+        if (payload.template.includes(`Judge`)) {
           // email meant for judge
-          const judge = await this.judgeRepository.findOneOrFail({ email: payload.recipent });
+          const judge = await this.judgeRepository.findOneOrFail({
+            email: payload.recipent,
+          });
           emailData.firstName = judge.name;
-          await this.sendHelper(payload.template, emailData, judge.email, payload.dryRun);
+          await this.sendHelper(
+            payload.template,
+            emailData,
+            judge.email,
+            payload.dryRun,
+          );
         } else {
           // email meant for registrant
-          const registrant = await this.registrantRepository.findOneOrFail({ email: payload.recipent });
+          const registrant = await this.registrantRepository.findOneOrFail({
+            email: payload.recipent,
+          });
           emailData.firstName = registrant.firstName;
           emailData.registrantId = registrant.id;
 
           emailData.resetToken = payload.resetToken;
 
-          await this.sendHelper(payload.template, emailData, registrant.email, payload.dryRun, registrant);
+          await this.sendHelper(
+            payload.template,
+            emailData,
+            registrant.email,
+            payload.dryRun,
+            registrant,
+          );
           if (!payload.dryRun) {
-            if(!registrant.emailsReceived.includes(payload.template)) {
+            if (!registrant.emailsReceived.includes(payload.template)) {
               registrant.emailsReceived.push(payload.template);
               await this.registrantRepository.save(registrant);
             }
           }
-  
-          Logger.log(`Successfully sent ${payload.template} to ${registrant.email}`);
+
+          Logger.log(
+            `Successfully sent ${payload.template} to ${registrant.email}`,
+          );
         }
-      } catch(err) {
-        Logger.error(`Could not send ${payload.template} to ${payload.recipent}: ${err.message}`);
+      } catch (err) {
+        Logger.error(
+          `Could not send ${payload.template} to ${payload.recipent}: ${err.message}`,
+        );
       }
     }
   }

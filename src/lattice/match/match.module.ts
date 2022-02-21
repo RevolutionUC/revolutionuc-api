@@ -11,8 +11,8 @@ import { Subscription } from '../entities/subscription.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ Swipe, Hacker, Notification, Subscription ]),
-    AuthModule
+    TypeOrmModule.forFeature([Swipe, Hacker, Notification, Subscription]),
+    AuthModule,
   ],
   controllers: [MatchController],
   providers: [MatchService, NotificationService],

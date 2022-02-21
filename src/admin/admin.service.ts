@@ -24,7 +24,7 @@ export class AdminService {
     sortKey: SortKey = 'createdAt',
     sortOrder: SortOrder = 'DESC',
     q: string,
-    full: boolean
+    full: boolean,
   ): Promise<Pagination<Registrant>> {
     console.log({ options: { page, limit }, sortKey, sortOrder, q });
 
@@ -39,7 +39,7 @@ export class AdminService {
         .setParameter('query', '%' + q + '%');
     }
 
-    if(!full) {
+    if (!full) {
       query = query.select([
         'user.id',
         'user.firstName',
@@ -163,7 +163,10 @@ export class AdminService {
     try {
       const registrant = await this.registrantRepository.findOne({ email });
       if (!registrant) {
-        throw new HttpException(`Invalid registrant email`, HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          `Invalid registrant email`,
+          HttpStatus.NOT_FOUND,
+        );
       }
 
       registrant.checkedIn = true;

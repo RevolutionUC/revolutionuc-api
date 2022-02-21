@@ -8,6 +8,6 @@ import { Judge } from '../judging/entities/judge.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Registrant, Judge]), AuthModule],
   providers: [EmailService],
-  exports: [EmailService]
+  exports: [EmailService],
 })
 export class EmailModule {}

@@ -11,12 +11,12 @@ import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ Registrant, Hacker, Swipe ]),
+    TypeOrmModule.forFeature([Registrant, Hacker, Swipe]),
     LatticeAuthModule,
     ProfileModule,
     SkillsModule,
     MatchModule,
-    NotificationModule
+    NotificationModule,
   ],
   controllers: [],
   providers: [],

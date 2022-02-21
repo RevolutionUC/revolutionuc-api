@@ -13,9 +13,14 @@ export class AttendeeService {
   ) {}
 
   async createAttendee(data: AttendeeDto): Promise<Attendee> {
-    const existing = await this.attendeeRepository.findOne({ email: data.email });
-    if(existing) {
-      throw new HttpException(`Attendee with this email already exists`, HttpStatus.BAD_REQUEST);
+    const existing = await this.attendeeRepository.findOne({
+      email: data.email,
+    });
+    if (existing) {
+      throw new HttpException(
+        `Attendee with this email already exists`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const attendee = this.attendeeRepository.create(data);
@@ -27,13 +32,15 @@ export class AttendeeService {
     const json: AttendeeDto[] = csvToJson(csv);
 
     const attendees: Attendee[] = await Promise.all(
-      json.map(async attendee => {
-        const existing = await this.attendeeRepository.findOne({ email: attendee.email });
-        if(!existing) {
+      json.map(async (attendee) => {
+        const existing = await this.attendeeRepository.findOne({
+          email: attendee.email,
+        });
+        if (!existing) {
           return this.attendeeRepository.create(attendee);
         }
         return Object.assign(existing, attendee);
-      })
+      }),
     );
 
     return this.attendeeRepository.save(attendees);
@@ -46,7 +53,7 @@ export class AttendeeService {
       throw new HttpException(`Invalid email`, HttpStatus.NOT_FOUND);
     }
 
-    if(attendee.checkedIn) {
+    if (attendee.checkedIn) {
       throw new HttpException(`Already checked in`, HttpStatus.FORBIDDEN);
     }
 

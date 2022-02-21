@@ -1,8 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { IsString, IsInt } from 'class-validator';
 
 @Entity()
@@ -12,33 +8,33 @@ export class JudgingConfig {
 
   @IsInt()
   @Column()
-  year: number
+  year: number;
 
   @IsInt()
   @Column()
-  generalGroupCount: number
+  generalGroupCount: number;
 
   @IsInt()
   @Column()
-  generalJudgesPerGroup: number
+  generalJudgesPerGroup: number;
 
   @IsInt()
   @Column()
-  generalGroupsPerProject: number
+  generalGroupsPerProject: number;
 
   @IsString()
   @Column()
-  titleColumn: string
+  titleColumn: string;
 
   @IsString()
   @Column()
-  urlColumn: string
+  urlColumn: string;
 
   @IsString()
   @Column()
-  categoryColumn: string
+  categoryColumn: string;
 
   @IsString()
   @Column()
-  tableNumberColumn: string
+  tableNumberColumn: string;
 }

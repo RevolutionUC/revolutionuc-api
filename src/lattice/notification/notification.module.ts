@@ -9,10 +9,10 @@ import { Subscription } from '../entities/subscription.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ Hacker, Notification, Subscription ]),
-    AuthModule
+    TypeOrmModule.forFeature([Hacker, Notification, Subscription]),
+    AuthModule,
   ],
   controllers: [NotificationController],
-  providers: [NotificationService]
+  providers: [NotificationService],
 })
 export class NotificationModule {}

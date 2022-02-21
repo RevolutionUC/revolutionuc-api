@@ -19,5 +19,5 @@ export class Notification {
   @Column({ default: false })
   @IsDefined()
   @IsBoolean()
-  read: boolean
+  read: boolean;
 }

@@ -22,7 +22,7 @@ import { SudoModule } from './sudo/sudo.module';
       synchronize: environment.database_config.synchronize,
       logging: environment.database_config.logging,
       ssl: {
-        rejectUnauthorized: false
+        rejectUnauthorized: false,
       },
     }),
     TypeOrmModule.forFeature([Registrant, Attendee]),
@@ -32,9 +32,9 @@ import { SudoModule } from './sudo/sudo.module';
     LatticeModule,
     AttendeeModule,
     JudgingModule,
-    StatsModule
+    StatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

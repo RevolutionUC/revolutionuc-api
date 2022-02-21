@@ -11,10 +11,12 @@ import { PushSubscription } from './push-subscription.dto';
 @Controller(`v2/lattice/notification`)
 @UseAuth([`HACKER`])
 export class NotificationController {
-  constructor(private readonly notificationService: NotificationService) { }
+  constructor(private readonly notificationService: NotificationService) {}
 
   @Get()
-  getNotifications(@CurrentUser() user: CurrentUserDto): Promise<Array<NotificationDetailsDto>> {
+  getNotifications(
+    @CurrentUser() user: CurrentUserDto,
+  ): Promise<Array<NotificationDetailsDto>> {
     return this.notificationService.getNotifications(user.id);
   }
 
@@ -24,12 +26,18 @@ export class NotificationController {
   }
 
   @Post(`subscribe`)
-  subscribe(@CurrentUser() user: CurrentUserDto, @Body() sub: PushSubscription): Promise<Subscription> {
+  subscribe(
+    @CurrentUser() user: CurrentUserDto,
+    @Body() sub: PushSubscription,
+  ): Promise<Subscription> {
     return this.notificationService.subscribe(user.id, sub);
   }
 
   @Delete(`subscribe/:id`)
-  unsubscribe(@CurrentUser() user: CurrentUserDto, @Param(`id`) id: string): Promise<void> {
+  unsubscribe(
+    @CurrentUser() user: CurrentUserDto,
+    @Param(`id`) id: string,
+  ): Promise<void> {
     return this.notificationService.unsubscribe(user.id, id);
   }
 }

@@ -19,5 +19,5 @@ export class Swipe {
   @Column()
   @IsDefined()
   @IsBoolean()
-  like: boolean
+  like: boolean;
 }

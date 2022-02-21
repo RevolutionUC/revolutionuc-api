@@ -1,8 +1,8 @@
 export class PushSubscription {
-  readonly endpoint: string
-  readonly expirationTime: number | null
+  readonly endpoint: string;
+  readonly expirationTime: number | null;
   readonly options: {
-    readonly applicationServerKey: ArrayBuffer | null
-    readonly userVisibleOnly: boolean
-  }
+    readonly applicationServerKey: ArrayBuffer | null;
+    readonly userVisibleOnly: boolean;
+  };
 }

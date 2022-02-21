@@ -1,9 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
 import { Submission } from './submission.entity';
 
@@ -37,6 +32,6 @@ export class Project {
   @Column({ nullable: true })
   disqualified?: string;
 
-  @OneToMany(() => Submission, score => score.project)
-  submissions: Submission[]
+  @OneToMany(() => Submission, (score) => score.project)
+  submissions: Submission[];
 }

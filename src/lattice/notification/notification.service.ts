@@ -19,32 +19,46 @@ export class NotificationService {
   constructor(
     private authService: AuthService,
     @InjectRepository(Hacker) private hackerRepository: Repository<Hacker>,
-    @InjectRepository(Notification) private notificationRepository: Repository<Notification>,
-    @InjectRepository(Subscription) private subscriptionRepository: Repository<Subscription>
-  ) { }
+    @InjectRepository(Notification)
+    private notificationRepository: Repository<Notification>,
+    @InjectRepository(Subscription)
+    private subscriptionRepository: Repository<Subscription>,
+  ) {}
 
-  private async createNotification(from: Hacker, to: Hacker): Promise<Notification> {
-    const pushSubscriptions = await this.subscriptionRepository.find({ hackerId: from.id });
+  private async createNotification(
+    from: Hacker,
+    to: Hacker,
+  ): Promise<Notification> {
+    const pushSubscriptions = await this.subscriptionRepository.find({
+      hackerId: from.id,
+    });
 
-    pushSubscriptions?.forEach(async ps => {
+    pushSubscriptions?.forEach(async (ps) => {
       try {
         Logger.log(`Sending match notification to ${from.name}`);
-        await this.sendPushNotification(ps.subscription, `You were matched with ${to.name}`);
+        await this.sendPushNotification(
+          ps.subscription,
+          `You were matched with ${to.name}`,
+        );
         Logger.log(`Sent match notification to ${from.name}`);
       } catch (err) {
-        Logger.error(`Could not push notification to ${from.name}: ${err.message}`);
+        Logger.error(
+          `Could not push notification to ${from.name}: ${err.message}`,
+        );
       }
     });
 
     const notification = this.notificationRepository.create({
       from: from.id,
       to: to.id,
-      read: false
+      read: false,
     });
     return this.notificationRepository.save(notification);
   }
 
-  private async hydrateNotification(notification: Notification): Promise<NotificationDetailsDto> {
+  private async hydrateNotification(
+    notification: Notification,
+  ): Promise<NotificationDetailsDto> {
     const hacker = await this.hackerRepository.findOne(notification.to, {
       select: [
         `userId`,
@@ -55,49 +69,72 @@ export class NotificationService {
         `started`,
         `completed`,
         `visible`,
-        `discord`
-      ]
+        `discord`,
+      ],
     });
 
-    const user = await this.authService.getUserDetails(hacker.userId, [`HACKER`]);
+    const user = await this.authService.getUserDetails(hacker.userId, [
+      `HACKER`,
+    ]);
 
     return { notification, to: { ...hacker, email: user.username } };
   }
 
-  private async sendPushNotification(sub: PushSubscription, data: string): Promise<unknown> {
+  private async sendPushNotification(
+    sub: PushSubscription,
+    data: string,
+  ): Promise<unknown> {
     return sendNotification(sub, data);
-  };
+  }
 
-  async createNotificationForBoth(a: string, b: string): Promise<[Notification, Notification]> {
+  async createNotificationForBoth(
+    a: string,
+    b: string,
+  ): Promise<[Notification, Notification]> {
     const userA = await this.hackerRepository.findOne(a);
     const userB = await this.hackerRepository.findOne(b);
 
     return [
       await this.createNotification(userA, userB),
-      await this.createNotification(userB, userA)
+      await this.createNotification(userB, userA),
     ];
   }
 
-  async getNotifications(userId: string): Promise<Array<NotificationDetailsDto>> {
+  async getNotifications(
+    userId: string,
+  ): Promise<Array<NotificationDetailsDto>> {
     const from = await this.hackerRepository.findOne({ userId });
-    const notifications = await this.notificationRepository.find({ from: from.id });
+    const notifications = await this.notificationRepository.find({
+      from: from.id,
+    });
     return Promise.all(
-      notifications.map(notification => this.hydrateNotification(notification))
+      notifications.map((notification) =>
+        this.hydrateNotification(notification),
+      ),
     );
   }
 
   async readNotifications(userId: string): Promise<void> {
     const from = await this.hackerRepository.findOne({ userId });
-    const notifications = await this.notificationRepository.find({ from: from.id, read: false });
+    const notifications = await this.notificationRepository.find({
+      from: from.id,
+      read: false,
+    });
     await this.notificationRepository.save(
-      notifications.map(notification => ({ ...notification, read: true }))
+      notifications.map((notification) => ({ ...notification, read: true })),
     );
   }
 
-  async subscribe(userId: string, subscription: PushSubscription): Promise<Subscription> {
+  async subscribe(
+    userId: string,
+    subscription: PushSubscription,
+  ): Promise<Subscription> {
     const hacker = await this.hackerRepository.findOne({ userId });
     Logger.log(`Subscribing ${hacker.id} for push notifications`);
-    const pushSubscription = this.subscriptionRepository.create({ hackerId: hacker.id, subscription });
+    const pushSubscription = this.subscriptionRepository.create({
+      hackerId: hacker.id,
+      subscription,
+    });
     return this.subscriptionRepository.save(pushSubscription);
   }
 

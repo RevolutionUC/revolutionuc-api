@@ -1,9 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Put
-} from '@nestjs/common';
+import { Body, Controller, Get, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JudgeService } from './judge.service';
 import { UseAuth } from '../../auth/auth.decorator';
@@ -14,7 +9,7 @@ import { Judge } from '../entities/judge.entity';
 @Controller('v2/judging/judge')
 @UseAuth([`JUDGE`])
 export class JudgeController {
-  constructor(private readonly judgeService: JudgeService) { }
+  constructor(private readonly judgeService: JudgeService) {}
 
   @Get(`me`)
   getJudgeDetails(@CurrentUser() user: CurrentUserDto): Promise<Judge> {
@@ -22,7 +17,10 @@ export class JudgeController {
   }
 
   @Put(`rankings`)
-  rankSubmissions(@CurrentUser() user: CurrentUserDto, @Body() data: { rankings: Array<string> }): Promise<Judge> {
+  rankSubmissions(
+    @CurrentUser() user: CurrentUserDto,
+    @Body() data: { rankings: Array<string> },
+  ): Promise<Judge> {
     return this.judgeService.rankSubmissions(user.id, data.rankings);
   }
 

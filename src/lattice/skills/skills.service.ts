@@ -7,7 +7,7 @@ import { SkillDto } from './skill.dto';
 @Injectable()
 export class SkillsService {
   constructor(
-    @InjectRepository(Skill) private skillsRepository: Repository<Skill>
+    @InjectRepository(Skill) private skillsRepository: Repository<Skill>,
   ) {}
 
   async getSkills(): Promise<Array<Skill>> {
@@ -20,6 +20,6 @@ export class SkillsService {
   }
 
   async createSkills(data: Array<SkillDto>): Promise<Array<Skill>> {
-    return Promise.all(data.map(skill => this.createSkill(skill)));
+    return Promise.all(data.map((skill) => this.createSkill(skill)));
   }
 }

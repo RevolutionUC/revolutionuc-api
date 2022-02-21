@@ -35,7 +35,10 @@ export class AuthService {
 
     const token = await this.jwtService.signAsync(payload);
 
-    return { token, user: { id: user.id, username: user.username, role: user.role } };
+    return {
+      token,
+      user: { id: user.id, username: user.username, role: user.role },
+    };
   }
 
   async trustedLogin(username: string): Promise<LoginDto> {
@@ -62,11 +65,11 @@ export class AuthService {
   async register(
     username: string,
     password: string,
-    role: Role
+    role: Role,
   ): Promise<LoginDto> {
     const existingUser = await this.userRepository.findOne({ username });
 
-    if(existingUser) {
+    if (existingUser) {
       throw new HttpException(`User already exists`, HttpStatus.BAD_REQUEST);
     }
 
@@ -82,7 +85,9 @@ export class AuthService {
   }
 
   async getUserDetails(id: string, roles: Role[]): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id, role: In(roles) } });
+    const user = await this.userRepository.findOne({
+      where: { id, role: In(roles) },
+    });
     if (!user) {
       throw this.invalidError;
     }

@@ -5,7 +5,7 @@ import {
   Param,
   Get,
   Delete,
-  Patch
+  Patch,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { SudoService } from './sudo.service';

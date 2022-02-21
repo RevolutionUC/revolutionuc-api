@@ -27,7 +27,7 @@ import { AdminService } from './admin.service';
 @Controller('v2/judging/admin')
 @UseAuth([`SUDO`, `ADMIN`])
 export class AdminController {
-  constructor(private readonly adminService: AdminService) { }
+  constructor(private readonly adminService: AdminService) {}
 
   @Get(`judge`)
   getJudges(): Promise<Array<Judge>> {
@@ -55,13 +55,18 @@ export class AdminController {
   }
 
   @Put(`project/:id/disqualified`)
-  qualifyProject(@Param(`id`) id: string, @Body() data: { disqualified?: string }): Promise<void> {
+  qualifyProject(
+    @Param(`id`) id: string,
+    @Body() data: { disqualified?: string },
+  ): Promise<void> {
     return this.adminService.qualifyProject(id, data.disqualified);
   }
 
   @Post(`devpost`)
   @UseInterceptors(FileInterceptor('file'))
-  uploadDevpostCsv(@UploadedFile() file: Express.Multer.File): Promise<Array<Submission>> {
+  uploadDevpostCsv(
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<Array<Submission>> {
     return this.adminService.uploadDevpostCsv(file);
   }
 

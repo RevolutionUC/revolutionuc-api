@@ -3,7 +3,7 @@ import {
   Controller,
   Body,
   UseInterceptors,
-  UploadedFile
+  UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
@@ -30,7 +30,9 @@ export class AttendeeController {
 
   @Post(`bulk`)
   @UseInterceptors(FileInterceptor('file'))
-  createAttendees(@UploadedFile() file: Express.Multer.File): Promise<Array<Attendee>> {
+  createAttendees(
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<Array<Attendee>> {
     return this.adminService.createAttendees(file);
   }
 }

@@ -1,5 +1,5 @@
 export class SwipeDto {
-  from: string
-  to: string
-  like: boolean
+  from: string;
+  to: string;
+  like: boolean;
 }

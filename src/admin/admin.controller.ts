@@ -8,7 +8,7 @@ import {
   Req,
   Res,
   Query,
-  Put
+  Put,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
@@ -22,7 +22,10 @@ import { UseAuth } from '../auth/auth.decorator';
 @Controller('v2/admin')
 @UseAuth([`SUDO`, `ADMIN`])
 export class AdminController {
-  constructor(private readonly adminService: AdminService, private readonly emailService: EmailService) {}
+  constructor(
+    private readonly adminService: AdminService,
+    private readonly emailService: EmailService,
+  ) {}
 
   @Get('registrants')
   searchRegistrants(
@@ -31,14 +34,14 @@ export class AdminController {
     @Query('sortKey') sortKey: SortKey,
     @Query('sortOrder') sortOrder: SortOrder,
     @Query('q') q: string,
-    @Query('full') full = `false`
+    @Query('full') full = `false`,
   ): Promise<Pagination<Registrant>> {
     return this.adminService.searchRegistrants(
       { page, limit },
       sortKey,
       sortOrder,
       q,
-      full === `true`
+      full === `true`,
     );
   }
 

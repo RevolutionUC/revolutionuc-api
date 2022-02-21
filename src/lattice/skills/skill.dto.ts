@@ -1,4 +1,4 @@
 export class SkillDto {
-  title: string
-  icon: string
+  title: string;
+  icon: string;
 }

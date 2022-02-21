@@ -5,15 +5,12 @@ import { RoleGuard, Roles } from '../auth/role.guard';
 import { AuthGuard } from '@nestjs/passport';
 
 export function UseAuth(roles?: Role[]) {
-  if(roles?.length) {
+  if (roles?.length) {
     return applyDecorators(
       ApiBearerAuth(),
       Roles(roles),
-      UseGuards(AuthGuard(`jwt`), RoleGuard)
+      UseGuards(AuthGuard(`jwt`), RoleGuard),
     );
   }
-  return applyDecorators(
-    ApiBearerAuth(),
-    UseGuards(AuthGuard(`jwt`))
-  );
+  return applyDecorators(ApiBearerAuth(), UseGuards(AuthGuard(`jwt`)));
 }

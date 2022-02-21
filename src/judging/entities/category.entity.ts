@@ -1,9 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Judge } from './judge.entity';
 import { Submission } from './submission.entity';
@@ -19,12 +14,12 @@ export class Category {
   @Column()
   name: string;
 
-  @OneToMany(() => Judge, judge => judge.category)
-  judges: Judge[]
+  @OneToMany(() => Judge, (judge) => judge.category)
+  judges: Judge[];
 
-  @OneToMany(() => Group, group => group.category)
-  groups: Group[]
+  @OneToMany(() => Group, (group) => group.category)
+  groups: Group[];
 
-  @OneToMany(() => Submission, score => score.category)
-  submissions: Submission[]
+  @OneToMany(() => Submission, (score) => score.category)
+  submissions: Submission[];
 }

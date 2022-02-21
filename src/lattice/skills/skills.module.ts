@@ -5,9 +5,7 @@ import { SkillsController } from './skills.controller';
 import { SkillsService } from './skills.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([ Skill ]),
-  ],
+  imports: [TypeOrmModule.forFeature([Skill])],
   controllers: [SkillsController],
   providers: [SkillsService],
 })

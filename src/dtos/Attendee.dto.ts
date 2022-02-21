@@ -1,4 +1,4 @@
-import { AttendeeRole } from "../entities/attendee.entity";
+import { AttendeeRole } from '../entities/attendee.entity';
 
 export class AttendeeDto {
   name: string;

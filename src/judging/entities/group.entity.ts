@@ -6,7 +6,7 @@ import {
   ManyToMany,
   JoinTable,
   Column,
-  ManyToOne
+  ManyToOne,
 } from 'typeorm';
 import { Category } from './category.entity';
 import { Judge } from './judge.entity';
@@ -22,13 +22,13 @@ export class Group {
   @Column()
   name: string;
 
-  @OneToMany(() => Judge, judge => judge.group)
-  judges: Judge[]
+  @OneToMany(() => Judge, (judge) => judge.group)
+  judges: Judge[];
 
-  @ManyToOne(() => Category, category => category.groups)
-  category: Category
+  @ManyToOne(() => Category, (category) => category.groups)
+  category: Category;
 
   @ManyToMany(() => Submission)
   @JoinTable()
-  submissions: Submission[]
+  submissions: Submission[];
 }

@@ -1,25 +1,25 @@
 export class RegisterDTO {
-  registrantId: string
-  password: string
+  registrantId: string;
+  password: string;
 }
 
 export class LoginDTO {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 export class ChangePasswordDTO {
-  oldPassword: string
-  newPassword: string
+  oldPassword: string;
+  newPassword: string;
 }
 
 export class ResetTokenDTO {
-  id: string
-  currentPassword: string
-  createdAt: Date
+  id: string;
+  currentPassword: string;
+  createdAt: Date;
 }
 
 export class ResetPasswordDTO {
-  resetToken: string
-  password: string
+  resetToken: string;
+  password: string;
 }

@@ -9,9 +9,9 @@ import { LatticeAuthService } from './auth.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ Registrant, Hacker ]),
+    TypeOrmModule.forFeature([Registrant, Hacker]),
     AuthModule,
-    EmailModule
+    EmailModule,
   ],
   controllers: [LatticeAuthController],
   providers: [LatticeAuthService],

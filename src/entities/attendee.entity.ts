@@ -1,13 +1,14 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { IsIn, IsBoolean, IsString, IsEmail } from 'class-validator';
 
 export type AttendeeRole = 'SPONSOR' | 'MENTOR' | 'JUDGE' | 'HACKER';
 
-export const ATTENDEE_ROLES: AttendeeRole[] = ['SPONSOR', 'MENTOR', 'JUDGE', 'HACKER'];
+export const ATTENDEE_ROLES: AttendeeRole[] = [
+  'SPONSOR',
+  'MENTOR',
+  'JUDGE',
+  'HACKER',
+];
 
 @Entity()
 export class Attendee {

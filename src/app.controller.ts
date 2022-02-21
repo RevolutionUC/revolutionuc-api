@@ -1,19 +1,15 @@
-import {
-  Body,
-  Controller,
-  Param, Post, Req,
-  Res
-} from '@nestjs/common';
+import { Body, Controller, Param, Post, Req, Res } from '@nestjs/common';
 import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import {
-  RegistrantDto, VerifyAttendanceDto as ConfirmAttendanceDto
+  RegistrantDto,
+  VerifyAttendanceDto as ConfirmAttendanceDto,
 } from './dtos/Registrant.dto';
 
 @ApiTags('registration')
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) { }
+  constructor(private readonly appService: AppService) {}
 
   @Post('registrant')
   async register(@Body() registrant: RegistrantDto) {

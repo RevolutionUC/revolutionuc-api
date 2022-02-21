@@ -15,8 +15,19 @@ import { Submission } from './entities/submission.entity';
 import { Group } from './entities/group.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ JudgingConfig, Project, Judge, Category, Group, Submission ]), AuthModule, EmailModule],
+  imports: [
+    TypeOrmModule.forFeature([
+      JudgingConfig,
+      Project,
+      Judge,
+      Category,
+      Group,
+      Submission,
+    ]),
+    AuthModule,
+    EmailModule,
+  ],
   controllers: [JudgeController, AdminController, JudgingAuthController],
-  providers: [JudgeService, AdminService]
+  providers: [JudgeService, AdminService],
 })
 export class JudgingModule {}

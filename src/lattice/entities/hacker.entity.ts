@@ -1,8 +1,12 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import {
-  IsDefined, IsBoolean,
-  IsArray, ArrayMaxSize, ArrayUnique,
-  IsString, MaxLength
+  IsDefined,
+  IsBoolean,
+  IsArray,
+  ArrayMaxSize,
+  ArrayUnique,
+  IsString,
+  MaxLength,
 } from 'class-validator';
 
 export type Tour = `profile` | `home` | `notification` | `reset`;
@@ -29,13 +33,13 @@ export class Hacker {
   @ArrayMaxSize(10)
   @ArrayUnique()
   @IsString({ each: true })
-  skills: string[]
+  skills: string[];
 
   @Column()
   @IsDefined()
   @IsString()
   @MaxLength(250)
-  idea: string
+  idea: string;
 
   @Column('text', { array: true })
   @IsDefined()
@@ -43,27 +47,27 @@ export class Hacker {
   @ArrayMaxSize(5)
   @ArrayUnique()
   @IsString({ each: true })
-  lookingFor: string[]
+  lookingFor: string[];
 
   @Column()
   @IsDefined()
   @IsString()
-  discord: string
+  discord: string;
 
   @Column({ default: false })
   @IsDefined()
   @IsBoolean()
-  inPerson: boolean
+  inPerson: boolean;
 
   @Column({ default: false })
-  started: boolean
+  started: boolean;
 
   @Column({ default: false })
-  completed: boolean
+  completed: boolean;
 
   @Column({ default: false })
-  visible: boolean
+  visible: boolean;
 
   @Column('text', { array: true })
-  completedTours: Tour[]
+  completedTours: Tour[];
 }

@@ -7,7 +7,7 @@ import { SkillsService } from './skills.service';
 @ApiTags('lattice')
 @Controller(`v2/lattice/skills`)
 export class SkillsController {
-  constructor(private readonly matchService: SkillsService) { }
+  constructor(private readonly matchService: SkillsService) {}
 
   @Get()
   getSkills(): Promise<Array<Skill>> {

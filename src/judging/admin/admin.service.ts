@@ -15,20 +15,26 @@ import { EmailService, SendEmailDto } from '../../email/email.service';
 import { Group } from '../entities/group.entity';
 import { assign } from './util/project-to-group-assignment';
 
-const scoreRanks = [ 5, 4, 3, 2, 1 ];
+const scoreRanks = [5, 4, 3, 2, 1];
 const JUDGE_PASSWORD = process.env.JUDGE_PASSWORD;
 
 @Injectable()
 export class AdminService {
   constructor(
-    @InjectRepository(JudgingConfig) private readonly configRepository: Repository<JudgingConfig>,
-    @InjectRepository(Judge) private readonly judgeRepository: Repository<Judge>,
-    @InjectRepository(Project) private readonly projectRepository: Repository<Project>,
-    @InjectRepository(Category) private readonly categoryRepository: Repository<Category>,
-    @InjectRepository(Submission) private readonly submissionRepository: Repository<Submission>,
-    @InjectRepository(Group) private readonly groupRepository: Repository<Group>,
+    @InjectRepository(JudgingConfig)
+    private readonly configRepository: Repository<JudgingConfig>,
+    @InjectRepository(Judge)
+    private readonly judgeRepository: Repository<Judge>,
+    @InjectRepository(Project)
+    private readonly projectRepository: Repository<Project>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(Submission)
+    private readonly submissionRepository: Repository<Submission>,
+    @InjectRepository(Group)
+    private readonly groupRepository: Repository<Group>,
     private readonly authService: AuthService,
-    private readonly emailService: EmailService
+    private readonly emailService: EmailService,
   ) {}
 
   //#region categories
@@ -48,10 +54,23 @@ export class AdminService {
     return this.judgeRepository.find({ relations: [`category`] });
   }
 
-  async createJudge({ name, email, category: categoryId }: JudgeDto): Promise<Judge> {
+  async createJudge({
+    name,
+    email,
+    category: categoryId,
+  }: JudgeDto): Promise<Judge> {
     const category = await this.categoryRepository.findOneOrFail(categoryId);
-    const { user } = await this.authService.register(email, JUDGE_PASSWORD, `JUDGE`);
-    const judge = this.judgeRepository.create({ name, email, category, userId: user.id });
+    const { user } = await this.authService.register(
+      email,
+      JUDGE_PASSWORD,
+      `JUDGE`,
+    );
+    const judge = this.judgeRepository.create({
+      name,
+      email,
+      category,
+      userId: user.id,
+    });
     return this.judgeRepository.save(judge);
   }
 
@@ -61,7 +80,10 @@ export class AdminService {
     return Promise.all(json.map(judge => this.createJudge(judge)));
   } */
 
-  async assignJudgeToCategory(judgeId: string, categoryId: string): Promise<Judge> {
+  async assignJudgeToCategory(
+    judgeId: string,
+    categoryId: string,
+  ): Promise<Judge> {
     const category = await this.categoryRepository.findOneOrFail(categoryId);
     const judge = await this.judgeRepository.findOneOrFail(judgeId);
 
@@ -83,27 +105,44 @@ export class AdminService {
   //#endregion
 
   //#region projects
-  private async createSubmissionsForProject({ categories: categoryNames, ...data }: ProjectDto, allCategories: Array<Category>): Promise<Array<Submission>> {
-    const project = await this.projectRepository.save(this.projectRepository.create(data));
-    const categories = allCategories.filter(category => categoryNames.includes(category.name));
-    const submissions = categories.map(category => this.submissionRepository.create({ project, category }));
+  private async createSubmissionsForProject(
+    { categories: categoryNames, ...data }: ProjectDto,
+    allCategories: Array<Category>,
+  ): Promise<Array<Submission>> {
+    const project = await this.projectRepository.save(
+      this.projectRepository.create(data),
+    );
+    const categories = allCategories.filter((category) =>
+      categoryNames.includes(category.name),
+    );
+    const submissions = categories.map((category) =>
+      this.submissionRepository.create({ project, category }),
+    );
     return submissions;
   }
 
-  private async createSubmissions(projects: Array<ProjectDto>, allCategories: Array<Category>): Promise<Array<Submission>> {
+  private async createSubmissions(
+    projects: Array<ProjectDto>,
+    allCategories: Array<Category>,
+  ): Promise<Array<Submission>> {
     const allSubmissions: Array<Submission> = [];
 
     await Promise.all(
-      projects.map(async project => {
-        const submissions = await this.createSubmissionsForProject(project, allCategories);
+      projects.map(async (project) => {
+        const submissions = await this.createSubmissionsForProject(
+          project,
+          allCategories,
+        );
         allSubmissions.push(...submissions);
-      })
+      }),
     );
 
     return this.submissionRepository.save(allSubmissions);
   }
 
-  async uploadDevpostCsv(file: Express.Multer.File): Promise<Array<Submission>> {
+  async uploadDevpostCsv(
+    file: Express.Multer.File,
+  ): Promise<Array<Submission>> {
     const csvString = file.buffer.toString();
     const config = await this.configRepository.findOneOrFail({ year: 2021 });
     const allCategories = await this.categoryRepository.find();
@@ -113,7 +152,9 @@ export class AdminService {
   }
 
   async getProjects(): Promise<Array<Project>> {
-    return this.projectRepository.find({ relations: [`submissions`, `submissions.category`] });
+    return this.projectRepository.find({
+      relations: [`submissions`, `submissions.category`],
+    });
   }
 
   async qualifyProject(id: string, disqualified?: string): Promise<void> {
@@ -131,11 +172,13 @@ export class AdminService {
   }
 
   async updateConfig(updatedConfig: JudgingConfigDto): Promise<JudgingConfig> {
-    const existingConfig = await this.configRepository.findOne({ year: updatedConfig.year });
+    const existingConfig = await this.configRepository.findOne({
+      year: updatedConfig.year,
+    });
 
     let config: JudgingConfigDto;
 
-    if(existingConfig) {
+    if (existingConfig) {
       config = { ...existingConfig, ...updatedConfig };
     } else {
       config = this.configRepository.create(updatedConfig);
@@ -150,17 +193,21 @@ export class AdminService {
 
   async getGroups(): Promise<Array<Group>> {
     return this.groupRepository.find({
-      relations: [`submissions`, `submissions.project`, `judges`, `category`]
+      relations: [`submissions`, `submissions.project`, `judges`, `category`],
     });
   }
 
   async initiateAssignment(): Promise<Array<Group>> {
     Logger.log(`initiateAssignment() start`);
 
-    const categories = await this.categoryRepository.find({ relations: [`judges`, `submissions`] });
+    const categories = await this.categoryRepository.find({
+      relations: [`judges`, `submissions`],
+    });
     const judgingConfig = await this.configRepository.findOne({ year: 2021 });
 
-    Logger.log(`initiateAssignment() assigning ${categories.length} categories`);
+    Logger.log(
+      `initiateAssignment() assigning ${categories.length} categories`,
+    );
 
     const assignments = assign(categories, judgingConfig);
 
@@ -177,13 +224,16 @@ export class AdminService {
   async getPrizingInfo(): Promise<Array<Submission>> {
     const judge = await this.judgeRepository.findOne({ isFinal: false });
 
-    if(judge) {
+    if (judge) {
       throw new HttpException(`Judge still deciding`, HttpStatus.BAD_REQUEST);
     }
 
-    const scoredSubmissions = await this.submissionRepository.find({ where: { score: MoreThan(0) }, relations: [`project`, `category`] });
+    const scoredSubmissions = await this.submissionRepository.find({
+      where: { score: MoreThan(0) },
+      relations: [`project`, `category`],
+    });
 
-    if(!scoredSubmissions.length) {
+    if (!scoredSubmissions.length) {
       throw new HttpException(`Scoring not started`, HttpStatus.NOT_FOUND);
     }
 
@@ -193,25 +243,31 @@ export class AdminService {
   async scoreSubmissions(): Promise<void> {
     const judges = await this.judgeRepository.find();
 
-    const indeterminateJudge = judges.findIndex(j => !j.isFinal);
+    const indeterminateJudge = judges.findIndex((j) => !j.isFinal);
 
-    if(indeterminateJudge !== -1) {
+    if (indeterminateJudge !== -1) {
       throw new HttpException(`Judge still deciding`, HttpStatus.BAD_REQUEST);
     }
 
-    const submissions = await this.submissionRepository.find({ relations: [`project`, `category`]});
+    const submissions = await this.submissionRepository.find({
+      relations: [`project`, `category`],
+    });
 
-    judges.forEach(judge => {
+    judges.forEach((judge) => {
       judge.rankings.forEach((submissionId, i) => {
         const submission = submissions.find(({ id }) => id === submissionId);
-        Logger.log(`${judge.name} ranked ${submission.project.title} at ${i+1}`);
+        Logger.log(
+          `${judge.name} ranked ${submission.project.title} at ${i + 1}`,
+        );
         submission.score += scoreRanks[i];
       });
     });
 
-    const jobs = submissions.map(submission => {
-      if(submission.score) {
-        Logger.log(`${submission.project.title}:${submission.category.name} has a score of ${submission.score}`);
+    const jobs = submissions.map((submission) => {
+      if (submission.score) {
+        Logger.log(
+          `${submission.project.title}:${submission.category.name} has a score of ${submission.score}`,
+        );
         return this.submissionRepository.save(submission);
       }
     });

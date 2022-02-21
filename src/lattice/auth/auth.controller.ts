@@ -1,16 +1,29 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser, CurrentUserDto } from '../../auth/currentuser';
 import { RoleGuard, Roles } from '../../auth/role.guard';
 import { LatticeAuthService } from './auth.service';
-import { ChangePasswordDTO, LoginDTO, RegisterDTO, ResetPasswordDTO } from './dtos';
+import {
+  ChangePasswordDTO,
+  LoginDTO,
+  RegisterDTO,
+  ResetPasswordDTO,
+} from './dtos';
 
 @ApiTags('lattice')
 @Controller(`v2/lattice/auth`)
 @Roles([`HACKER`])
 export class LatticeAuthController {
-  constructor(private readonly registrationService: LatticeAuthService) { }
+  constructor(private readonly registrationService: LatticeAuthService) {}
 
   @Get(`email/:id`)
   getRegistrantEmail(@Param(`id`) registrantId: string): Promise<string> {
@@ -39,13 +52,22 @@ export class LatticeAuthController {
   }
 
   @Put(`reset`)
-  resetPassword(@Body() { resetToken, password }: ResetPasswordDTO): Promise<void> {
+  resetPassword(
+    @Body() { resetToken, password }: ResetPasswordDTO,
+  ): Promise<void> {
     return this.registrationService.resetPassword(resetToken, password);
   }
 
   @Put(`password`)
   @UseGuards(AuthGuard(`jwt`), RoleGuard)
-  changePassword(@CurrentUser() user: CurrentUserDto, @Body() { oldPassword, newPassword }: ChangePasswordDTO): Promise<void> {
-    return this.registrationService.changePassword(user.id, oldPassword, newPassword);
+  changePassword(
+    @CurrentUser() user: CurrentUserDto,
+    @Body() { oldPassword, newPassword }: ChangePasswordDTO,
+  ): Promise<void> {
+    return this.registrationService.changePassword(
+      user.id,
+      oldPassword,
+      newPassword,
+    );
   }
 }

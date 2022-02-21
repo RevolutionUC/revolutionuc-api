@@ -5,13 +5,13 @@ export class DailyUpdateDto {
   total: {
     registrants: number;
     confirmed: number;
-  }
+  };
 
   @ApiProperty()
   last24hrs: {
     registrants: number;
     confirmed: number;
-  }
+  };
 }
 
 export class AnonymizedRegistrantDto {
@@ -42,11 +42,11 @@ export class AnonymizedRegistrantDto {
 
 export class LatticeStatsDto {
   @ApiProperty()
-  hackers: number
+  hackers: number;
 
   @ApiProperty()
-  visible: number
+  visible: number;
 
   @ApiProperty()
-  matches: number
+  matches: number;
 }

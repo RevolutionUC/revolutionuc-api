@@ -10,10 +10,12 @@ import { ProfileService } from './profile.service';
 @Controller(`v2/lattice/profile`)
 @UseAuth([`HACKER`])
 export class ProfileController {
-  constructor(private readonly profileService: ProfileService) { }
+  constructor(private readonly profileService: ProfileService) {}
 
   @Get(`list`)
-  getProfiles(@CurrentUser() user: CurrentUserDto): Promise<Array<ScoredProfileDTO>> {
+  getProfiles(
+    @CurrentUser() user: CurrentUserDto,
+  ): Promise<Array<ScoredProfileDTO>> {
     return this.profileService.getScoredProfiles(user.id);
   }
 
@@ -28,17 +30,26 @@ export class ProfileController {
   }
 
   @Put()
-  updateProfile(@CurrentUser() user: CurrentUserDto, @Body() newProfile: ProfileDTO): Promise<ProfileWithEmail> {
+  updateProfile(
+    @CurrentUser() user: CurrentUserDto,
+    @Body() newProfile: ProfileDTO,
+  ): Promise<ProfileWithEmail> {
     return this.profileService.updateProfile(user.id, newProfile);
   }
 
   @Put(`visible`)
-  setVisible(@CurrentUser() user: CurrentUserDto, @Body() body: { visible: boolean }): Promise<ProfileWithEmail> {
+  setVisible(
+    @CurrentUser() user: CurrentUserDto,
+    @Body() body: { visible: boolean },
+  ): Promise<ProfileWithEmail> {
     return this.profileService.setVisible(user.id, body.visible);
   }
 
   @Post(`tour/:tour`)
-  completeTour(@CurrentUser() user: CurrentUserDto, @Param(`tour`) tour: Tour): Promise<void> {
+  completeTour(
+    @CurrentUser() user: CurrentUserDto,
+    @Param(`tour`) tour: Tour,
+  ): Promise<void> {
     return this.profileService.completeTour(user.id, tour);
   }
 }
