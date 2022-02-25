@@ -89,7 +89,7 @@ export class EmailService {
       shortDescription: `RevolutionUC is here. Here's some important information for the event`,
       firstName: '',
       registrantId: '',
-      discordLink: 'https://discord.com/invite/a5yfCWGpzf',
+      discordLink: ``,
       hopinLink: ``,
     },
     infoEmailMinors: {
