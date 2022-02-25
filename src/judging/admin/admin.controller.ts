@@ -27,7 +27,7 @@ import { AdminService } from './admin.service';
 @Controller('v2/judging/admin')
 @UseAuth([`SUDO`, `ADMIN`])
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(private readonly adminService: AdminService) { }
 
   @Get(`judge`)
   getJudges(): Promise<Array<Judge>> {
@@ -83,6 +83,11 @@ export class AdminController {
   @Post(`assignment`)
   initiateAssignment(): Promise<Array<Group>> {
     return this.adminService.initiateAssignment();
+  }
+
+  @Delete(`assignment`)
+  resetAssignment(): Promise<void> {
+    return this.adminService.resetAssignment();
   }
 
   @Get(`config`)

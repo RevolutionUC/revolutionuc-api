@@ -12,7 +12,11 @@ export class Submission {
   @Column({ default: 0 })
   score: number;
 
-  @ManyToOne(() => Project, (project) => project.submissions, { cascade: true })
+  @ManyToOne(
+    () => Project,
+    (project) => project.submissions,
+    { cascade: ["insert", "update", "remove", "soft-remove", "recover"] }
+  )
   project: Project;
 
   @ManyToOne(() => Category, (cateogry) => cateogry.submissions)

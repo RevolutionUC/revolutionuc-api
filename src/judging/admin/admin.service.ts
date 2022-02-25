@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MoreThan, Repository } from 'typeorm';
+import { Connection, MoreThan, QueryRunner, Repository } from 'typeorm';
 import { JudgeDto } from '../dtos/judge.dto';
 import { ProjectDto } from '../dtos/project.dto';
 import { Judge } from '../entities/judge.entity';
@@ -35,7 +35,8 @@ export class AdminService {
     private readonly groupRepository: Repository<Group>,
     private readonly authService: AuthService,
     private readonly emailService: EmailService,
-  ) {}
+    private connection: Connection
+  ) { }
 
   //#region categories
   async getCategories(): Promise<Array<Category>> {
@@ -108,15 +109,21 @@ export class AdminService {
   private async createSubmissionsForProject(
     { categories: categoryNames, ...data }: ProjectDto,
     allCategories: Array<Category>,
+    queryRunner?: QueryRunner
   ): Promise<Array<Submission>> {
-    const project = await this.projectRepository.save(
-      this.projectRepository.create(data),
-    );
+    const project = this.projectRepository.create(data);
+
+    const savedProject = await (queryRunner ?
+      queryRunner.manager.save(Project, project) :
+      this.projectRepository.save(
+        this.projectRepository.create(data),
+      ))
+
     const categories = allCategories.filter((category) =>
       categoryNames.includes(category.name),
     );
     const submissions = categories.map((category) =>
-      this.submissionRepository.create({ project, category }),
+      this.submissionRepository.create({ project: savedProject, category }),
     );
     return submissions;
   }
@@ -137,7 +144,25 @@ export class AdminService {
       }),
     );
 
-    return this.submissionRepository.save(allSubmissions);
+    const queryRunner = this.connection.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      await this.resetAssignment(queryRunner);
+      await queryRunner.manager.delete(Submission, {});
+      await queryRunner.manager.delete(Project, {});
+      const submissions = await queryRunner.manager.save(allSubmissions);
+
+      await queryRunner.commitTransaction();
+
+      return submissions;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async uploadDevpostCsv(
@@ -191,6 +216,38 @@ export class AdminService {
 
   //#region groups
 
+  private async deleteGroups(queryRunner: QueryRunner): Promise<void> {
+    const judges = await queryRunner.manager.find(Judge);
+    await Promise.all(judges.map(j => {
+      j.group = null;
+      return queryRunner.manager.save(j);
+    }))
+    await queryRunner.manager.delete(Group, {});
+    return;
+  }
+
+  async resetAssignment(existingQueryRunner?: QueryRunner): Promise<void> {
+    if (existingQueryRunner) {
+      return this.deleteGroups(existingQueryRunner);
+    }
+
+    const queryRunner = this.connection.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      await this.deleteGroups(queryRunner);
+      await queryRunner.commitTransaction();
+
+      return;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
   async getGroups(): Promise<Array<Group>> {
     return this.groupRepository.find({
       relations: [`submissions`, `submissions.project`, `judges`, `category`],
@@ -222,10 +279,13 @@ export class AdminService {
 
   //#region prizing
   async getPrizingInfo(): Promise<Array<Submission>> {
-    const judge = await this.judgeRepository.findOne({ isFinal: false });
+    const judges = await this.judgeRepository.find({ isFinal: false });
 
-    if (judge) {
-      throw new HttpException(`Judge still deciding`, HttpStatus.BAD_REQUEST);
+    if (judges.length) {
+      throw new HttpException(
+        `Judges still deciding: ${judges.map(j => j.name).join(`, `)}`,
+        HttpStatus.BAD_REQUEST
+      );
     }
 
     const scoredSubmissions = await this.submissionRepository.find({
