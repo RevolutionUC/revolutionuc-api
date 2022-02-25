@@ -85,11 +85,11 @@ export class EmailService {
       registrantId: '',
     },
     infoEmail4: {
-      subject: 'RevolutionUC is tomorrow!',
+      subject: 'RevolutionUC is tomorrow! [Discord link correction]',
       shortDescription: `RevolutionUC is here. Here's some important information for the event`,
       firstName: '',
       registrantId: '',
-      discordLink: ``,
+      discordLink: `https://discord.com/invite/a5yfCWGpzf`,
       hopinLink: ``,
     },
     infoEmailMinors: {
