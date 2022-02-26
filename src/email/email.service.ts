@@ -85,7 +85,7 @@ export class EmailService {
       registrantId: '',
     },
     infoEmail4: {
-      subject: 'RevolutionUC is tomorrow! [Discord link correction]',
+      subject: 'Final Reminder for RevolutionUC!',
       shortDescription: `RevolutionUC is here. Here's some important information for the event`,
       firstName: '',
       registrantId: '',
