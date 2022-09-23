@@ -58,7 +58,9 @@ export class AdminService {
 
   async getRegistrant(uuid: string): Promise<Registrant> {
     try {
-      const registrant = await this.registrantRepository.findOne(uuid);
+      const registrant = await this.registrantRepository.findOneBy({
+        id: uuid,
+      });
       if (!registrant) {
         throw new HttpException(`Invalid registrant id`, HttpStatus.NOT_FOUND);
       }
@@ -76,7 +78,9 @@ export class AdminService {
     data: Partial<RegistrantDto>,
   ): Promise<Registrant> {
     try {
-      const oldRegistrant = await this.registrantRepository.findOne(uuid);
+      const oldRegistrant = await this.registrantRepository.findOneBy({
+        id: uuid,
+      });
       if (!oldRegistrant) {
         throw new HttpException(`Invalid registrant id`, HttpStatus.NOT_FOUND);
       }
@@ -92,7 +96,9 @@ export class AdminService {
 
   async uploadResume(req, res, uuid: string) {
     try {
-      const registrant = await this.registrantRepository.findOne(uuid);
+      const registrant = await this.registrantRepository.findOneBy({
+        id: uuid,
+      });
       if (!registrant) {
         throw new HttpException(`Invalid registrant id`, HttpStatus.NOT_FOUND);
       }
@@ -161,7 +167,7 @@ export class AdminService {
 
   async checkInRegistrantByEmail(email: string): Promise<Registrant> {
     try {
-      const registrant = await this.registrantRepository.findOne({ email });
+      const registrant = await this.registrantRepository.findOneBy({ email });
       if (!registrant) {
         throw new HttpException(
           `Invalid registrant email`,

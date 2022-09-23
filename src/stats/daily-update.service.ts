@@ -1,4 +1,5 @@
-import { HttpService, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { schedule } from 'node-cron';
 import { combineLatest } from 'rxjs';
 import { map, tap } from 'rxjs/operators';

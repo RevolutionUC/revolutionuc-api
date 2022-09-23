@@ -182,10 +182,8 @@ export class EmailService {
       return;
     } else {
       if (template === 'confirmAttendance') {
-        const {
-          yesConfirmationUrl,
-          noConfirmationUrl,
-        } = this.getConfirmationLinks(recipentEmail);
+        const { yesConfirmationUrl, noConfirmationUrl } =
+          this.getConfirmationLinks(recipentEmail);
         emailData.yesConfirmationUrl = yesConfirmationUrl;
         emailData.noConfirmationUrl = noConfirmationUrl;
       }
@@ -227,7 +225,7 @@ export class EmailService {
     const emailData = { ...this.emailData[payload.template] };
 
     if (payload.recipent === 'all') {
-      const registrants = await this.registrantRepository.find({
+      const registrants = await this.registrantRepository.findBy({
         emailVerfied: true,
       });
 
@@ -267,7 +265,7 @@ export class EmailService {
       try {
         if (payload.template.includes(`Judge`)) {
           // email meant for judge
-          const judge = await this.judgeRepository.findOneOrFail({
+          const judge = await this.judgeRepository.findOneByOrFail({
             email: payload.recipent,
           });
           emailData.firstName = judge.name;
@@ -279,7 +277,7 @@ export class EmailService {
           );
         } else {
           // email meant for registrant
-          const registrant = await this.registrantRepository.findOneOrFail({
+          const registrant = await this.registrantRepository.findOneByOrFail({
             email: payload.recipent,
           });
           emailData.firstName = registrant.firstName;

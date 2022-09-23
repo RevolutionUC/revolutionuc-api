@@ -15,7 +15,7 @@ export class MatchService {
   ) {}
 
   private async checkMatch(from: string, to: string): Promise<void> {
-    const otherWaySwipe = await this.swipeRepository.findOne({
+    const otherWaySwipe = await this.swipeRepository.findOneBy({
       from: to,
       to: from,
       like: true,
@@ -34,8 +34,8 @@ export class MatchService {
     userId: string,
     swipe: Pick<SwipeDto, 'to' | 'like'>,
   ): Promise<Swipe> {
-    const from = await this.hackerRepository.findOne({ userId });
-    const existing = await this.swipeRepository.findOne({
+    const from = await this.hackerRepository.findOneBy({ userId });
+    const existing = await this.swipeRepository.findOneBy({
       from: from.id,
       to: swipe.to,
     });
@@ -57,8 +57,8 @@ export class MatchService {
   }
 
   async reset(userId: string): Promise<void> {
-    const from = await this.hackerRepository.findOne({ userId });
-    const swipes = await this.swipeRepository.find({
+    const from = await this.hackerRepository.findOneBy({ userId });
+    const swipes = await this.swipeRepository.findBy({
       from: from.id,
       like: false,
     });

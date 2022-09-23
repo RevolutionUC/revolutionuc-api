@@ -21,7 +21,9 @@ export class LatticeAuthService {
 
   async getRegistrantEmail(registrantId: string): Promise<string> {
     try {
-      const registrant = await this.registrantRepository.findOne(registrantId);
+      const registrant = await this.registrantRepository.findOneBy({
+        id: registrantId,
+      });
       if (!registrant || !registrant.emailVerfied) {
         throw new Error(`Invalid registrant`);
       }
@@ -32,12 +34,14 @@ export class LatticeAuthService {
   }
 
   async register(registrantId: string, password: string): Promise<string> {
-    const registrant = await this.registrantRepository.findOne(registrantId);
+    const registrant = await this.registrantRepository.findOneBy({
+      id: registrantId,
+    });
     if (!registrant) {
       throw new HttpException(`Registrant not found`, HttpStatus.NOT_FOUND);
     }
 
-    const existingHacker = await this.hackerRepository.findOne({
+    const existingHacker = await this.hackerRepository.findOneBy({
       registrantId,
     });
     if (existingHacker) {

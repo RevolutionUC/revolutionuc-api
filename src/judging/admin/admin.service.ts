@@ -35,8 +35,8 @@ export class AdminService {
     private readonly groupRepository: Repository<Group>,
     private readonly authService: AuthService,
     private readonly emailService: EmailService,
-    private connection: Connection
-  ) { }
+    private connection: Connection,
+  ) {}
 
   //#region categories
   async getCategories(): Promise<Array<Category>> {
@@ -60,7 +60,9 @@ export class AdminService {
     email,
     category: categoryId,
   }: JudgeDto): Promise<Judge> {
-    const category = await this.categoryRepository.findOneOrFail(categoryId);
+    const category = await this.categoryRepository.findOneByOrFail({
+      id: categoryId,
+    });
     const { user } = await this.authService.register(
       email,
       JUDGE_PASSWORD,
@@ -85,8 +87,10 @@ export class AdminService {
     judgeId: string,
     categoryId: string,
   ): Promise<Judge> {
-    const category = await this.categoryRepository.findOneOrFail(categoryId);
-    const judge = await this.judgeRepository.findOneOrFail(judgeId);
+    const category = await this.categoryRepository.findOneByOrFail({
+      id: categoryId,
+    });
+    const judge = await this.judgeRepository.findOneByOrFail({ id: judgeId });
 
     judge.category = category;
 
@@ -98,7 +102,7 @@ export class AdminService {
   }
 
   async deleteJudge(id: string): Promise<void> {
-    const judge = await this.judgeRepository.findOne(id);
+    const judge = await this.judgeRepository.findOneBy({ id });
     await this.judgeRepository.remove(judge);
     return this.authService.deleteUser(judge.userId);
   }
@@ -109,15 +113,13 @@ export class AdminService {
   private async createSubmissionsForProject(
     { categories: categoryNames, ...data }: ProjectDto,
     allCategories: Array<Category>,
-    queryRunner?: QueryRunner
+    queryRunner?: QueryRunner,
   ): Promise<Array<Submission>> {
     const project = this.projectRepository.create(data);
 
-    const savedProject = await (queryRunner ?
-      queryRunner.manager.save(Project, project) :
-      this.projectRepository.save(
-        this.projectRepository.create(data),
-      ))
+    const savedProject = await (queryRunner
+      ? queryRunner.manager.save(Project, project)
+      : this.projectRepository.save(this.projectRepository.create(data)));
 
     const categories = allCategories.filter((category) =>
       categoryNames.includes(category.name),
@@ -169,7 +171,7 @@ export class AdminService {
     file: Express.Multer.File,
   ): Promise<Array<Submission>> {
     const csvString = file.buffer.toString();
-    const config = await this.configRepository.findOneOrFail({ year: 2022 });
+    const config = await this.configRepository.findOneByOrFail({ year: 2022 });
     const allCategories = await this.categoryRepository.find();
     const projects = devpostParser(csvString, config);
 
@@ -183,7 +185,7 @@ export class AdminService {
   }
 
   async qualifyProject(id: string, disqualified?: string): Promise<void> {
-    const project = await this.projectRepository.findOne(id);
+    const project = await this.projectRepository.findOneBy({ id });
     Logger.log(`Qualifyin project ${project.title} with ${disqualified}`);
     project.disqualified = disqualified || null;
     await this.projectRepository.save(project);
@@ -193,11 +195,11 @@ export class AdminService {
 
   //#region config
   async getConfig(): Promise<JudgingConfig> {
-    return this.configRepository.findOne();
+    return this.configRepository.findOneBy({});
   }
 
   async updateConfig(updatedConfig: JudgingConfigDto): Promise<JudgingConfig> {
-    const existingConfig = await this.configRepository.findOne({
+    const existingConfig = await this.configRepository.findOneBy({
       year: updatedConfig.year,
     });
 
@@ -218,10 +220,12 @@ export class AdminService {
 
   private async deleteGroups(queryRunner: QueryRunner): Promise<void> {
     const judges = await queryRunner.manager.find(Judge);
-    await Promise.all(judges.map(j => {
-      j.group = null;
-      return queryRunner.manager.save(j);
-    }))
+    await Promise.all(
+      judges.map((j) => {
+        j.group = null;
+        return queryRunner.manager.save(j);
+      }),
+    );
     await queryRunner.manager.delete(Group, {});
     return;
   }
@@ -260,7 +264,7 @@ export class AdminService {
     const categories = await this.categoryRepository.find({
       relations: [`judges`, `submissions`],
     });
-    const judgingConfig = await this.configRepository.findOne({ year: 2021 });
+    const judgingConfig = await this.configRepository.findOneBy({ year: 2021 });
 
     Logger.log(
       `initiateAssignment() assigning ${categories.length} categories`,
@@ -279,12 +283,12 @@ export class AdminService {
 
   //#region prizing
   async getPrizingInfo(): Promise<Array<Submission>> {
-    const judges = await this.judgeRepository.find({ isFinal: false });
+    const judges = await this.judgeRepository.findBy({ isFinal: false });
 
     if (judges.length) {
       throw new HttpException(
-        `Judges still deciding: ${judges.map(j => j.name).join(`, `)}`,
-        HttpStatus.BAD_REQUEST
+        `Judges still deciding: ${judges.map((j) => j.name).join(`, `)}`,
+        HttpStatus.BAD_REQUEST,
       );
     }
 

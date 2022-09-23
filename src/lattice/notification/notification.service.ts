@@ -29,7 +29,7 @@ export class NotificationService {
     from: Hacker,
     to: Hacker,
   ): Promise<Notification> {
-    const pushSubscriptions = await this.subscriptionRepository.find({
+    const pushSubscriptions = await this.subscriptionRepository.findBy({
       hackerId: from.id,
     });
 
@@ -59,7 +59,8 @@ export class NotificationService {
   private async hydrateNotification(
     notification: Notification,
   ): Promise<NotificationDetailsDto> {
-    const hacker = await this.hackerRepository.findOne(notification.to, {
+    const hacker = await this.hackerRepository.findOne({
+      where: { id: notification.to },
       select: [
         `userId`,
         `name`,
@@ -91,8 +92,8 @@ export class NotificationService {
     a: string,
     b: string,
   ): Promise<[Notification, Notification]> {
-    const userA = await this.hackerRepository.findOne(a);
-    const userB = await this.hackerRepository.findOne(b);
+    const userA = await this.hackerRepository.findOneBy({ id: a });
+    const userB = await this.hackerRepository.findOneBy({ id: b });
 
     return [
       await this.createNotification(userA, userB),
@@ -103,8 +104,8 @@ export class NotificationService {
   async getNotifications(
     userId: string,
   ): Promise<Array<NotificationDetailsDto>> {
-    const from = await this.hackerRepository.findOne({ userId });
-    const notifications = await this.notificationRepository.find({
+    const from = await this.hackerRepository.findOneBy({ userId });
+    const notifications = await this.notificationRepository.findBy({
       from: from.id,
     });
     return Promise.all(
@@ -115,8 +116,8 @@ export class NotificationService {
   }
 
   async readNotifications(userId: string): Promise<void> {
-    const from = await this.hackerRepository.findOne({ userId });
-    const notifications = await this.notificationRepository.find({
+    const from = await this.hackerRepository.findOneBy({ userId });
+    const notifications = await this.notificationRepository.findBy({
       from: from.id,
       read: false,
     });
@@ -129,7 +130,7 @@ export class NotificationService {
     userId: string,
     subscription: PushSubscription,
   ): Promise<Subscription> {
-    const hacker = await this.hackerRepository.findOne({ userId });
+    const hacker = await this.hackerRepository.findOneBy({ userId });
     Logger.log(`Subscribing ${hacker.id} for push notifications`);
     const pushSubscription = this.subscriptionRepository.create({
       hackerId: hacker.id,
@@ -139,10 +140,10 @@ export class NotificationService {
   }
 
   async unsubscribe(userId: string, id: string): Promise<void> {
-    const hacker = await this.hackerRepository.findOne({ userId });
+    const hacker = await this.hackerRepository.findOneBy({ userId });
     Logger.log(`Unsubscribing ${hacker.id}:${id} from push notifications`);
 
-    const subscription = await this.subscriptionRepository.findOne(id);
+    const subscription = await this.subscriptionRepository.findOneBy({ id });
     if (subscription.hackerId !== hacker.id) {
       throw new HttpException(`Invalid subscription id`, HttpStatus.NOT_FOUND);
     }
