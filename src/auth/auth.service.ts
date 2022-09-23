@@ -42,8 +42,7 @@ export class AuthService {
   }
 
   async trustedLogin(username: string): Promise<LoginDto> {
-    const user = await this.userRepository.findOne({ username });
-
+    const user = await this.userRepository.findOneBy({ username });
     return this.getLoginDetails(user);
   }
 
@@ -67,7 +66,7 @@ export class AuthService {
     password: string,
     role: Role,
   ): Promise<LoginDto> {
-    const existingUser = await this.userRepository.findOne({ username });
+    const existingUser = await this.userRepository.findOneBy({ username });
 
     if (existingUser) {
       throw new HttpException(`User already exists`, HttpStatus.BAD_REQUEST);
@@ -81,7 +80,7 @@ export class AuthService {
   }
 
   async validateUser({ id, role }: CurrentUserDto): Promise<User> {
-    return this.userRepository.findOne({ id, role });
+    return this.userRepository.findOneBy({ id, role });
   }
 
   async getUserDetails(id: string, roles: Role[]): Promise<User> {
@@ -96,7 +95,7 @@ export class AuthService {
   }
 
   async changePassword(id: string, newPassword: string): Promise<User> {
-    const user = await this.userRepository.findOne(id);
+    const user = await this.userRepository.findOneBy({ id });
     if (!user) {
       throw this.invalidError;
     }

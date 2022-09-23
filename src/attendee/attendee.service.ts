@@ -13,7 +13,7 @@ export class AttendeeService {
   ) {}
 
   async createAttendee(data: AttendeeDto): Promise<Attendee> {
-    const existing = await this.attendeeRepository.findOne({
+    const existing = await this.attendeeRepository.findOneBy({
       email: data.email,
     });
     if (existing) {
@@ -33,7 +33,7 @@ export class AttendeeService {
 
     const attendees: Attendee[] = await Promise.all(
       json.map(async (attendee) => {
-        const existing = await this.attendeeRepository.findOne({
+        const existing = await this.attendeeRepository.findOneBy({
           email: attendee.email,
         });
         if (!existing) {
@@ -47,7 +47,7 @@ export class AttendeeService {
   }
 
   async checkInAttendee(email: string): Promise<Attendee> {
-    const attendee = await this.attendeeRepository.findOne({ email });
+    const attendee = await this.attendeeRepository.findOneBy({ email });
 
     if (!attendee) {
       throw new HttpException(`Invalid email`, HttpStatus.NOT_FOUND);

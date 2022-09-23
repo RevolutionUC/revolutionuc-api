@@ -18,7 +18,7 @@ export class ProfileService {
   ) {}
 
   private async getSwipes(from: Hacker): Promise<Array<Swipe>> {
-    return this.swipeRepository.find({ from: from.id });
+    return this.swipeRepository.findBy({ from: from.id });
   }
 
   private async getUnscoredProfiles(from: Hacker): Promise<Array<Hacker>> {
@@ -34,7 +34,7 @@ export class ProfileService {
   }
 
   async getScoredProfiles(userId: string): Promise<Array<ScoredProfileDTO>> {
-    const from = await this.hackerRepository.findOne({ userId });
+    const from = await this.hackerRepository.findOneBy({ userId });
     if (!from.visible) {
       throw new HttpException(
         `Profile must be visible`,
@@ -52,23 +52,21 @@ export class ProfileService {
   }
 
   async getProfile(userId: string): Promise<ProfileWithEmail> {
-    const hacker = await this.hackerRepository.findOne(
-      { userId },
-      {
-        select: [
-          `name`,
-          `skills`,
-          `idea`,
-          `lookingFor`,
-          `discord`,
-          `inPerson`,
-          `started`,
-          `completed`,
-          `visible`,
-          `completedTours`,
-        ],
-      },
-    );
+    const hacker = await this.hackerRepository.findOne({
+      where: { userId },
+      select: [
+        `name`,
+        `skills`,
+        `idea`,
+        `lookingFor`,
+        `discord`,
+        `inPerson`,
+        `started`,
+        `completed`,
+        `visible`,
+        `completedTours`,
+      ],
+    });
 
     const { username: email } = await this.authService.getUserDetails(userId, [
       `HACKER`,
@@ -88,23 +86,21 @@ export class ProfileService {
   async getProfileByEmail(email: string): Promise<ProfileDTO> {
     const { id: userId } = await this.authService.findUser(email, [`HACKER`]);
 
-    const hacker = await this.hackerRepository.findOne(
-      { userId },
-      {
-        select: [
-          `name`,
-          `skills`,
-          `idea`,
-          `lookingFor`,
-          `discord`,
-          `inPerson`,
-          `started`,
-          `completed`,
-          `visible`,
-          `completedTours`,
-        ],
-      },
-    );
+    const hacker = await this.hackerRepository.findOne({
+      where: { userId },
+      select: [
+        `name`,
+        `skills`,
+        `idea`,
+        `lookingFor`,
+        `discord`,
+        `inPerson`,
+        `started`,
+        `completed`,
+        `visible`,
+        `completedTours`,
+      ],
+    });
 
     if (!hacker) {
       Logger.error(`Hacker profile for user ${email} not found`);
@@ -118,7 +114,7 @@ export class ProfileService {
   }
 
   async startProfile(userId: string): Promise<void> {
-    const profile = await this.hackerRepository.findOne({ userId });
+    const profile = await this.hackerRepository.findOneBy({ userId });
     if (profile.started) {
       throw new HttpException(
         `Profile already started`,
@@ -134,7 +130,7 @@ export class ProfileService {
     userId: string,
     updates: ProfileDTO,
   ): Promise<ProfileWithEmail> {
-    const profile = await this.hackerRepository.findOne({ userId });
+    const profile = await this.hackerRepository.findOneBy({ userId });
     if (!profile) {
       Logger.error(`Hacker profile for user ${userId} not found`);
       throw new HttpException(
@@ -174,14 +170,14 @@ export class ProfileService {
     userId: string,
     visible: boolean,
   ): Promise<ProfileWithEmail> {
-    const profile = await this.hackerRepository.findOne({ userId });
+    const profile = await this.hackerRepository.findOneBy({ userId });
     profile.visible = !!visible;
     await this.hackerRepository.save(profile);
     return this.getProfile(userId);
   }
 
   async completeTour(userId: string, tour: Tour): Promise<void> {
-    const profile = await this.hackerRepository.findOne({ userId });
+    const profile = await this.hackerRepository.findOneBy({ userId });
 
     if (!profile.completedTours) {
       profile.completedTours = [];

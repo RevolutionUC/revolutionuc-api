@@ -38,7 +38,7 @@ export class AppService {
   private userCryptoAlgorithm = 'aes-256-ctr';
 
   private async getRegistrantsConfirmedCount(): Promise<number> {
-    return await this.registrantRepository.count({
+    return await this.registrantRepository.countBy({
       confirmedAttendance: true,
     });
   }
@@ -51,7 +51,7 @@ export class AppService {
     ) {
       registrant.isWaitlisted = true;
     }
-    const existingRegistrant = await this.registrantRepository.findOne({
+    const existingRegistrant = await this.registrantRepository.findOneBy({
       email: registrant.email,
     });
     console.log({ existingRegistrant });
