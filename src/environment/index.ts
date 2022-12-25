@@ -9,7 +9,7 @@ export const environment = {
   CURRENT_INFO_EMAIL: process.env.CURRENT_INFO_EMAIL || 'infoEmail1',
   database_config: {
     url: process.env.DATABASE_URL,
-    synchronize: process.env.production !== 'true',
+    synchronize: true,
     logging: true,
   },
 };
