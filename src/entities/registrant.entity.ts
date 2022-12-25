@@ -33,6 +33,9 @@ const SHIRT_SIZES: string[] = ['Small', 'Medium', 'Large', 'X-Large'];
   'GlutenFree',
 ]; */
 const EDUCATION_LEVEL: string[] = ['HighSchool', 'Undergraduate', 'Graduate'];
+
+const HOWYOUHEARD: string[] = ['Search Engine', 'RevolutionUC Website', 'Facebook', 
+'Twitter', 'Instagram', 'LinkedIn', 'Email', 'Word Of Mouth', 'Other']
 @Entity()
 export class Registrant {
   @PrimaryGeneratedColumn('uuid')
@@ -95,11 +98,19 @@ export class Registrant {
   })
   ethnicity: string[];
 
+  // @IsString()
+  // @Column({
+  //   nullable: true,
+  // })
+  // howYouHeard: string;
   @IsString()
-  @Column({
-    nullable: true,
+  @Column('enum', {
+    nullable: true, 
+    enum: HOWYOUHEARD,
+    array: true,
   })
-  howYouHeard: string;
+  howYouHeard: string[];
+
 
   @IsInt()
   @Column({
