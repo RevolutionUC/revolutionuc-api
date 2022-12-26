@@ -35,6 +35,8 @@ const ALLERGENS: string[] = [
   'GlutenFree',
 ];
 const EDUCATION_LEVEL: string[] = ['HighSchool', 'Undergraduate', 'Graduate'];
+const HOWYOUHEARD: string[] = ['Search Engine', 'RevolutionUC Website', 'Facebook', 
+'Twitter', 'Instagram', 'LinkedIn', 'Email', 'Word Of Mouth', 'Other']
 export class RegistrantDto {
   @ApiPropertyOptional()
   id: string;
@@ -98,9 +100,12 @@ export class RegistrantDto {
   })
   ethnicity: string[];
 
-  @IsString()
-  @ApiProperty()
-  howYouHeard: string;
+  @IsIn(HOWYOUHEARD, { each: true }) 
+  @IsArray()
+  @ApiProperty({
+    enum: HOWYOUHEARD,
+  })
+  howYouHeard: string[];
 
   @IsInt()
   @ApiProperty()
