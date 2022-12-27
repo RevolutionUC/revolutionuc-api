@@ -85,7 +85,7 @@ export class AppService {
       verificationUrl: `https://revolutionuc.com/registration/verify?user=${encrypted}`,
       waitlist: user.isWaitlisted,
     };
-    build('master', emailData)
+    build('verifyEmail', emailData)
       .then((html) => {
         send(
           environment.MAILGUN_API_KEY,
