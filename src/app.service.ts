@@ -126,7 +126,7 @@ export class AppService {
     dec += decipher.final('utf8');
     const upload = multer({
       storage: multers3({
-        s3: new S3Client({}),
+        s3: new S3Client({region: 'us-east-2'}),
         bucket: 'revolutionuc-resumes-2023',
         key: function (_req, file, cb) {
           const fileArray = file.originalname.split('.');
