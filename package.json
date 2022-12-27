@@ -42,7 +42,7 @@
     "dotenv": "^16.0.2",
     "fs-extra": "^10.1.0",
     "military-speak": "0.0.2",
-    "multer-s3": "^2.9.0",
+    "multer-s3": "^2.10.0",
     "nestjs-typeorm-paginate": "^4.0.2",
     "node-cron": "^3.0.0",
     "passport": "^0.6.0",
