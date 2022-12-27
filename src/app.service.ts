@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { S3 } from 'aws-sdk';
+import { S3Client } from '@aws-sdk/client-s3';
 import * as crypto from 'crypto';
 import * as multer from 'multer';
 import * as multers3 from 'multer-s3';
@@ -125,7 +126,7 @@ export class AppService {
     dec += decipher.final('utf8');
     const upload = multer({
       storage: multers3({
-        s3: new S3(),
+        s3: new S3Client({}),
         bucket: 'revolutionuc-resumes-2023',
         key: function (_req, file, cb) {
           const fileArray = file.originalname.split('.');
