@@ -137,6 +137,7 @@ export class AppService {
     });
     upload.single('resume')(req, res, (err) => {
       if (err) {
+        console.log(err);
         throw new HttpException('There was an error uploading the resume', 500);
       } else {
         return res.header("Access-Control-Allow-Origin", "*").status(HttpStatus.CREATED).send();
