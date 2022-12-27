@@ -139,8 +139,7 @@ export class AppService {
       if (err) {
         throw new HttpException('There was an error uploading the resume', 500);
       } else {
-        res.set("Access-Control-Allow-Origin", "*");
-        return res.status(HttpStatus.CREATED).send();
+        return res.set("Access-Control-Allow-Origin", "*").status(HttpStatus.CREATED).send();
       }
     });
   }
