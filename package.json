@@ -76,7 +76,7 @@
     "ts-jest": "^29.0.1",
     "ts-loader": "^9.4.1",
     "ts-node": "^10.9.1",
-    "tsconfig-paths": "^3.9.0",
+    "tsconfig-paths": "^3.14.1",
     "typescript": "^4.0.5"
   },
   "jest": {
