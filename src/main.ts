@@ -3,24 +3,29 @@ config();
 
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { setVapidDetails } from 'web-push';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { environment } from './environment';
 
 async function bootstrap() {
+  const publicKey = process.env.LATTICE_PUSH_PUBLIC_KEY;
+  const privateKey = process.env.LATTICE_PUSH_PRIVATE_KEY;
+
+  setVapidDetails(`https://revolutionuc.com`, publicKey, privateKey);
+
   const app = await NestFactory.create(AppModule);
+
+  app.setGlobalPrefix('/api');
 
   const swaggerOptions = new DocumentBuilder()
     .setTitle('RevolutionUC API')
     .setVersion('2.0.0')
-    .setBasePath('/api')
     .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerOptions);
   SwaggerModule.setup('docs', app, document);
-
-  app.setGlobalPrefix('/api');
 
   if (environment.production) {
     app.enableCors({

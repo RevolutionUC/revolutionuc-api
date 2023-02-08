@@ -1,11 +1,13 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from '../entities/user.entity';
-import { RoleGuard } from './role.guard';
+import { RoleGuard, Roles } from './role.guard';
 import { AuthService } from './auth.service';
 
 @ApiTags('auth')
 @Controller('v2/auth')
+@Roles(['SUDO'])
+@ApiBearerAuth()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

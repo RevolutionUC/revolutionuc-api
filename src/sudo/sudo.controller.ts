@@ -7,7 +7,7 @@ import {
   Delete,
   Patch,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SudoService } from './sudo.service';
 import { User } from '../entities/user.entity';
 import { UserDto } from '../dtos/User.dto';
@@ -16,8 +16,14 @@ import { UseAuth } from '../auth/auth.decorator';
 @ApiTags('sudo')
 @Controller('v2/sudo')
 @UseAuth([`SUDO`])
+@ApiBearerAuth()
 export class SudoController {
   constructor(private readonly sudoService: SudoService) {}
+
+  // @Get('seed')
+  // seed() {
+  //   return this.sudoService.seed();
+  // }
 
   @Get('users')
   getUsers(): Promise<User[]> {
