@@ -1,4 +1,4 @@
-import { Post, Body, Controller } from '@nestjs/common';
+import { Post, Get, Body, Controller } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../auth/auth.service';
 import { UserDto, LoginDto } from '../dtos/User.dto';
@@ -17,4 +17,11 @@ export class AdminLoginController {
       `SUDO`,
     ]);
   }
+
+  // @Get('seed')
+  // seed(
+  //   @Body() credentials: Pick<UserDto, 'username' | 'password'>,
+  // ): Promise<LoginDto> {
+  //   return this.authService.register('bao', 'helloworld', 'SUDO');
+  // }
 }

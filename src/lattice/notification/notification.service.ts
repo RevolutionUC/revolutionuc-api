@@ -1,18 +1,13 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { setVapidDetails, sendNotification } from 'web-push';
+import { sendNotification } from 'web-push';
 import { AuthService } from '../../auth/auth.service';
 import { Notification } from '../entities/notification.entity';
 import { Hacker } from '../entities/hacker.entity';
 import { NotificationDetailsDto } from './notification-details.dto';
 import { PushSubscription } from './push-subscription.dto';
 import { Subscription } from '../entities/subscription.entity';
-
-const publicKey = process.env.LATTICE_PUSH_PUBLIC_KEY;
-const privateKey = process.env.LATTICE_PUSH_PRIVATE_KEY;
-
-setVapidDetails(`https://revolutionuc.com`, publicKey, privateKey);
 
 @Injectable()
 export class NotificationService {
