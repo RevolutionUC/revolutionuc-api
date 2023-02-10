@@ -3239,9 +3239,9 @@ caniuse-api@^1.5.2:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000639:
-  version "1.0.30001450"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001450.tgz#51ea1e1eb6688d391189a46b7d962854035d3ff5"
-  integrity sha512-HqXvh7yrdHTNLVaXu9t/8lkG49xXe97jD6zWvbnT6aQBGPl1I5ukZbSAlOLjJ6/hV8BduRMl1eR6ggNi/O0hTA==
+  version "1.0.30001451"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001451.tgz#daae7d80b348ec0c9032c5be2b7c8eea9f83dbb6"
+  integrity sha512-EUR1rMCBkMTQ+srvEuL4lJKraWLvc11XaIiBCJP8otQrcSVdnr8czFzixW+rpi1ckg7rr7SjfEYTw4QHxXshcg==
 
 caniuse-lite@^1.0.30001400:
   version "1.0.30001409"
@@ -4259,9 +4259,9 @@ ejs@^3.1.8:
     jake "^10.8.5"
 
 electron-to-chromium@^1.2.7:
-  version "1.4.286"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.286.tgz#0e039de59135f44ab9a8ec9025e53a9135eba11f"
-  integrity sha512-Vp3CVhmYpgf4iXNKAucoQUDcCrBQX3XLBtwgFqP9BUXuucgvAV9zWp1kYU7LL9j4++s9O+12cb3wMtN4SJy6UQ==
+  version "1.4.293"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.293.tgz#eaea755ad37a0f1759874a8597b33be62def2781"
+  integrity sha512-h7vBlhC83NsgC9UO3LOZx91xgstIrHk5iqMbZgnEArL5rHTM6HfsUZhnwb3oRnNetXM1741kB9SO7x9jLshz5A==
 
 electron-to-chromium@^1.4.251:
   version "1.4.257"
@@ -5859,9 +5859,9 @@ image-size@^0.7.3:
   integrity sha512-Hiyv+mXHfFEP7LzUL/llg9RwFxxY+o9N3JVLIeG5E7iFIFAalxvRU9UZthBdYDEVnzHMgjnKJPPpay5BWf1g9g==
 
 immutable@^4.0.0:
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.2.3.tgz#a203cdda37a5a30bc351b982a1794c1930198815"
-  integrity sha512-IHpmvaOIX4VLJwPOuQr1NpeBr2ZG6vpIj3blsLVxXRWJscLioaJRStqC+NcBsLeCDsnGlPpXd5/WZmnE7MbsKA==
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.2.4.tgz#83260d50889526b4b531a5e293709a77f7c55a2a"
+  integrity sha512-WDxL3Hheb1JkRN3sQkyujNlL/xRjAo3rJtaU5xeufUauG66JdMr32bLj4gF+vWl84DIA3Zxw7tiAjneYzRRw+w==
 
 import-fresh@^3.0.0, import-fresh@^3.2.1:
   version "3.3.0"
@@ -7520,9 +7520,9 @@ minimatch@~3.0.2:
     brace-expansion "^1.1.7"
 
 minimist@^1.2.0, minimist@^1.2.6, minimist@~1.2.0:
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.7.tgz#daa1c4d91f507390437c6a8bc01078e7000c4d18"
-  integrity sha512-bzfL1YUZsP41gmu/qjrEk0Q6i2ix/cVeAhbCbqH9u3zYutS1cLg00qhrD0M2MVdCcx4Sc0UpP2eBWo9rotpq6g==
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.8.tgz#c1a464e7693302e082a075cee0c057741ac4772c"
+  integrity sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==
 
 minimist@^1.2.5:
   version "1.2.6"
@@ -9183,7 +9183,7 @@ reusify@^1.0.4:
 
 "revolutionuc-emails@https://github.com/RevolutionUC/revolutionuc-emails.git":
   version "3.0.0"
-  resolved "https://github.com/RevolutionUC/revolutionuc-emails.git#e41bcc9142339f5df036cbc6292838c4b0912bd6"
+  resolved "https://github.com/RevolutionUC/revolutionuc-emails.git#13299f4cb5285074394dbb41857bb473e64b04ec"
   dependencies:
     body-parser "^1.20.0"
     ejs "^3.1.8"
