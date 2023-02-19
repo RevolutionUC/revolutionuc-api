@@ -126,7 +126,7 @@ export class AppService {
     dec += decipher.final('utf8');
     const upload = multer({
       storage: multers3({
-        s3: new S3Client({region: 'us-east-2'}),
+        s3: new S3Client({ region: 'us-east-2' }),
         bucket: 'revolutionuc-resumes-2023',
         key: function (_req, file, cb) {
           const fileArray = file.originalname.split('.');
@@ -141,7 +141,10 @@ export class AppService {
         console.log(err);
         throw new HttpException('There was an error uploading the resume', 500);
       } else {
-        return res.header("Access-Control-Allow-Origin", "*").status(HttpStatus.CREATED).send();
+        return res
+          .header('Access-Control-Allow-Origin', '*')
+          .status(HttpStatus.CREATED)
+          .send();
       }
     });
   }
