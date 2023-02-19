@@ -3239,9 +3239,9 @@ caniuse-api@^1.5.2:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000639:
-  version "1.0.30001454"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001454.tgz#66f9745ce4122c1415b1d8d1598b9bbd417e1c54"
-  integrity sha512-JezyFkZeZ5DYfQOq4rAuYhMcKaCmEhxOS89WrH6x128ZIAdDxdpsUjxqDbGPxMaNk0URHghP11fwxQDB1aLKmA==
+  version "1.0.30001456"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001456.tgz#b0702d4c446a9e20d5e2942df4e0687420885016"
+  integrity sha512-/J33M7MxX3XwznSFI+SUkTDk1yIJdBCcDYdzTnkmAXwFXQ9XoQpFjL9pSwC9LYyfVHyad1n7rErKYakkXCmWEw==
 
 caniuse-lite@^1.0.30001400:
   version "1.0.30001409"
@@ -4267,9 +4267,9 @@ ejs@^3.1.8:
     jake "^10.8.5"
 
 electron-to-chromium@^1.2.7:
-  version "1.4.301"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.301.tgz#175d9fa1509a5b062752c6db321051e610fe2eae"
-  integrity sha512-bz00ASIIDjcgszZKuEA1JEFhbDjqUNbQ/PEhNEl1wbixzYpeTp2H2QWjsQvAL2T1wJBdOwCF5hE896BoMwYKrA==
+  version "1.4.302"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.302.tgz#5770646ffe7051677b489226144aad9386d420f2"
+  integrity sha512-Uk7C+7aPBryUR1Fwvk9VmipBcN9fVsqBO57jV2ZjTm+IZ6BMNqu7EDVEg2HxCNufk6QcWlFsBkhQyQroB2VWKw==
 
 electron-to-chromium@^1.4.251:
   version "1.4.257"
@@ -9191,7 +9191,7 @@ reusify@^1.0.4:
 
 "revolutionuc-emails@https://github.com/RevolutionUC/revolutionuc-emails.git":
   version "3.0.0"
-  resolved "https://github.com/RevolutionUC/revolutionuc-emails.git#e9b09004dfc21e46c3a0416419b956e4ac47566e"
+  resolved "https://github.com/RevolutionUC/revolutionuc-emails.git#c5c85bb3a9ba5ccf24033cbcb351432c0b7ff6c5"
   dependencies:
     body-parser "^1.20.0"
     ejs "^3.1.8"
@@ -9289,9 +9289,9 @@ safe-regex@^1.1.0:
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
 sass@^1.55.0:
-  version "1.58.1"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.58.1.tgz#17ab0390076a50578ed0733f1cc45429e03405f6"
-  integrity sha512-bnINi6nPXbP1XNRaranMFEBZWUfdW/AF16Ql5+ypRxfTvCRTTKrLsMIakyDcayUt2t/RZotmL4kgJwNH5xO+bg==
+  version "1.58.3"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.58.3.tgz#2348cc052061ba4f00243a208b09c40e031f270d"
+  integrity sha512-Q7RaEtYf6BflYrQ+buPudKR26/lH+10EmO9bBqbmPh/KeLqv8bjpTNqxe71ocONqXq+jYiCbpPUmQMS+JJPk4A==
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
     immutable "^4.0.0"
