@@ -225,9 +225,7 @@ export class EmailService {
     const emailData = { ...this.emailData[payload.template] };
 
     if (payload.recipent === 'all') {
-      const registrants = await this.registrantRepository.findBy({
-        emailVerfied: true,
-      });
+      const registrants = await this.registrantRepository.find();
 
       Logger.log(`Sending ${payload.template} to ${registrants.length}`);
 
