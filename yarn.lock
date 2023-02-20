@@ -3239,9 +3239,9 @@ caniuse-api@^1.5.2:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000639:
-  version "1.0.30001456"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001456.tgz#b0702d4c446a9e20d5e2942df4e0687420885016"
-  integrity sha512-/J33M7MxX3XwznSFI+SUkTDk1yIJdBCcDYdzTnkmAXwFXQ9XoQpFjL9pSwC9LYyfVHyad1n7rErKYakkXCmWEw==
+  version "1.0.30001457"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001457.tgz#f9aabf06ef2868d949c470721832273287ab2190"
+  integrity sha512-B/2wxaSInL8ufOPVhrjYwe3fy54X35mmQ0aJwHBREuW0if1LEmrsZTrlDhqV9xBHFo7K6/nzrxa3yip4AAWxlA==
 
 caniuse-lite@^1.0.30001400:
   version "1.0.30001409"
@@ -4267,9 +4267,9 @@ ejs@^3.1.8:
     jake "^10.8.5"
 
 electron-to-chromium@^1.2.7:
-  version "1.4.302"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.302.tgz#5770646ffe7051677b489226144aad9386d420f2"
-  integrity sha512-Uk7C+7aPBryUR1Fwvk9VmipBcN9fVsqBO57jV2ZjTm+IZ6BMNqu7EDVEg2HxCNufk6QcWlFsBkhQyQroB2VWKw==
+  version "1.4.303"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.303.tgz#6c598653c52b2554f768d98374803236b8f022a8"
+  integrity sha512-XaqiQhVsGO5ymf/Lg6XEGpv2h8b5AFqQDQ9fQckolNP2VtD2VL1pn1TIx1SSYsf0srfXVi2Sm7n/K3slJSX3ig==
 
 electron-to-chromium@^1.4.251:
   version "1.4.257"
@@ -9191,7 +9191,7 @@ reusify@^1.0.4:
 
 "revolutionuc-emails@https://github.com/RevolutionUC/revolutionuc-emails.git":
   version "3.0.0"
-  resolved "https://github.com/RevolutionUC/revolutionuc-emails.git#c5c85bb3a9ba5ccf24033cbcb351432c0b7ff6c5"
+  resolved "https://github.com/RevolutionUC/revolutionuc-emails.git#d2268d198e69b45e480818787dfe4cb985382d0a"
   dependencies:
     body-parser "^1.20.0"
     ejs "^3.1.8"
