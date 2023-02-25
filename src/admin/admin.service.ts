@@ -11,6 +11,7 @@ import { Registrant, SortKey, SortOrder } from '../entities/registrant.entity';
 import * as multer from 'multer';
 import * as multers3 from 'multer-s3';
 import { S3 } from 'aws-sdk';
+import { environment } from 'src/environment';
 
 @Injectable()
 export class AdminService {
@@ -26,8 +27,6 @@ export class AdminService {
     q: string,
     full: boolean,
   ): Promise<Pagination<Registrant>> {
-    console.log({ options: { page, limit }, sortKey, sortOrder, q });
-
     let query = this.registrantRepository
       .createQueryBuilder('user')
       .orderBy(`user.${sortKey}`, sortOrder);
@@ -48,6 +47,7 @@ export class AdminService {
         'user.createdAt',
         'user.emailVerfied',
         'user.checkedIn',
+        'user.dateOfBirth',
       ]);
     }
 
@@ -143,6 +143,34 @@ export class AdminService {
     } catch (err) {
       throw new HttpException(
         `Error verifying registrant: ${err.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async confirmAttendance(uuid: string): Promise<void> {
+    try {
+      const count = await this.registrantRepository.countBy({
+        confirmedAttendance: true,
+      });
+      console.log(`confirmAttendance()`, {
+        count,
+        threshold: environment.WAITLIST_THRESHOLD,
+      });
+      if (count >= environment.WAITLIST_THRESHOLD) {
+        throw new HttpException(`error`, 400);
+      }
+
+      const result = await this.registrantRepository.update(uuid, {
+        confirmedAttendance: true,
+      });
+      if (!result.affected) {
+        throw new HttpException(`Invalid registrant id`, HttpStatus.NOT_FOUND);
+      }
+      return;
+    } catch (err) {
+      throw new HttpException(
+        `Error confirming attendance: ${err.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

@@ -55,7 +55,6 @@ export class AppService {
     const existingRegistrant = await this.registrantRepository.findOneBy({
       email: registrant.email,
     });
-    console.log({ existingRegistrant });
     if (existingRegistrant) {
       throw new HttpException(
         'You are already registered. Please check your email for the confirmation link.',
@@ -138,7 +137,6 @@ export class AppService {
     });
     upload.single('resume')(req, res, (err) => {
       if (err) {
-        console.log(err);
         throw new HttpException('There was an error uploading the resume', 500);
       } else {
         return res
@@ -187,7 +185,7 @@ export class AppService {
       try {
         this.registrantRepository.update({ email }, { isWaitlisted: true });
       } catch (error) {
-        throw new HttpException(error, 500);
+        throw new HttpException(error, 400);
       }
       throw new HttpException({ error: 'ConfirmedQuotaReached' }, 500);
     } else {

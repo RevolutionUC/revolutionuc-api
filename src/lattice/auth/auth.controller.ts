@@ -27,7 +27,6 @@ export class LatticeAuthController {
 
   @Get(`email/:id`)
   getRegistrantEmail(@Param(`id`) registrantId: string): Promise<string> {
-    console.log({ registrantId });
     return this.registrationService.getRegistrantEmail(registrantId);
   }
 
