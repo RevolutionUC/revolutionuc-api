@@ -13,7 +13,7 @@ const judgingRoles: Role[] = [`ADMIN`, `SUDO`, `JUDGE`];
 @Controller('v2/judging/auth')
 @Roles(judgingRoles)
 export class JudgingAuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Post(`login`)
   login(
@@ -31,7 +31,6 @@ export class JudgingAuthController {
   async getUserDetails(
     @CurrentUser() { id }: CurrentUserDto,
   ): Promise<Pick<User, 'id' | 'username' | 'role'>> {
-    console.log({ id });
     const user = await this.authService.getUserDetails(id, judgingRoles);
     return { id: user.id, username: user.username, role: user.role };
   }

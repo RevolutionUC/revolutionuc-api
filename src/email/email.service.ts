@@ -120,12 +120,12 @@ export class EmailService {
       firstName: ``,
     },
     postEventEmail: {
-      subject: `Thank you for participating in RevolutionUC 2021!`,
+      subject: `Thank you for participating in RevolutionUC 2023!`,
       shortDescription: `Thank you for participating in RevolutionUC. Below is important information on the post event survey and prize information.`,
       firstName: ``,
     },
     postEventJudgeEmail: {
-      subject: `Thank you for participating in RevolutionUC 2021!`,
+      subject: `Thank you for participating in RevolutionUC 2023!`,
       shortDescription: `Thank you for participating in RevolutionUC. Below is important information on the post event survey and prize information.`,
       firstName: ``,
     },
@@ -225,9 +225,7 @@ export class EmailService {
     const emailData = { ...this.emailData[payload.template] };
 
     if (payload.recipent === 'all') {
-      const registrants = await this.registrantRepository.findBy({
-        emailVerfied: true,
-      });
+      const registrants = await this.registrantRepository.find();
 
       Logger.log(`Sending ${payload.template} to ${registrants.length}`);
 
