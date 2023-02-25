@@ -68,6 +68,11 @@ export class AdminController {
     return this.adminService.verifyRegistrant(uuid);
   }
 
+  @Post('registrants/:uuid/confirm')
+  confirmAttendance(@Param('uuid') uuid: string): Promise<void> {
+    return this.adminService.confirmAttendance(uuid);
+  }
+
   @Post('registrants/:uuid/checkin')
   checkInRegistrant(@Param('uuid') uuid: string): Promise<void> {
     return this.adminService.checkInRegistrant(uuid);
