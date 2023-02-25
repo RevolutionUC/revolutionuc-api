@@ -45,6 +45,11 @@ export class AdminController {
     );
   }
 
+  @Get('checkedInCount')
+  getCheckedInCount(): Promise<number> {
+    return this.adminService.getCheckedInCount();
+  }
+
   @Get('registrants/:uuid')
   getRegistrant(@Param('uuid') uuid: string): Promise<Registrant> {
     return this.adminService.getRegistrant(uuid);

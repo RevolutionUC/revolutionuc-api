@@ -185,4 +185,17 @@ export class AdminService {
       );
     }
   }
+
+  async getCheckedInCount(): Promise<number> {
+    try {
+      return await this.registrantRepository.count({
+        where: { checkedIn: true },
+      });
+    } catch (err) {
+      throw new HttpException(
+        `Error getting checked in count: ${err.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
