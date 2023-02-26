@@ -4,4 +4,5 @@ export class ProjectDto {
   submitter: string;
   team: string[];
   categories: string[];
+  tableNumber?: string;
 }

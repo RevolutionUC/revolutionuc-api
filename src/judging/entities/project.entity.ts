@@ -34,4 +34,8 @@ export class Project {
 
   @OneToMany(() => Submission, (score) => score.project)
   submissions: Submission[];
+
+  @IsString()
+  @Column({ nullable: true })
+  tableNumber?: string;
 }

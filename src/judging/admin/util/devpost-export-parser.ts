@@ -13,6 +13,7 @@ export const devpostParser = (csv: string, config: JudgingConfig) => {
     const title = submission[config.titleColumn];
     const url = submission[config.urlColumn];
     const category = submission[config.categoryColumn];
+    const tableNumber = submission[config.tableNumberColumn];
 
     Logger.log(`Searching for project "${title}"`);
     const project = projects[title];
@@ -57,6 +58,7 @@ export const devpostParser = (csv: string, config: JudgingConfig) => {
         team,
         url,
         categories: [`General`, category],
+        tableNumber,
       };
     }
   });
