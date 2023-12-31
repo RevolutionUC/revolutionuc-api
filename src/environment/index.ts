@@ -1,5 +1,5 @@
 export const environment = {
-  production: process.env.production === 'true',
+  production: process.env.NODE_ENV === 'production',
   PORT: process.env.PORT,
   API_KEY: process.env.API_KEY,
   MAILGUN_API_KEY: process.env.MAILGUN_API_KEY,
@@ -9,7 +9,7 @@ export const environment = {
   CURRENT_INFO_EMAIL: process.env.CURRENT_INFO_EMAIL || 'infoEmail1',
   database_config: {
     url: process.env.DATABASE_URL,
-    synchronize: process.env.production !== 'true',
+    synchronize: process.env.NODE_ENV !== 'production',
     logging: true,
   },
 };
