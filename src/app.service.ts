@@ -126,7 +126,7 @@ export class AppService {
     const upload = multer({
       storage: multers3({
         s3: new S3Client({ region: 'us-east-2' }),
-        bucket: 'revolutionuc-resumes-2023',
+        bucket: 'revolutionuc-resume-2024',
         key: function (_req, file, cb) {
           const fileArray = file.originalname.split('.');
           const extension = fileArray[fileArray.length - 1];
@@ -147,7 +147,7 @@ export class AppService {
     });
   }
 
-  verify(encryptedKey: string): HttpStatus {
+  async verify(encryptedKey: string) {
     const decipher = crypto.createDecipher(
       this.userCryptoAlgorithm,
       environment.CRYPTO_KEY,
@@ -155,7 +155,7 @@ export class AppService {
     let email = decipher.update(encryptedKey, 'hex', 'utf8');
     email += decipher.final('utf8');
     try {
-      this.registrantRepository.update(
+      await this.registrantRepository.update(
         { email: email },
         { emailVerfied: true },
       );
