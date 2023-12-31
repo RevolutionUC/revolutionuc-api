@@ -9,6 +9,7 @@ import { AuthService } from '../auth/auth.service';
 import { Judge } from '../judging/entities/judge.entity';
 
 export type EMAIL =
+  | 'welcome'
   | 'confirmAttendance'
   | 'infoEmail1'
   | 'infoEmail2'
@@ -59,6 +60,11 @@ export class EmailService {
   ) {}
 
   emailData: { [key in EMAIL]: EmailDataDto } = {
+    welcome: {
+      subject: 'Welcome to RevolutionUC!',
+      shortDescription: 'Thanks for registering for RevolutionUC!',
+      firstName: '',
+    },
     confirmAttendance: {
       subject: 'Confirm Your Attendance for RevolutionUC!',
       shortDescription: 'Please confirm your attendance for RevolutionUC',
