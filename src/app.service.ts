@@ -155,11 +155,14 @@ export class AppService {
     let email = decipher.update(encryptedKey, 'hex', 'utf8');
     email += decipher.final('utf8');
     try {
-      await this.registrantRepository.update(
-        { email: email },
+      const response = await this.registrantRepository.update(
+        { email: email, emailVerfied: false },
         { emailVerfied: true },
       );
-      if (currentInfoEmail !== 'infoEmail1') {
+      // Only send email if an actual change from false to true was made
+      // --> Prevent sending duplicates email if user click Verify multiple times
+      // Also, should not send "infoEmail1" as it would be too many emails in one day
+      if (response.affected === 1 && currentInfoEmail !== 'infoEmail1') {
         this.emailService.sendEmail({
           template: currentInfoEmail,
           recipent: email,
