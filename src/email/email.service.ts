@@ -147,8 +147,8 @@ export class EmailService {
     let encrypted = cipher.update(email, 'utf8', 'hex');
     encrypted += cipher.final('hex');
 
-    const yesConfirmationUrl = `https://revolutionuc.com/attendance?confirm=true&id=${encrypted}`;
-    const noConfirmationUrl = `https://revolutionuc.com/attendance?confirm=false&id=${encrypted}`;
+    const yesConfirmationUrl = `https://revolutionuc.com/registration/attendance?confirm=true&id=${encrypted}`;
+    const noConfirmationUrl = `https://revolutionuc.com/registration/attendance?confirm=false&id=${encrypted}`;
 
     return { yesConfirmationUrl, noConfirmationUrl };
   }

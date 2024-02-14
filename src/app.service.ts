@@ -186,7 +186,7 @@ export class AppService {
       environment.WAITLIST_THRESHOLD
     ) {
       try {
-        this.registrantRepository.update({ email }, { isWaitlisted: true });
+        await this.registrantRepository.update({ email }, { isWaitlisted: true });
       } catch (error) {
         throw new HttpException(error, 400);
       }
@@ -198,12 +198,12 @@ export class AppService {
           { confirmedAttendance: payload.isConfirmed },
         );
 
-        if (payload.isConfirmed) {
-          this.emailService.sendEmail({
-            template: currentInfoEmail,
-            recipent: email,
-          });
-        }
+        // if (payload.isConfirmed) {
+        //   this.emailService.sendEmail({
+        //     template: currentInfoEmail,
+        //     recipent: email,
+        //   });
+        // }
       } catch (error) {
         throw new HttpException(error, 500);
       }
