@@ -198,12 +198,12 @@ export class AppService {
           { confirmedAttendance: payload.isConfirmed },
         );
 
-        // if (payload.isConfirmed) {
-        //   this.emailService.sendEmail({
-        //     template: currentInfoEmail,
-        //     recipent: email,
-        //   });
-        // }
+        if (payload.isConfirmed) {
+          this.emailService.sendEmail({
+            template: currentInfoEmail,
+            recipent: email,
+          });
+        }
       } catch (error) {
         throw new HttpException(error, 500);
       }

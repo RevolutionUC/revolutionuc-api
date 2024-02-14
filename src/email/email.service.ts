@@ -1,6 +1,6 @@
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import * as crypto from 'crypto';
 import { build, send } from 'revolutionuc-emails';
 import { Registrant } from '../entities/registrant.entity';
@@ -231,8 +231,10 @@ export class EmailService {
     const emailData = { ...this.emailData[payload.template] };
 
     if (payload.recipent === 'all') {
-      const registrants = await this.registrantRepository.find();
-
+      const registrants = await this.registrantRepository.find({
+        // Should NOT email people who have confirm false attendance
+        where: [{ confirmedAttendance: IsNull() }, { confirmedAttendance: true }],
+      });
       Logger.log(`Sending ${payload.template} to ${registrants.length}`);
 
       registrants.forEach(async (reg) => {
