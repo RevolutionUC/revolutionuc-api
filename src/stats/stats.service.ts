@@ -19,7 +19,7 @@ export class StatsService {
     private readonly hackerRepository: Repository<Hacker>,
     @InjectRepository(Notification)
     private readonly notificationRepository: Repository<Notification>,
-  ) {}
+  ) { }
 
   async getAnonymizedData(): Promise<AnonymizedRegistrantDto[]> {
     const registrants = await this.registrantRepository.find({
@@ -84,5 +84,11 @@ export class StatsService {
       visible: hackers.filter((h) => h.visible).length,
       matches: notifications.length / 2,
     };
+  }
+
+  async getRegistrantsConfirmedCount(): Promise<number> {
+    return await this.registrantRepository.countBy({
+      confirmedAttendance: true,
+    });
   }
 }

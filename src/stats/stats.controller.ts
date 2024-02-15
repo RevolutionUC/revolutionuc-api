@@ -9,7 +9,7 @@ export class StatsController {
   constructor(
     private readonly statsService: StatsService,
     private readonly dailyUpdateService: DailyUpdateService,
-  ) {}
+  ) { }
 
   @Get('registrants')
   async getRegistrants() {
@@ -24,5 +24,10 @@ export class StatsController {
   @Get('lattice')
   async getLatticeStats() {
     return this.statsService.getLatticeStats();
+  }
+
+  @Get('confirmedRegistrants')
+  async getConfirmedRegistrants() {
+    return this.statsService.getRegistrantsConfirmedCount();
   }
 }
