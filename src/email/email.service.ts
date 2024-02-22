@@ -126,12 +126,12 @@ export class EmailService {
       firstName: ``,
     },
     postEventEmail: {
-      subject: `Thank you for participating in RevolutionUC 2023!`,
+      subject: `Thank you for participating in RevolutionUC 2024!`,
       shortDescription: `Thank you for participating in RevolutionUC. Below is important information on the post event survey and prize information.`,
       firstName: ``,
     },
     postEventJudgeEmail: {
-      subject: `Thank you for participating in RevolutionUC 2023!`,
+      subject: `Thank you for participating in RevolutionUC 2024!`,
       shortDescription: `Thank you for participating in RevolutionUC. Below is important information on the post event survey and prize information.`,
       firstName: ``,
     },
@@ -184,7 +184,7 @@ export class EmailService {
     reg?: Registrant,
   ) {
     if (dryRun) {
-      console.log({ template, emailData, recipentEmail });
+      // console.log({ template, emailData, recipentEmail });
       return;
     } else {
       if (template === 'confirmAttendance') {
@@ -232,8 +232,11 @@ export class EmailService {
 
     if (payload.recipent === 'all') {
       const registrants = await this.registrantRepository.find({
-        // Should NOT email people who have confirm false attendance
-        where: [{ confirmedAttendance: IsNull() }, { confirmedAttendance: true }],
+        // Should NOT email people who have confirm false attendance or is waitlisted
+        where: [
+          { confirmedAttendance: IsNull(), isWaitlisted: false },
+          { confirmedAttendance: true, isWaitlisted: false },
+        ],
       });
       Logger.log(`Sending ${payload.template} to ${registrants.length}`);
 
