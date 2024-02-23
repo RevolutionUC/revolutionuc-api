@@ -232,10 +232,10 @@ export class EmailService {
 
     if (payload.recipent === 'all') {
       const registrants = await this.registrantRepository.find({
-        // Should NOT email people who have confirm false attendance or is waitlisted
+        // Should NOT email people who have confirm false attendance
         where: [
-          { confirmedAttendance: IsNull(), isWaitlisted: false },
-          { confirmedAttendance: true, isWaitlisted: false },
+          { confirmedAttendance: IsNull() },
+          { confirmedAttendance: true },
         ],
       });
       Logger.log(`Sending ${payload.template} to ${registrants.length}`);
