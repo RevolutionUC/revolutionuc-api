@@ -184,8 +184,8 @@ export class AdminService {
       if (!registrant) {
         throw new HttpException(`Invalid registrant id`, HttpStatus.NOT_FOUND);
       }
-      // If they have confirmed attendance, then we simply check them in
-      if (registrant.confirmedAttendance) {
+      // If they have confirmed attendance and not in the waitlist, then we simply check them in
+      if (registrant.confirmedAttendance && !registrant.isWaitlisted) {
         registrant.checkedIn = true;
         await this.registrantRepository.save(registrant);
       } else {
