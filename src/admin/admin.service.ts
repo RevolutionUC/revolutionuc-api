@@ -178,12 +178,23 @@ export class AdminService {
 
   async checkInRegistrant(uuid: string): Promise<void> {
     try {
-      const result = await this.registrantRepository.update(uuid, {
-        checkedIn: true,
+      const registrant = await this.registrantRepository.findOneBy({
+        id: uuid,
       });
-      if (!result.affected) {
+      if (!registrant) {
         throw new HttpException(`Invalid registrant id`, HttpStatus.NOT_FOUND);
       }
+      // If they have confirmed attendance, then we simply check them in
+      if (registrant.confirmedAttendance) {
+        registrant.checkedIn = true;
+        await this.registrantRepository.save(registrant);
+      } else {
+        // If haven't confirmed attendance or confirmed "NO", then we check in but also put into waitlist
+        registrant.checkedIn = true;
+        registrant.isWaitlisted = true;
+        await this.registrantRepository.save(registrant);
+      }
+
       return;
     } catch (err) {
       throw new HttpException(
