@@ -47,7 +47,7 @@ export class AdminService {
         'user.createdAt',
         'user.emailVerfied',
         'user.checkedIn',
-        'user.dateOfBirth',
+        'user.age',
       ]);
     }
 

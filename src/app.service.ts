@@ -100,7 +100,7 @@ export class AppService {
         throw new HttpException('Error while generating email', 500);
       });
 
-    if (getAge(registrant.dateOfBirth) >= 18) {
+    if (registrant.age >= 18) {
       const attendee = this.attendeeRepository.create({
         email: registrant.email,
         name: `${registrant.firstName} ${registrant.lastName}`,

@@ -34,7 +34,7 @@ const ALLERGENS: string[] = [
   'PeanutAllergy',
   'GlutenFree',
 ];
-const EDUCATION_LEVEL: string[] = ['HighSchool', 'Undergraduate', 'Graduate'];
+const EDUCATION_LEVEL: string[] = ['LessThanSecondary', 'HighSchool', 'Undergraduate2Year', 'Undergraduate3Year', 'Graduate', 'CodeSchool', 'Vocational', 'PostDoctorate', 'Other', 'PreferNotToAnswer'];
 const HOWYOUHEARD: string[] = ['Search Engine', 'RevolutionUC Website', 'Facebook', 
 'Twitter', 'Instagram', 'LinkedIn', 'Email', 'Word Of Mouth', 'Other']
 export class RegistrantDto {
@@ -121,9 +121,8 @@ export class RegistrantDto {
   @ApiPropertyOptional()
   githubUsername: string;
 
-  @IsDateString()
   @ApiProperty()
-  dateOfBirth: string;
+  age: number;
 
   @IsNotEmpty()
   @IsBoolean()

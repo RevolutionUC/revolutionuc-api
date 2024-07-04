@@ -171,7 +171,7 @@ export class EmailService {
 
   private getInviteLinks(registrant: Registrant) {
     const discordLink = DISCORD_INVITE;
-    const isMinor = this.getAge(registrant.dateOfBirth) < 18;
+    const isMinor = registrant.age < 18;
     const hopinLink = isMinor ? HOPIN_INVITE_MINOR : HOPIN_INVITE;
     return { discordLink, hopinLink };
   }
