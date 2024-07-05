@@ -24,7 +24,7 @@ export class StatsService {
   async getAnonymizedData(): Promise<AnonymizedRegistrantDto[]> {
     const registrants = await this.registrantRepository.find({
       select: [
-        'dateOfBirth',
+        'age',
         'major',
         'school',
         'gender',
@@ -38,14 +38,14 @@ export class StatsService {
     const today = new Date();
 
     return registrants.map<AnonymizedRegistrantDto>((r) => {
-      const dateOfBirth = new Date(r.dateOfBirth);
+      // const dateOfBirth = new Date(r.dateOfBirth);
 
-      const age = today.getFullYear() - dateOfBirth.getFullYear();
+      // const age = today.getFullYear() - dateOfBirth.getFullYear();
 
       return {
         ...r,
         hackathonExperience: r.hackathons.toString(),
-        age: age.toString(),
+        age: r.age.toString(),
         ethnicity: r.ethnicity.join(`, `),
       };
     });
