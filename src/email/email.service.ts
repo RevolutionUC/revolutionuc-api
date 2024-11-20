@@ -10,6 +10,7 @@ import { Judge } from '../judging/entities/judge.entity';
 
 export type EMAIL =
   | 'welcome'
+  | 'dateChange'
   | 'confirmAttendance'
   | 'infoEmail1'
   | 'infoEmail2'
@@ -63,6 +64,11 @@ export class EmailService {
     welcome: {
       subject: 'Welcome to RevolutionUC!',
       shortDescription: 'Thanks for registering for RevolutionUC!',
+      firstName: '',
+    },
+    dateChange: {
+      subject: 'Important Update: RevolutionUC Schedule and Format',
+      shortDescription: 'Important update regarding RevolutionUC schedule and format',
       firstName: '',
     },
     confirmAttendance: {
