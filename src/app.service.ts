@@ -132,7 +132,7 @@ export class AppService {
           const fileArray = file.originalname.split('.');
           const extension = fileArray[fileArray.length - 1];
           const folder = researchConsent ? 'research-consent' : '';
-          const filePath = folder ? `${folder}/${fileArray[0]}.${extension}` : `${fileArray[0]}.${extension}`;
+          const filePath = folder ? `${folder}/${dec}.${extension}` : `${dec}.${extension}`;
           cb(null, filePath);
         },
       }),
