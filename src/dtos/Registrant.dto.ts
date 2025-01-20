@@ -129,6 +129,10 @@ export class RegistrantDto {
   @ApiProperty()
   acceptedWaiver: boolean;
 
+  @IsBoolean()
+  @ApiProperty()
+  researchConsent: boolean;
+
   @IsIn(ALLERGENS, {
     each: true,
   })

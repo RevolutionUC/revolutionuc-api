@@ -167,6 +167,10 @@ export class Registrant {
 
   @IsBoolean()
   @Column({ default: false })
+  researchConsent: boolean;
+
+  @IsBoolean()
+  @Column({ default: false })
   isWaitlisted: boolean;
 
   @Column('text', {

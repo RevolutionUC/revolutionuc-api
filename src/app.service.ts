@@ -128,9 +128,12 @@ export class AppService {
         s3: new S3Client({ region: 'us-east-2' }),
         bucket: 'revolutionuc-resume-2025',
         key: function (_req, file, cb) {
+          const researchConsent = _req.body.researchConsent === 'on';
           const fileArray = file.originalname.split('.');
           const extension = fileArray[fileArray.length - 1];
-          cb(null, `${dec}.${extension}`);
+          const folder = researchConsent ? 'research-consent' : '';
+          const filePath = folder ? `${folder}/${fileArray[0]}.${extension}` : `${fileArray[0]}.${extension}`;
+          cb(null, filePath);
         },
       }),
       limits: { fileSize: 20000000, files: 1 },
