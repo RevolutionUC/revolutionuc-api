@@ -171,7 +171,7 @@ export class AdminService {
     file: Express.Multer.File,
   ): Promise<Array<Submission>> {
     const csvString = file.buffer.toString();
-    const config = await this.configRepository.findOneByOrFail({ year: 2024 });
+    const config = await this.configRepository.findOneByOrFail({ year: 2025 });
     const allCategories = await this.categoryRepository.find();
     const projects = devpostParser(csvString, config);
 
@@ -264,7 +264,7 @@ export class AdminService {
     const categories = await this.categoryRepository.find({
       relations: [`judges`, `submissions`],
     });
-    const judgingConfig = await this.configRepository.findOneBy({ year: 2024 });
+    const judgingConfig = await this.configRepository.findOneBy({ year: 2025 });
 
     Logger.log(
       `initiateAssignment() assigning ${categories.length} categories`,

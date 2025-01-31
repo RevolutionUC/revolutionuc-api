@@ -132,12 +132,12 @@ export class EmailService {
       firstName: ``,
     },
     postEventEmail: {
-      subject: `Thank you for participating in RevolutionUC 2024!`,
+      subject: `Thank you for participating in RevolutionUC 2025!`,
       shortDescription: `Thank you for participating in RevolutionUC. Below is important information on the post event survey and prize information.`,
       firstName: ``,
     },
     postEventJudgeEmail: {
-      subject: `Thank you for participating in RevolutionUC 2024!`,
+      subject: `Thank you for participating in RevolutionUC 2025!`,
       shortDescription: `Thank you for participating in RevolutionUC. Below is important information on the post event survey and prize information.`,
       firstName: ``,
     },
