@@ -3639,9 +3639,9 @@ caniuse-api@^1.5.2:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000639:
-  version "1.0.30001695"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001695.tgz#4f526978adc0e9fe7b1f6159d605fe4f7e638b16"
-  integrity sha512-RLiLjmQZv3Aez1CeHJ7RYSOv7JvPnWAieufjue0FWA0kXXWaUvoYU3ui2htv/invgF0px6AjwBUKdBrJDxidUQ==
+  version "1.0.30001697"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001697.tgz#09b9b5286f553b19db34bf5b965d0dd462ece371"
+  integrity sha512-LHXW8VWE+BSo0kn+/iDEtw33LM/qFky5tBqHdTXnVwrPxcH0+A+cfNBIGO7hI7ts2ZMpSKFUJpdj0OGk1qOFbg==
 
 caniuse-lite@^1.0.30001587:
   version "1.0.30001589"
@@ -4745,9 +4745,9 @@ ejs@^3.1.8:
     jake "^10.8.5"
 
 electron-to-chromium@^1.2.7:
-  version "1.5.88"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.88.tgz#cdb6e2dda85e6521e8d7d3035ba391c8848e073a"
-  integrity sha512-K3C2qf1o+bGzbilTDCTBhTQcMS9KW60yTAaTeeXsfvQuTDDwlokLam/AdqlqcSy9u4UainDgsHV23ksXAOgamw==
+  version "1.5.93"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.93.tgz#6fae820ac8bb772a841aa67fce5389e6c6da7ba2"
+  integrity sha512-M+29jTcfNNoR9NV7la4SwUqzWAxEwnc7ThA5e1m6LRSotmpfpCpLcIfgtSCVL+MllNLgAyM/5ru86iMRemPzDQ==
 
 electron-to-chromium@^1.4.668:
   version "1.4.681"
@@ -8455,10 +8455,15 @@ object-copy@^0.1.0:
     define-property "^0.2.5"
     kind-of "^3.0.3"
 
-object-inspect@^1.13.1, object-inspect@^1.13.3:
+object-inspect@^1.13.1:
   version "1.13.3"
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.13.3.tgz#f14c183de51130243d6d18ae149375ff50ea488a"
   integrity sha512-kDCGIbxkDSXE3euJZZXzc6to7fCrKHNI/hSRQnRuQ+BWjFNzZwiFF8fj/6o2t2G9/jTj8PSIYTfCLelLZEeRpA==
+
+object-inspect@^1.13.3:
+  version "1.13.4"
+  resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.13.4.tgz#8375265e21bc20d0fa582c22e1b13485d6e00213"
+  integrity sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew==
 
 object-keys@^1.1.1:
   version "1.1.1"
@@ -9864,7 +9869,7 @@ reusify@^1.0.4:
 
 "revolutionuc-emails@https://github.com/RevolutionUC/revolutionuc-emails.git":
   version "3.0.0"
-  resolved "https://github.com/RevolutionUC/revolutionuc-emails.git#cd7738d1544a6222a15b4f1d6517534f4fab1a34"
+  resolved "https://github.com/RevolutionUC/revolutionuc-emails.git#7d5518fc5d55669eb9b35f8632aba90a3db6ca31"
   dependencies:
     body-parser "^1.20.0"
     ejs "^3.1.8"
@@ -9962,9 +9967,9 @@ safe-regex@^1.1.0:
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
 sass@^1.55.0:
-  version "1.83.4"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.83.4.tgz#5ccf60f43eb61eeec300b780b8dcb85f16eec6d1"
-  integrity sha512-B1bozCeNQiOgDcLd33e2Cs2U60wZwjUUXzh900ZyQF5qUasvMdDZYbQ566LJu7cqR+sAHlAfO6RMkaID5s6qpA==
+  version "1.84.0"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.84.0.tgz#da9154cbccb2d2eac7a9486091b6d9ba93ef5bad"
+  integrity sha512-XDAbhEPJRxi7H0SxrnOpiXFQoUJHwkR2u3Zc4el+fK/Tt5Hpzw5kkQ59qVDfvdaUq6gCrEZIbySFBM2T9DNKHg==
   dependencies:
     chokidar "^4.0.0"
     immutable "^5.0.2"
@@ -10023,9 +10028,9 @@ semver@^7.2.1, semver@^7.3.4, semver@^7.3.5, semver@^7.3.8, semver@^7.5.4:
     lru-cache "^6.0.0"
 
 semver@^7.5.3:
-  version "7.6.3"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-7.6.3.tgz#980f7b5550bc175fb4dc09403085627f9eb33143"
-  integrity sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==
+  version "7.7.1"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.7.1.tgz#abd5098d82b18c6c81f6074ff2647fd3e7220c9f"
+  integrity sha512-hlq8tAfn0m/61p4BVRcPzIGr6LKiMwo4VM6dGi6pt4qcRkmNzTcWq6eCEjEh+qXjkMDvPlOFFSGwQjoEa6gyMA==
 
 send@0.16.2:
   version "0.16.2"
