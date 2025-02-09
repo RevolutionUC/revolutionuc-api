@@ -15,7 +15,7 @@
 
 # Credit: https://github.com/Saluki/nestjs-template/blob/master/Dockerfile
 
-FROM node:18-alpine as builder
+FROM node:20-alpine as builder
 
 ENV NODE_ENV build
 
@@ -41,7 +41,7 @@ RUN yarn run build \
 
 LABEL fly_launch_runtime="nodejs"
 
-FROM node:18-alpine
+FROM node:20-alpine
 
 ENV NODE_ENV production
 
