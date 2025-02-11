@@ -80,8 +80,8 @@ export class EmailService {
       offWaitlist: false,
     },
     infoEmail1: {
-      subject: 'RevolutionUC is this month!',
-      shortDescription: `RevolutionUC is coming this month. Here's some important information for the event`,
+      subject: 'RevolutionUC is 3 weeks away!',
+      shortDescription: `RevolutionUC is coming in less than 3 weeks. Here's some important information for the event`,
       firstName: '',
     },
     infoEmail2: {
