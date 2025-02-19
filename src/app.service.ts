@@ -196,16 +196,23 @@ export class AppService {
       throw new HttpException({ error: 'ConfirmedQuotaReached' }, 500);
     } else {
       try {
-        const response = await this.registrantRepository.update(
-          { email },
-          { confirmedAttendance: payload.isConfirmed },
-        );
+        const registrant = await this.registrantRepository.findOneBy({ email: email });
+        if (!registrant) {
+          throw new HttpException(`Registrant not found`, HttpStatus.NOT_FOUND);
+        }
+        const prevStatus = registrant.confirmedAttendance;
+        if (prevStatus !== payload.isConfirmed) {
+          const response = await this.registrantRepository.update(
+            { email },
+            { confirmedAttendance: payload.isConfirmed },
+          );
 
-        if (response.affected && payload.isConfirmed) {
-          this.emailService.sendEmail({
-            template: "confirmAttendanceFollowUp",
-            recipent: email,
-          });
+          if (response.affected === 1 && payload.isConfirmed) {
+            this.emailService.sendEmail({
+              template: "confirmAttendanceFollowUp",
+              recipent: email,
+            });
+          }
         }
       } catch (error) {
         throw new HttpException(error, 500);
