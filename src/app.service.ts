@@ -196,14 +196,14 @@ export class AppService {
       throw new HttpException({ error: 'ConfirmedQuotaReached' }, 500);
     } else {
       try {
-        await this.registrantRepository.update(
+        const response = await this.registrantRepository.update(
           { email },
           { confirmedAttendance: payload.isConfirmed },
         );
 
-        if (payload.isConfirmed) {
+        if (response.affected && payload.isConfirmed) {
           this.emailService.sendEmail({
-            template: currentInfoEmail,
+            template: "confirmAttendanceFollowUp",
             recipent: email,
           });
         }

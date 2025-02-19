@@ -12,6 +12,7 @@ export type EMAIL =
   | 'welcome'
   | 'dateChange'
   | 'confirmAttendance'
+  | 'confirmAttendanceFollowUp'
   | 'infoEmail1'
   | 'infoEmail2'
   | 'infoEmail3'
@@ -78,6 +79,11 @@ export class EmailService {
       yesConfirmationUrl: '',
       noConfirmationUrl: '',
       offWaitlist: false,
+    },
+    confirmAttendanceFollowUp: {
+      subject: 'Your Attendance Has Been Confirmed!',
+      shortDescription: 'Your attendance has been confirmed for RevolutionUC',
+      firstName: '',
     },
     infoEmail1: {
       subject: 'RevolutionUC is 3 weeks away!',
