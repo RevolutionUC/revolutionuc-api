@@ -209,7 +209,7 @@ export class AppService {
 
           if (response.affected === 1 && payload.isConfirmed) {
             this.emailService.sendEmail({
-              template: "confirmAttendanceFollowUp",
+              template: currentInfoEmail,
               recipent: email,
             });
           }
