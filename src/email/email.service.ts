@@ -24,7 +24,8 @@ export type EMAIL =
   | 'submissionReminder'
   | 'postEventEmail'
   | 'postEventJudgeEmail'
-  | 'postEventSurveyReminder';
+  | 'postEventSurveyReminder'
+  | 'infoEmailWaitlist';
 
 const DISCORD_INVITE = process.env.DISCORD_INVITE;
 const HOPIN_INVITE = process.env.HOPIN_INVITE;
@@ -152,6 +153,11 @@ export class EmailService {
       shortDescription: `Thank you for participating in RevolutionUC. We would love your feedback on your experience at RevolutionUC.`,
       firstName: ``,
     },
+    infoEmailWaitlist: {
+      subject: `Important Information: You're on the Waitlist for RevolutionUC `,
+      shortDescription: `Thank you for registering for RevolutionUC. You are currently on the waitlist.`,
+      firstName: ``,
+    },
   };
 
   private getConfirmationLinks(email: string) {
@@ -243,13 +249,15 @@ export class EmailService {
     const emailData = { ...this.emailData[payload.template] };
 
     if (payload.recipent === 'all') {
+
+      const whereCondition = payload.template === 'infoEmailWaitlist' 
+        ? { confirmedAttendance: IsNull() } 
+        : [{ confirmedAttendance: IsNull() }, { confirmedAttendance: true }];
+      
       const registrants = await this.registrantRepository.find({
-        // Should NOT email people who have confirm false attendance
-        where: [
-          { confirmedAttendance: IsNull() },
-          { confirmedAttendance: true },
-        ],
+        where: whereCondition,
       });
+
       Logger.log(`Sending ${payload.template} to ${registrants.length}`);
 
       registrants.forEach(async (reg) => {
