@@ -202,7 +202,7 @@ export class EmailService {
     reg?: Registrant,
   ) {
     if (dryRun) {
-      // console.log({ template, emailData, recipentEmail });
+      console.log({ template, emailData, recipentEmail });
       return;
     } else {
       if (template === 'confirmAttendance') {
