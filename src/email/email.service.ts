@@ -25,7 +25,8 @@ export type EMAIL =
   | 'postEventEmail'
   | 'postEventJudgeEmail'
   | 'postEventSurveyReminder'
-  | 'infoEmailWaitlist';
+  | 'infoEmailWaitlist'
+  | 'infoEmailCTF';
 
 const DISCORD_INVITE = process.env.DISCORD_INVITE;
 const HOPIN_INVITE = process.env.HOPIN_INVITE;
@@ -156,6 +157,11 @@ export class EmailService {
     infoEmailWaitlist: {
       subject: `Important Information: You're on the Waitlist for RevolutionUC `,
       shortDescription: `Thank you for registering for RevolutionUC. You are currently on the waitlist.`,
+      firstName: ``,
+    },
+    infoEmailCTF: {
+      subject: `RevolutionUC Capture the Flag Challenge with ICR`,
+      shortDescription: `Get ready for the ICR Capture The Flag (CTF) challenge at RevolutionUC!`,
       firstName: ``,
     },
   };
