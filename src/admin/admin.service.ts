@@ -237,4 +237,17 @@ export class AdminService {
       );
     }
   }
+
+  async getConfirmedCheckedInCount(): Promise<number> {
+    try {
+      return await this.registrantRepository.count({
+        where: { checkedIn: true, confirmedAttendance: true },
+      });
+    } catch (err) {
+      throw new HttpException(
+        `Error getting confirmed checked in count: ${err.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

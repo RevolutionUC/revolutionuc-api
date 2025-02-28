@@ -50,6 +50,11 @@ export class AdminController {
     return this.adminService.getCheckedInCount();
   }
 
+  @Get('confirmedCheckedInCount')
+  getConfirmedCheckedInCount(): Promise<number> {
+    return this.adminService.getConfirmedCheckedInCount();
+  }
+
   @Get('registrants/:uuid')
   getRegistrant(@Param('uuid') uuid: string): Promise<Registrant> {
     return this.adminService.getRegistrant(uuid);
