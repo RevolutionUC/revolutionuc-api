@@ -26,6 +26,7 @@ export type EMAIL =
   | 'postEventJudgeEmail'
   | 'postEventSurveyReminder'
   | 'infoEmailWaitlist'
+  | 'infoEmailWaitlist2'
   | 'infoEmailCTF';
 
 const DISCORD_INVITE = process.env.DISCORD_INVITE;
@@ -159,6 +160,11 @@ export class EmailService {
       shortDescription: `Thank you for registering for RevolutionUC. You are currently on the waitlist.`,
       firstName: ``,
     },
+    infoEmailWaitlist2: {
+      subject: `Check-In for Waitlisted Registrants is Open!`,
+      shortDescription: `Check-in is open!`,
+      firstName: ``,
+    },
     infoEmailCTF: {
       subject: `RevolutionUC Capture the Flag Challenge with ICR`,
       shortDescription: `Get ready for the ICR Capture The Flag (CTF) challenge at RevolutionUC!`,
@@ -256,7 +262,7 @@ export class EmailService {
 
     if (payload.recipent === 'all') {
 
-      const whereCondition = payload.template === 'infoEmailWaitlist' 
+      const whereCondition = payload.template === 'infoEmailWaitlist || infoEmailWaitlist2' 
         ? { confirmedAttendance: IsNull() } 
         : [{ confirmedAttendance: IsNull() }, { confirmedAttendance: true }];
       
