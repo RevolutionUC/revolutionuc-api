@@ -262,7 +262,7 @@ export class EmailService {
 
     if (payload.recipent === 'all') {
 
-      const whereCondition = payload.template === 'infoEmailWaitlist || infoEmailWaitlist2' 
+      const whereCondition = payload.template === 'infoEmailWaitlist' || 'infoEmailWaitlist2' 
         ? { confirmedAttendance: IsNull() } 
         : [{ confirmedAttendance: IsNull() }, { confirmedAttendance: true }];
       
