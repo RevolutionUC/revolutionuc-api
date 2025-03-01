@@ -9880,7 +9880,7 @@ reusify@^1.0.4:
 
 "revolutionuc-emails@https://github.com/RevolutionUC/revolutionuc-emails.git":
   version "3.0.0"
-  resolved "https://github.com/RevolutionUC/revolutionuc-emails.git#2a23f8bfccdecaaae9951156cf0898c5a86bb4e1"
+  resolved "https://github.com/RevolutionUC/revolutionuc-emails.git#ffad6dd9d2b188d794c629d2a0fa1834ce73fe1e"
   dependencies:
     body-parser "^1.20.0"
     ejs "^3.1.8"
