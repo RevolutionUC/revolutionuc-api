@@ -14,6 +14,10 @@ export class Category {
   @Column()
   name: string;
 
+  @IsString()
+  @Column()
+  description: string;
+
   @OneToMany(() => Judge, (judge) => judge.category)
   judges: Judge[];
 
