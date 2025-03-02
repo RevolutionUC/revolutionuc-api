@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { IsString, IsInt } from 'class-validator';
+import { IsString, IsInt, IsOptional } from 'class-validator';
 
 @Entity()
 export class JudgingConfig {
@@ -37,4 +37,8 @@ export class JudgingConfig {
   @IsString()
   @Column()
   tableNumberColumn: string;
+
+  @IsOptional()
+  @Column({ type: 'jsonb', nullable: true })
+  categoryConfig: Record<string, { groupCount: number; judgesPerGroup: number; groupsPerProject: number }>;
 }

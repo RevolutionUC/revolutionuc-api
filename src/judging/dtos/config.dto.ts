@@ -7,4 +7,5 @@ export class JudgingConfigDto {
   urlColumn: string;
   categoryColumn: string;
   tableNumberColumn: string;
+  categoryConfig?: Record<string, { groupCount: number; judgesPerGroup: number; groupsPerProject: number }>;
 }
