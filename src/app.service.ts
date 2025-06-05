@@ -126,7 +126,7 @@ export class AppService {
     const upload = multer({
       storage: multers3({
         s3: new S3Client({ region: 'us-east-2' }),
-        bucket: 'revolutionuc-resume-2025',
+        bucket: 'revolutionuc-resume-2026',
         key: function (_req, file, cb) {
           const researchConsent = _req.body.researchConsent === 'on';
           const fileArray = file.originalname.split('.');
