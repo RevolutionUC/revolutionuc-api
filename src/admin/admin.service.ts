@@ -105,7 +105,7 @@ export class AdminService {
       const upload = multer({
         storage: multers3({
           s3: new S3(),
-          bucket: 'revolutionuc-resumes-2020',
+          bucket: 'revolutionuc-resumes-2026',
           key: function (_req, file, cb) {
             const fileArray = file.originalname.split('.');
             const extension = fileArray[fileArray.length - 1];
