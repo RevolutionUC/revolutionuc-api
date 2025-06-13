@@ -121,6 +121,10 @@ export class RegistrantDto {
   @ApiPropertyOptional()
   githubUsername: string;
 
+  @IsString()
+  @ApiPropertyOptional()
+  linkedinUrl: string;
+
   @ApiProperty()
   age: number;
 
