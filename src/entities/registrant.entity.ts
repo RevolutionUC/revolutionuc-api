@@ -130,6 +130,12 @@ export class Registrant {
   })
   githubUsername: string;
 
+  @IsString()
+  @Column({
+    nullable: true,
+  })
+  linkedinUrl: string;
+
   @Column()
   age: number;
 
