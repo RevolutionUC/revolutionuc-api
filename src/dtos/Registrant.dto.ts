@@ -123,7 +123,7 @@ export class RegistrantDto {
 
   @IsString()
   @ApiPropertyOptional()
-  linkedinUrl: string;
+  linkedInURL: string;
 
   @ApiProperty()
   age: number;
