@@ -134,7 +134,7 @@ export class Registrant {
   @Column({
     nullable: true,
   })
-  linkedinUrl: string;
+  linkedInURL: string;
 
   @Column()
   age: number;
