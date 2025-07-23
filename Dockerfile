@@ -28,14 +28,14 @@ RUN apk add --no-cache git
 USER root
 WORKDIR /home/node
 
-COPY --chown=node package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+COPY --chown=node package.json yarn.lock pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 COPY --chown=node . .
 
 # Fly.io build secrets: https://fly.io/docs/reference/build-secrets/
-RUN yarn run build \
-    && yarn install --production
+RUN pnpm run build \
+    && pnpm install --prod
 
 # ---
 
