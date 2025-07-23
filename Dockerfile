@@ -25,6 +25,8 @@ RUN chown -R app:node /home/node
 # Add git to be able to clone the "RevolutionUC-emails" repo
 RUN apk add --no-cache git
 
+RUN npm update -g npm && npm install -g pnpm
+
 USER root
 WORKDIR /home/node
 
