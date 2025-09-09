@@ -87,8 +87,8 @@ importers:
         specifier: ^0.1.13
         version: 0.1.14
       revolutionuc-emails:
-        specifier: https://github.com/RevolutionUC/revolutionuc-emails.git
-        version: https://codeload.github.com/RevolutionUC/revolutionuc-emails/tar.gz/abccf5a09f097542ecab79173b2e044fa9ab76ef(chokidar@3.5.3)
+        specifier: github:RevolutionUC/revolutionuc-emails
+        version: https://codeload.github.com/RevolutionUC/revolutionuc-emails/tar.gz/402272eddf3d90cc603d2c87502fdb4ce3962226(chokidar@3.5.3)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -4950,8 +4950,8 @@ packages:
     resolution: {integrity: sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
-  revolutionuc-emails@https://codeload.github.com/RevolutionUC/revolutionuc-emails/tar.gz/abccf5a09f097542ecab79173b2e044fa9ab76ef:
-    resolution: {tarball: https://codeload.github.com/RevolutionUC/revolutionuc-emails/tar.gz/abccf5a09f097542ecab79173b2e044fa9ab76ef}
+  revolutionuc-emails@https://codeload.github.com/RevolutionUC/revolutionuc-emails/tar.gz/402272eddf3d90cc603d2c87502fdb4ce3962226:
+    resolution: {tarball: https://codeload.github.com/RevolutionUC/revolutionuc-emails/tar.gz/402272eddf3d90cc603d2c87502fdb4ce3962226}
     version: 3.0.0
     engines: {node: '>=16.x'}
 
@@ -12197,7 +12197,7 @@ snapshots:
 
   reusify@1.1.0: {}
 
-  revolutionuc-emails@https://codeload.github.com/RevolutionUC/revolutionuc-emails/tar.gz/abccf5a09f097542ecab79173b2e044fa9ab76ef(chokidar@3.5.3):
+  revolutionuc-emails@https://codeload.github.com/RevolutionUC/revolutionuc-emails/tar.gz/402272eddf3d90cc603d2c87502fdb4ce3962226(chokidar@3.5.3):
     dependencies:
       body-parser: 1.20.3
       ejs: 3.1.10
